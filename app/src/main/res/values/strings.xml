@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name" translatable="false">CircleGathering</string>
+    <string name="action_settings">Action Settings</string>
+    <string name="all_stories">All Stories</string>
+    <string name="format_email_error_message">Email Format not match</string>
+    <string name="login">Login</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="stories">Stories</string>
+    <string name="logout">Logout</string>
+    <string name="prompt_email">Your Email</string>
+    <string name="prompt_password">Your Password</string>
+    <string name="click_here">Click Here</string>
+    <string name="don_t_have_account_user_yet">Don\'t have account user yet?</string>
+    <string name="welcome">Welcome</string>
+    <string name="button_add_data_story">Button Add Data Story</string>
+    <string name="username">Username</string>
+    <string name="register">Register</string>
+    <string name="language_settings">Language Settings</string>
+    <string name="input_password_error_message">Passwords must be at least 6 characters</string>
+    <string name="image_on_login_page">Image On Login Page</string>
+</resources>
