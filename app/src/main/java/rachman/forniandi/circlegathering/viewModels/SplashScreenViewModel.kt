@@ -10,5 +10,5 @@ import javax.inject.Inject
 class SplashScreenViewModel @Inject constructor(private val repository: AuthUserRepository) :
     ViewModel() {
 
-        fun checkSessionToken(): Flow<String?> = repository.store.obtainAuthToken()
+        fun checkSessionToken(): Flow<String?> = repository.store.checkToken()
 }

@@ -32,7 +32,13 @@ class MainViewModel @Inject constructor(
 
     fun clearTheTokenAndSession(tokenStory:String){
         viewModelScope.launch {
-            repository1.store.saveTheAuthToken(tokenStory)
+            repository1.store.keepAuthToken(tokenStory)
+        }
+    }
+
+    fun actionClearDataUserName(){
+        viewModelScope.launch {
+            repository1.store.clearUsername()
         }
     }
 

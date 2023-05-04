@@ -117,6 +117,7 @@ class MainActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.menu_logout ->{
                 viewModel.clearTheTokenAndSession("")
+                viewModel.actionClearDataUserName()
                 val intentToAuth = Intent(this,LoginRegisterActivity::class.java)
                 startActivity(intentToAuth)
                 finish()

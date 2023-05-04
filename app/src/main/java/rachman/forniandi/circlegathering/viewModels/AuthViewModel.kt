@@ -102,22 +102,17 @@ class AuthViewModel @Inject constructor(
 
     fun actionSaveAuthToken(token: String) {
         viewModelScope.launch {
-            repository.remote.keepAuthToken(token)
+            repository.store.keepAuthToken(token)
         }
     }
 
     fun actionSaveAuthUsername(name: String) {
         viewModelScope.launch {
-            repository.remote.keepDataUsername(name)
+            repository.store.keepDataUsername(name)
         }
     }
 
-/*
-    private fun saveTokenLogin(token: String){
-        viewModelScope.launch {
-            repository.store.saveTheAuthToken(token)
-        }
-    }*/
+
 
     fun saveBackOnline(backOnline:Boolean)=
         viewModelScope.launch(Dispatchers.IO) {

@@ -13,8 +13,7 @@ import retrofit2.Response
 import javax.inject.Inject
 
 class RemoteDataSource @Inject constructor(
-    private val networkService: NetworkService,
-private val tokenDataSource: TokenDataSource) {
+    private val networkService: NetworkService) {
 
     suspend fun doLogin(email: String, password: String): Response<ResponseLogin >{
        return networkService.loginUser(email, password)
@@ -22,14 +21,6 @@ private val tokenDataSource: TokenDataSource) {
 
     suspend fun doRegister(username:String,email: String, password: String): Response<ResponseRegister>{
         return networkService.registerUser(username,email, password)
-    }
-
-    suspend fun keepAuthToken(token: String) {
-        tokenDataSource.saveTheAuthToken(token)
-    }
-
-    suspend fun keepDataUsername(name: String) {
-        tokenDataSource.saveUsername(name)
     }
 
     suspend fun showStories(authorization:String):Response<ResponseAllStories>{

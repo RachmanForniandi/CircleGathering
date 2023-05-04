@@ -2,13 +2,13 @@ package rachman.forniandi.circlegathering.repositories
 
 import dagger.hilt.android.scopes.ActivityRetainedScoped
 import rachman.forniandi.circlegathering.source.RemoteDataSource
-import rachman.forniandi.circlegathering.utils.TokenDataSource
+import rachman.forniandi.circlegathering.source.SessionDataSource
 import javax.inject.Inject
 
 @ActivityRetainedScoped
 class AuthUserRepository @Inject constructor(
     remoteDataSource: RemoteDataSource,
-    prefStore:TokenDataSource,
+    prefStore:SessionDataSource,
     onlineSource: KeyOnlineSource
 ){
     val remote = remoteDataSource
