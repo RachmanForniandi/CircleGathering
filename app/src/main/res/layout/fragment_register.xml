@@ -36,9 +36,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/lbl_register"/>
 
-
-
-
         <EditText
             android:id="@+id/et_username"
             android:layout_width="match_parent"

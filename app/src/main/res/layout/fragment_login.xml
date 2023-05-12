@@ -33,11 +33,10 @@
         android:id="@+id/lbl_sign_in_2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Before Explore all of student\'s experience and story when learning in Dicoding, and of course you can also share your story too"
+        android:text="Before Explore all of user\'s experience and story of all user, Please login with account that you already registered."
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/lbl_sign_in"/>
-
 
         <rachman.forniandi.circlegathering.customViews.CustomEmailEditText
             android:id="@+id/et_email"
