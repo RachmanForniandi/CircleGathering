@@ -21,13 +21,11 @@ import rachman.forniandi.circlegathering.viewModels.MainViewModel
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    //private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
     private val viewModel: MainViewModel by viewModels()
     private val adapter by lazy { MainAdapter() }
     private var token: String = ""
     private var username: String = ""
-    //var intent = getIntent()
 
 
 
@@ -45,10 +43,6 @@ class MainActivity : AppCompatActivity() {
         username = extras.getString(OBTAINED_USERNAME)!!
 
         binding.txtUsername.text = username
-
-        /*val navController = findNavController(R.id.nav_host_fragment_content_main)
-        appBarConfiguration = AppBarConfiguration(navController.graph)
-        setupActionBarWithNavController(navController, appBarConfiguration)*/
 
         setSwipeRefreshAtMainPage()
         showDataStoriesOnMain()

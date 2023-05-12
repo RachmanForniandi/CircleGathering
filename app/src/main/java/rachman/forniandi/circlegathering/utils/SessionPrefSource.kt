@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class TokenDataSource @Inject
+class SessionPrefSource @Inject
 constructor(private val prefData: DataStore<Preferences>){
 
     companion object{
@@ -16,7 +16,7 @@ constructor(private val prefData: DataStore<Preferences>){
         private val KEY_USERNAME = stringPreferencesKey("username")
     }
 
-    fun obtainAuthToken(): Flow<String?> {
+    fun checkAuthToken(): Flow<String?> {
         return prefData.data.map { pref ->
             pref[KEY_TOKEN_STORE]
         }
