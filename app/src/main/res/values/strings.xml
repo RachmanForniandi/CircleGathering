@@ -17,6 +17,6 @@
     <string name="username">Username</string>
     <string name="register">Register</string>
     <string name="language_settings">Language Settings</string>
-    <string name="input_password_error_message">Passwords must be at least 6 characters</string>
+    <string name="input_password_error_message">Passwords must be at least 8 characters</string>
     <string name="image_on_login_page">Image On Login Page</string>
 </resources>

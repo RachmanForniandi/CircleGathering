@@ -56,4 +56,8 @@ class CustomEmailEditText : AppCompatEditText {
                                  bottom: Drawable? = null) {
         setCompoundDrawablesWithIntrinsicBounds(start, top, end, bottom)
     }
+
+    companion object{
+        private const val INPUT_TYPE_EMAIL = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
+    }
 }

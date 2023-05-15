@@ -16,6 +16,20 @@ constructor(private val prefData: DataStore<Preferences>){
         private val KEY_USERNAME = stringPreferencesKey("username")
     }
 
+    suspend fun saveUserData(token:String,name:String){
+        prefData.edit {
+            it[KEY_TOKEN_STORE] = token
+            it[KEY_USERNAME] = name
+        }
+    }
+
+    val tokenParamFlow:Flow<String> = prefData.data.map {
+        it[KEY_TOKEN_STORE] ?:""
+    }
+
+    val nameParamFlow:Flow<String> = prefData.data.map {
+        it[KEY_USERNAME] ?:""
+    }
     fun checkAuthToken(): Flow<String?> {
         return prefData.data.map { pref ->
             pref[KEY_TOKEN_STORE]

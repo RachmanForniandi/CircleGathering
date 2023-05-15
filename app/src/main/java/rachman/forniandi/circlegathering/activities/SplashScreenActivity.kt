@@ -11,6 +11,7 @@ import kotlinx.coroutines.launch
 import rachman.forniandi.circlegathering.LoginRegister.LoginRegisterActivity
 import rachman.forniandi.circlegathering.R
 import rachman.forniandi.circlegathering.activities.MainActivity.Companion.OBTAINED_TOKEN
+import rachman.forniandi.circlegathering.activities.MainActivity.Companion.OBTAINED_USERNAME
 import rachman.forniandi.circlegathering.viewModels.SplashScreenViewModel
 import java.util.*
 import kotlin.concurrent.schedule
@@ -39,11 +40,13 @@ class SplashScreenActivity : AppCompatActivity() {
                 }else{
                     Intent(this@SplashScreenActivity, MainActivity::class.java).also { backToMain->
                         backToMain.putExtra(OBTAINED_TOKEN,sessionToken)
+                        //backToMain.putExtra(OBTAINED_USERNAME,username)
                         startActivity(backToMain)
                         finish()
                     }
 
                 }
+
             }
 
 
