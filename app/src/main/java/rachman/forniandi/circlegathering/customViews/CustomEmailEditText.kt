@@ -45,7 +45,7 @@ class CustomEmailEditText : AppCompatEditText {
                 // Email validation
                 // Display error automatically if the email is not valid
                 if (!s.isNullOrEmpty() && !Patterns.EMAIL_ADDRESS.matcher(s).matches())
-                    error = context.getString(R.string.format_email_error_message)
+                    error = context.getString(R.string.email_error_message)
             }
         })
     }

@@ -24,11 +24,13 @@ import rachman.forniandi.circlegathering.utils.NetworkResult
 import rachman.forniandi.circlegathering.utils.animateLoadingProcessData
 import rachman.forniandi.circlegathering.viewModels.AuthViewModel
 
+
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
 
-    private var binding :FragmentLoginBinding?= null
+    private var _binding: FragmentLoginBinding? = null
+    private val binding get() = _binding!!
 
     private val loginViewModel: AuthViewModel by viewModels()
     private lateinit var networkListener: NetworkListener
@@ -37,9 +39,10 @@ class LoginFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding=FragmentLoginBinding.inflate(inflater, container, false)
+        _binding=FragmentLoginBinding.inflate(inflater, container, false)
 
-        lifecycleScope.launchWhenStarted {
+
+        lifecycleScope.launch{
             networkListener = NetworkListener()
             networkListener.checkNetworkAvailability(requireActivity())
                 .collect { status->
@@ -48,7 +51,7 @@ class LoginFragment : Fragment() {
                     loginViewModel.showNetworkStatus()
                 }
         }
-        return binding!!.root
+        return _binding!!.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -58,27 +61,27 @@ class LoginFragment : Fragment() {
 
     private fun startActionLoginOrRegister() {
 
-        binding?.btnLogin?.setOnClickListener {
+        binding.btnLogin.setOnClickListener {
                 actionLogin()
         }
 
-        binding?.txtLinkToRegister?.setOnClickListener {
-                Navigation.createNavigateOnClickListener(R.id.action_LoginFragment_to_RegisterFragment)
-            Toast.makeText(requireActivity(),"test klik register",Toast.LENGTH_SHORT).show()
-        }
+        binding.txtLinkToRegister.setOnClickListener (Navigation.createNavigateOnClickListener(R.id.action_LoginFragment_to_RegisterFragment))
 
     }
 
     private fun actionLogin() {
-        val email = binding?.etEmail?.text.toString().trim()
-        val password = binding?.etPassword?.text.toString()
+        val email = binding.etEmail.text.toString().trim()
+        val password = binding.etPassword.text.toString()
 
-        lifecycleScope.launch{
+        viewLifecycleOwner.lifecycleScope.launch{
 
             loginViewModel.actionLogin(email, password)
             loginViewModel.loginResponse.observe(viewLifecycleOwner,{
                     response->
                 when(response){
+                    is NetworkResult.Loading->{
+                        applyLoadProgressStateLogin(true)
+                    }
                     is NetworkResult.Success->{
                         applyLoadProgressStateLogin(false)
                         val responseLogin =response.data
@@ -104,9 +107,7 @@ class LoginFragment : Fragment() {
                             response.message.toString()
                             , Toast.LENGTH_SHORT).show()
                     }
-                    is NetworkResult.Loading->{
-                        applyLoadProgressStateLogin(true)
-                    }
+
                 }
             })
         }
@@ -115,18 +116,18 @@ class LoginFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        binding = null
+        _binding = null
     }
 
     private fun applyLoadProgressStateLogin(onProcess:Boolean){
-        binding?.etEmail?.isEnabled = !onProcess
-        binding?.etPassword?.isEnabled = !onProcess
-        binding?.btnLogin?.isEnabled = !onProcess
+        binding.etEmail.isEnabled = !onProcess
+        binding.etPassword.isEnabled = !onProcess
+        binding.btnLogin.isEnabled = !onProcess
 
         if (onProcess){
-            binding?.pgLogin?.animateLoadingProcessData(true)
+            binding.maskedViewPgLogin.animateLoadingProcessData(true)
         }else{
-            binding?.pgLogin?.animateLoadingProcessData(false)
+            binding.maskedViewPgLogin.animateLoadingProcessData(false)
         }
     }
 }

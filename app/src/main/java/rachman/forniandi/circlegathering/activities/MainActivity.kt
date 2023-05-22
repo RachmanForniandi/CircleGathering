@@ -44,6 +44,9 @@ class MainActivity : AppCompatActivity() {
 
         binding.txtUsername.text = username
 
+        binding.lifecycleOwner = this
+        binding.mainViewModel= viewModel
+
         setSwipeRefreshAtMainPage()
         showDataStoriesOnMain()
         requestDataRemoteStories()

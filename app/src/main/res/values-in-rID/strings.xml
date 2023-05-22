@@ -3,11 +3,12 @@
     <string name="action_settings">Aksi Pengaturan</string>
     <string name="all_stories">Semua Cerita</string>
     <string name="email">email</string>
-    <string name="format_email_error_message">Format email tidak cocok.</string>
+    <string name="email_error_message">Format email tidak cocok.</string>
     <string name="password">Kata sandi</string>
     <string name="login">Masuk</string>
     <string name="stories">Cerita</string>
     <string name="logout">Keluar</string>
+    <string name="prompt_name">Nama Anda</string>
     <string name="prompt_email">Email Anda</string>
     <string name="prompt_password">Kata Sandi Anda</string>
     <string name="click_here">Klik Disini</string>
@@ -18,5 +19,9 @@
     <string name="register">Daftar</string>
     <string name="language_settings">Pengaturan Bahasa</string>
     <string name="input_password_error_message">Kata Sandi harus memiliki sedikitnya 6 karakter</string>
+    <string name="input_name_error_message">Nama tidak boleh kosong!</string>
     <string name="image_on_login_page">gambar di halaman login</string>
+    <string name="image_data_error">Gambar Gangguan tidak ada data</string>
+    <string name="no_internet_connection">Tidak ada sambungan internet</string>
+
 </resources>

@@ -22,7 +22,8 @@ import rachman.forniandi.circlegathering.viewModels.AuthViewModel
 @AndroidEntryPoint
 class RegisterFragment : Fragment() {
 
-    private var binding: FragmentRegisterBinding?= null
+    private var _binding: FragmentRegisterBinding? = null
+    private val binding get() = _binding
     private val registerViewModel:AuthViewModel by viewModels()
     //private val actionNavRegister= findNavController().navigate(R.id.action_RegisterFragment_to_LoginFragment)
 
@@ -30,7 +31,7 @@ class RegisterFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-       binding = FragmentRegisterBinding.inflate(inflater,container,false)
+       _binding = FragmentRegisterBinding.inflate(inflater,container,false)
         return binding!!.root
     }
 
@@ -40,11 +41,10 @@ class RegisterFragment : Fragment() {
     }
 
     private fun setActionInRegisterPage() {
-        binding?.apply {
-            btnRegister.setOnClickListener {
+        binding?.btnRegister?.setOnClickListener {
                 actionRegister()
-            }
         }
+
     }
 
     private fun actionRegister() {
@@ -83,7 +83,7 @@ class RegisterFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        binding = null
+        _binding = null
     }
 
     private fun applyLoadProgressStateRegister(onProcess:Boolean){

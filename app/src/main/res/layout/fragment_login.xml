@@ -38,7 +38,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/lbl_sign_in"/>
 
-        <rachman.forniandi.circlegathering.customViews.CustomEmailEditText
+        <rachman.forniandi.circlegathering.customViews.CustomInputEditText
             android:id="@+id/et_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -47,12 +47,13 @@
             android:textColor="@color/dark"
             android:textColorHint="@color/mediumGray"
             android:textSize="16sp"
+            app:custom_type="email"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/lbl_sign_in_2"/>
 
 
-        <rachman.forniandi.circlegathering.customViews.CustomPasswordEditText
+        <rachman.forniandi.circlegathering.customViews.CustomInputEditText
             android:id="@+id/et_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -62,7 +63,7 @@
             android:textColor="@color/dark"
             android:textColorHint="@color/mediumGray"
             android:textSize="16sp"
-
+            app:custom_type="password"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/et_email"/>
@@ -107,15 +108,24 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/txt_ask_got_account"/>
 
-    <ProgressBar
-        android:id="@+id/pg_login"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone"
-        style="?android:attr/progressBarStyle"
-        app:layout_constraintTop_toBottomOf="@id/txt_link_to_register"
+
+    <RelativeLayout
+        android:id="@+id/masked_view_pg_login"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/white_transparent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone" >
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            style="?android:attr/progressBarStyle"
+            />
+    </RelativeLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

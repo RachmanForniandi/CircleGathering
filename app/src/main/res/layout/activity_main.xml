@@ -3,6 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+        <variable
+            name="mainViewModel"
+            type="rachman.forniandi.circlegathering.viewModels.MainViewModel" />
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -35,7 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:text="@string/welcome"
-            android:textSize="20sp"
+            android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/toolbar_main" />
 
@@ -45,7 +51,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             tools:text="user"
-            android:textSize="20sp"
+            android:textSize="16sp"
             app:layout_constraintStart_toEndOf="@id/lbl_greeting_user"
             app:layout_constraintTop_toBottomOf="@id/toolbar_main" />
 
@@ -101,6 +107,39 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/ic_add_data" />
+
+        <ImageView
+            android:id="@+id/img_error"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:alpha="0.5"
+            android:contentDescription="@string/image_data_error"
+            android:src="@drawable/ic_sad"
+            android:visibility="invisible"
+            readApiResponse="@{mainViewModel.getAllStoriesResponse}"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintVertical_bias="0.37"
+            />
+
+        <TextView
+            android:id="@+id/txt_error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:alpha="0.5"
+            android:text="@string/no_internet_connection"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:visibility="invisible"
+            readApiResponse="@{mainViewModel.getAllStoriesResponse}"
+            readApiResponseForText ="@{mainViewModel.getAllStoriesResponse}"
+            app:layout_constraintEnd_toEndOf="@id/img_error"
+            app:layout_constraintStart_toStartOf="@id/img_error"
+            app:layout_constraintTop_toBottomOf="@id/img_error" />
+
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

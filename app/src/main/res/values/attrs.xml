@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="TextViewUsage">
+        <attr name="custom_type" format="enum">
+            <enum name="email" value="0" />
+            <enum name="password" value="1" />
+            <enum name="name" value="2" />
+        </attr>
+        <attr name="min_password_length" format="integer" />
+    </declare-styleable>
+</resources>

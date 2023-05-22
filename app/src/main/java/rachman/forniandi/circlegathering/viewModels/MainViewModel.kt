@@ -53,7 +53,7 @@ class MainViewModel @Inject constructor(
                 val storiesFeedback = repository2.remoteMain.showStories(token)
                 getAllStoriesResponse.value  = handledAllStoriesResponse(storiesFeedback)
             }catch (e: Exception){
-                getAllStoriesResponse.value  = NetworkResult.Error("Can't do register.")
+                getAllStoriesResponse.value  = NetworkResult.Error("Data not Available.")
             }
         }
     }
