@@ -84,21 +84,24 @@ class LoginFragment : Fragment() {
                     }
                     is NetworkResult.Success->{
                         applyLoadProgressStateLogin(false)
-                        val responseLogin =response.data
+                        /*val responseLogin =response.data?.loginResult
                         val bundleLogin = Bundle()
-                        responseLogin?.loginResult?.token.let { token->
-                            token?.let { loginViewModel.actionSaveAuthToken(it) }
-                            bundleLogin.putString(OBTAINED_TOKEN,token)
-                        }
-                        responseLogin?.loginResult?.name.let {
-                                name->
-                            name?.let { loginViewModel.actionSaveAuthUsername(it) }
-                            bundleLogin.putString(OBTAINED_USERNAME,name)
-                        }
 
-                        val intent = Intent(requireActivity(), MainActivity::class.java)
+                        responseLogin.let { token->
+                            responseLogin?.token?.let { loginViewModel.actionSaveAuthToken(it)
+                                bundleLogin.putString(OBTAINED_TOKEN,responseLogin.token)
+                            }
+                        }.also { name->
+                            responseLogin?.name?.let {
+                                loginViewModel.actionSaveAuthUsername(it)
+                                bundleLogin.putString(OBTAINED_USERNAME,responseLogin.name)
+                            }
+                        }
+*/
+                        /*val intent = Intent(requireActivity(), MainActivity::class.java)
                         intent.putExtras(bundleLogin)
-                        startActivity(intent)
+                        startActivity(intent)*/
+                        startActivity(Intent(requireActivity(), MainActivity::class.java))
                         requireActivity().finish()
                     }
                     is NetworkResult.Error->{

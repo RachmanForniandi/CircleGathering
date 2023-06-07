@@ -32,14 +32,14 @@ class SplashScreenActivity : AppCompatActivity() {
 
     private fun chooseUserDirection() {
         lifecycleScope.launch {
-            viewModel.checkSessionToken().collect(){ sessionToken->
-                if (sessionToken.isNullOrEmpty()){
+            viewModel.checkUserStatus().observe(this@SplashScreenActivity) { userStatus->
+                if (userStatus.equals(true)){
                     val intentFromBeginning = Intent(this@SplashScreenActivity,LoginRegisterActivity::class.java)
                     startActivity(intentFromBeginning)
                     finish()
                 }else{
                     Intent(this@SplashScreenActivity, MainActivity::class.java).also { backToMain->
-                        backToMain.putExtra(OBTAINED_TOKEN,sessionToken)
+                        //backToMain.putExtra(OBTAINED_TOKEN,sessionToken)
                         //backToMain.putExtra(OBTAINED_USERNAME,username)
                         startActivity(backToMain)
                         finish()

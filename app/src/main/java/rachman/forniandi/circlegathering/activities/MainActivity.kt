@@ -37,16 +37,17 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.toolbarMain)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        val extras = intent.extras
+        /*val extras = intent.extras
 
-        token = extras?.getString(OBTAINED_TOKEN)!!
-        username = extras.getString(OBTAINED_USERNAME)!!
+        token = intent.getStringExtra(OBTAINED_TOKEN)!!
+        username = intent.getStringExtra(OBTAINED_USERNAME)!!
 
-        binding.txtUsername.text = username
+        binding.txtUsername.text = username*/
 
         binding.lifecycleOwner = this
         binding.mainViewModel= viewModel
 
+        setUserName()
         setSwipeRefreshAtMainPage()
         showDataStoriesOnMain()
         requestDataRemoteStories()
@@ -54,6 +55,13 @@ class MainActivity : AppCompatActivity() {
 
         }
     }
+
+    private fun setUserName() {
+        if (viewModel.getUserLoginStatus().equals(true)){
+            username = viewModel.getUserName().toString()
+        }
+    }
+
 
     private fun setSwipeRefreshAtMainPage() {
         binding.swipeRefreshMain.setOnRefreshListener {
@@ -64,7 +72,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun requestDataRemoteStories() {
         binding.swipeRefreshMain.isRefreshing = true
-        viewModel.doShowAllStoriesData(token)
+        viewModel.doShowAllStoriesData()
         viewModel.getAllStoriesResponse.observe(this, {
                 response->
             when(response){
@@ -113,8 +121,9 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_logout ->{
-                viewModel.clearTheTokenAndSession("")
-                viewModel.actionClearDataUserName()
+                /*viewModel.clearTheTokenAndSession("")
+                viewModel.actionClearDataUserName()*/
+                viewModel.signOutUser()
                 val intentToAuth = Intent(this,LoginRegisterActivity::class.java)
                 startActivity(intentToAuth)
                 finish()

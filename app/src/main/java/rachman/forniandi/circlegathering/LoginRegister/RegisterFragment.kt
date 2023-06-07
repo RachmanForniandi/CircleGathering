@@ -25,8 +25,6 @@ class RegisterFragment : Fragment() {
     private var _binding: FragmentRegisterBinding? = null
     private val binding get() = _binding
     private val registerViewModel:AuthViewModel by viewModels()
-    //private val actionNavRegister= findNavController().navigate(R.id.action_RegisterFragment_to_LoginFragment)
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -65,13 +63,14 @@ class RegisterFragment : Fragment() {
                             responseRegister?.message,
                             Toast.LENGTH_SHORT
                         ).show()
-                        //actionNavRegister
+                        findNavController().navigate(R.id.action_RegisterFragment_to_LoginFragment)
+
                     }
                     is NetworkResult.Error->{
-                        applyLoadProgressStateRegister(false)
                         Toast.makeText(requireContext(),
                             response.message.toString()
                             , Toast.LENGTH_SHORT).show()
+                        applyLoadProgressStateRegister(false)
                     }
                     is NetworkResult.Loading->{
                         applyLoadProgressStateRegister(true)
@@ -87,6 +86,7 @@ class RegisterFragment : Fragment() {
     }
 
     private fun applyLoadProgressStateRegister(onProcess:Boolean){
+        binding?.etUsername?.isEnabled = !onProcess
         binding?.etEmail?.isEnabled = !onProcess
         binding?.etPassword?.isEnabled = !onProcess
         binding?.btnRegister?.isEnabled = !onProcess

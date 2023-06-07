@@ -8,13 +8,14 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import rachman.forniandi.circlegathering.models.addStory.ResponseAddStory
 import rachman.forniandi.circlegathering.models.allStories.ResponseAllStories
 import rachman.forniandi.circlegathering.repositories.AuthUserRepository
 import rachman.forniandi.circlegathering.repositories.MainRepository
 import rachman.forniandi.circlegathering.utils.NetworkResult
+import rachman.forniandi.circlegathering.utils.SessionPreferences
 import retrofit2.Response
 import java.lang.Exception
 import javax.inject.Inject
@@ -23,6 +24,7 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val repository1: AuthUserRepository,
     private val repository2:MainRepository,
+    private val sessionPreferences: SessionPreferences,
     application: Application
 ): AndroidViewModel(application) {
 
@@ -36,21 +38,40 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun actionClearDataUserName(){
-        viewModelScope.launch {
-            repository1.store.clearUsername()
+    fun getUserName()= sessionPreferences.getUsername()
+
+    /*suspend fun signOutUser(){
+        sessionPreferences.run {
+            deleteTokenAuth()
+            setLoginUserStatus(false)
+        }
+    }*/
+
+    fun signOutUser() = viewModelScope.launch {
+        sessionPreferences.run {
+            deleteTokenAuth()
+            setLoginUserStatus(false)
         }
     }
 
-    fun doShowAllStoriesData(token:String)= viewModelScope.launch {
-        actionSafeCallShowAllStories(token)
+    fun getUserLoginStatus()= sessionPreferences.getLoginUserStatus()
+
+    /*fun actionClearDataUserName(){
+        viewModelScope.launch {
+            repository1.store.clearUsername()
+        }
+    }*/
+
+    fun doShowAllStoriesData()= viewModelScope.launch {
+        actionSafeCallShowAllStories()
     }
 
-    private suspend fun actionSafeCallShowAllStories(token: String) {
+    private suspend fun actionSafeCallShowAllStories() {
         getAllStoriesResponse.value = NetworkResult.Loading()
         if(hasInternetConnectionForMain()){
             try {
-                val storiesFeedback = repository2.remoteMain.showStories(token)
+                val tokenAuth= sessionPreferences.getTheTokenAuth().first()
+                val storiesFeedback = repository2.remoteMain.showStories(tokenAuth)
                 getAllStoriesResponse.value  = handledAllStoriesResponse(storiesFeedback)
             }catch (e: Exception){
                 getAllStoriesResponse.value  = NetworkResult.Error("Data not Available.")

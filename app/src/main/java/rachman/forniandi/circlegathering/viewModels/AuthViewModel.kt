@@ -15,6 +15,7 @@ import rachman.forniandi.circlegathering.models.login.ResponseLogin
 import rachman.forniandi.circlegathering.models.register.ResponseRegister
 import rachman.forniandi.circlegathering.repositories.AuthUserRepository
 import rachman.forniandi.circlegathering.utils.NetworkResult
+import rachman.forniandi.circlegathering.utils.SessionPreferences
 import retrofit2.Response
 import java.lang.Exception
 import javax.inject.Inject
@@ -22,6 +23,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val repository: AuthUserRepository,
+    private val sessionPreferences: SessionPreferences,
     application: Application
 ): AndroidViewModel(application) {
 
@@ -39,6 +41,7 @@ class AuthViewModel @Inject constructor(
     fun actionLogin(email:String,password:String) = viewModelScope.launch {
         actionLoginSafeCall(email, password)
     }
+
 
     private suspend fun actionRegisterSafeCall(name:String,email:String,password:String){
         registerResponse.value = NetworkResult.Loading()
@@ -76,6 +79,7 @@ class AuthViewModel @Inject constructor(
             try {
                 val loginFeedback = repository.remote.doLogin(email,password)
                 loginResponse.value = handledLoginResponse(loginFeedback)
+
             }catch (e: Exception){
                 loginResponse.value = NetworkResult.Error("Login Failed.")
             }
@@ -84,7 +88,7 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    private fun handledLoginResponse(response: Response<ResponseLogin>): NetworkResult<ResponseLogin>? {
+    private suspend fun handledLoginResponse(response: Response<ResponseLogin>): NetworkResult<ResponseLogin>? {
         when{
             response.message().toString().contains("timeout")->{
                 return NetworkResult.Error("Timeout")
@@ -92,6 +96,11 @@ class AuthViewModel @Inject constructor(
 
             response.isSuccessful -> {
                 val login = response.body()
+                sessionPreferences.run {
+                    login?.loginResult?.token?.let { saveTokenAuth(it) }
+                    login?.loginResult?.name?.let{ saveUsername(it)}
+                    setLoginUserStatus(true)
+                }
                 return NetworkResult.Success(login)
             }
             else->{
@@ -100,6 +109,11 @@ class AuthViewModel @Inject constructor(
         }
     }
 
+    /*fun actionSaveUserCredential(token: String) {
+        viewModelScope.launch {
+            repository.store.keepAuthToken(token)
+        }
+    }*/
     fun actionSaveAuthToken(token: String) {
         viewModelScope.launch {
             repository.store.keepAuthToken(token)
@@ -128,6 +142,14 @@ class AuthViewModel @Inject constructor(
             capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)->true
             capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)->true
             else -> false
+        }
+    }
+    fun getLoginUserStatus() = sessionPreferences.getLoginUserStatus()
+
+    suspend fun deleteCredentialUser(){
+        sessionPreferences.run {
+            deleteTokenAuth()
+            setLoginUserStatus(false)
         }
     }
 

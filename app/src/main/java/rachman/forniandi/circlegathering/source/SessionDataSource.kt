@@ -3,13 +3,15 @@ package rachman.forniandi.circlegathering.source
 import kotlinx.coroutines.flow.Flow
 import rachman.forniandi.circlegathering.utils.SessionPrefSource
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class SessionDataSource @Inject constructor(
     private val tokenDataSource: SessionPrefSource
 ){
 
     suspend fun keepAuthToken(token: String) {
-        tokenDataSource.saveTheAuthToken(token)
+        tokenDataSource.saveTokenAuth(token)
     }
 
     fun checkToken(): Flow<String?> =
@@ -21,7 +23,11 @@ class SessionDataSource @Inject constructor(
     }
 
     suspend fun clearUsername() {
-        tokenDataSource.clearUsername()
+        tokenDataSource.deleteUsername()
+    }
+
+    suspend fun deleteTheTokenAuth(){
+        tokenDataSource.deleteTokenAuth()
     }
 
 }
