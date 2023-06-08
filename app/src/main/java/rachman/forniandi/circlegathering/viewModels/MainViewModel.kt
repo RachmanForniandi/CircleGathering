@@ -6,6 +6,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.first
@@ -22,7 +23,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val repository1: AuthUserRepository,
     private val repository2:MainRepository,
     private val sessionPreferences: SessionPreferences,
     application: Application
@@ -32,13 +32,13 @@ class MainViewModel @Inject constructor(
     var inputDataResponse: MutableLiveData<NetworkResult<ResponseAddStory>> = MutableLiveData()
 
 
-    fun clearTheTokenAndSession(tokenStory:String){
+    /*fun clearTheTokenAndSession(tokenStory:String){
         viewModelScope.launch {
             repository1.store.keepAuthToken(tokenStory)
         }
-    }
+    }*/
 
-    fun getUserName()= sessionPreferences.getUsername()
+    fun getUserName()= sessionPreferences.getUsername().asLiveData()
 
     /*suspend fun signOutUser(){
         sessionPreferences.run {
@@ -54,7 +54,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun getUserLoginStatus()= sessionPreferences.getLoginUserStatus()
+    fun getUserLoginStatus()= sessionPreferences.getLoginUserStatus().asLiveData()
 
     /*fun actionClearDataUserName(){
         viewModelScope.launch {

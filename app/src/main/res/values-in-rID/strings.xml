@@ -8,6 +8,8 @@
     <string name="login">Masuk</string>
     <string name="stories">Cerita</string>
     <string name="logout">Keluar</string>
+    <string name="name">Nama</string>
+    <string name="description">Deskripsi</string>
     <string name="prompt_name">Nama Anda</string>
     <string name="prompt_email">Email Anda</string>
     <string name="prompt_password">Kata Sandi Anda</string>
@@ -23,5 +25,8 @@
     <string name="image_on_login_page">gambar di halaman login</string>
     <string name="image_data_error">Gambar Gangguan tidak ada data</string>
     <string name="no_internet_connection">Tidak ada sambungan internet</string>
-
+    <string name="image_contentDescription">gambar</string>
+    <string name="title_select_image">Aksi pilih gambar</string>
+    <string name="lbl_camera">Kamera</string>
+    <string name="lbl_gallery">Galeri</string>
 </resources>

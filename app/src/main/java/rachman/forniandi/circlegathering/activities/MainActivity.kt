@@ -11,6 +11,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.observeOn
 import rachman.forniandi.circlegathering.LoginRegister.LoginRegisterActivity
 import rachman.forniandi.circlegathering.R
 import rachman.forniandi.circlegathering.adapters.MainAdapter
@@ -24,8 +25,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val viewModel: MainViewModel by viewModels()
     private val adapter by lazy { MainAdapter() }
-    private var token: String = ""
-    private var username: String = ""
+    /*private var token: String = ""
+    private var username: String = ""*/
 
 
 
@@ -51,15 +52,16 @@ class MainActivity : AppCompatActivity() {
         setSwipeRefreshAtMainPage()
         showDataStoriesOnMain()
         requestDataRemoteStories()
-        binding.fabAddStory.setOnClickListener { view ->
-
+        binding.fabAddStory.setOnClickListener {
+            val intentToAddData = Intent(this,FormAddDataActivity::class.java)
+            startActivity(intentToAddData)
         }
     }
 
     private fun setUserName() {
-        if (viewModel.getUserLoginStatus().equals(true)){
-            username = viewModel.getUserName().toString()
-        }
+        viewModel.getUserName().observe(this,{ user->
+            binding.txtUsername.text = user
+        })
     }
 
 

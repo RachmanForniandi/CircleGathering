@@ -10,7 +10,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import rachman.forniandi.circlegathering.source.SessionDataSource
 import rachman.forniandi.circlegathering.utils.ConstantsMain.Companion.PREFERENCES_NAME
 import rachman.forniandi.circlegathering.utils.SessionPrefSource
 import rachman.forniandi.circlegathering.utils.SessionPreferences
