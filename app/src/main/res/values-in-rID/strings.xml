@@ -8,6 +8,10 @@
     <string name="login">Masuk</string>
     <string name="stories">Cerita</string>
     <string name="logout">Keluar</string>
+    <string name="yes">Iya</string>
+    <string name="no">Tidak</string>
+    <string name="exit">keluar ?</string>
+    <string name="are_you_sure_do_you_want_to_exit">Apakah anda yakin ingin keluar dari aplikasi?</string>
     <string name="name">Nama</string>
     <string name="description">Deskripsi</string>
     <string name="prompt_name">Nama Anda</string>
@@ -19,6 +23,7 @@
     <string name="button_add_data_story">tombol tambah data cerita</string>
     <string name="username">Nama Pengguna</string>
     <string name="register">Daftar</string>
+    <string name="select_image_input_type">Pilih jenis input gambar</string>
     <string name="language_settings">Pengaturan Bahasa</string>
     <string name="input_password_error_message">Kata Sandi harus memiliki sedikitnya 6 karakter</string>
     <string name="input_name_error_message">Nama tidak boleh kosong!</string>

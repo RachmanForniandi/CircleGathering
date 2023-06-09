@@ -1,5 +1,7 @@
 package rachman.forniandi.circlegathering.activities
 
+import android.app.AlertDialog.Builder
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
@@ -11,13 +13,13 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.observeOn
 import rachman.forniandi.circlegathering.LoginRegister.LoginRegisterActivity
 import rachman.forniandi.circlegathering.R
 import rachman.forniandi.circlegathering.adapters.MainAdapter
 import rachman.forniandi.circlegathering.databinding.ActivityMainBinding
 import rachman.forniandi.circlegathering.utils.NetworkResult
 import rachman.forniandi.circlegathering.viewModels.MainViewModel
+
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -112,6 +114,18 @@ class MainActivity : AppCompatActivity() {
         binding.shimmerFrameLayout.stopShimmer()
         binding.shimmerFrameLayout.visibility = View.GONE
         binding.listDataStories.visibility = View.VISIBLE
+    }
+
+    override fun onBackPressed() {
+        Builder(this)
+            .setTitle(getString(R.string.exit))
+            .setMessage(getString(R.string.are_you_sure_do_you_want_to_exit))
+            .setNegativeButton(getString(R.string.no), null)
+            .setPositiveButton(getString(R.string.yes), object : DialogInterface.OnClickListener {
+                override fun onClick(arg0: DialogInterface?, arg1: Int) {
+                    super@MainActivity.onBackPressed()
+                }
+            }).create().show()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
