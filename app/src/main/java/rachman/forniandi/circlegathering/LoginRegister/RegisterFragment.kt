@@ -52,12 +52,11 @@ class RegisterFragment : Fragment() {
 
         lifecycleScope.launch {
             registerViewModel.actionRegister(username,email, password)
-            registerViewModel.registerResponse.observe(viewLifecycleOwner,{
-                    response->
-                when(response){
-                    is NetworkResult.Success->{
+            registerViewModel.registerResponse.observe(viewLifecycleOwner) { response ->
+                when (response) {
+                    is NetworkResult.Success -> {
                         applyLoadProgressStateRegister(false)
-                        val responseRegister =response.data
+                        val responseRegister = response.data
                         Toast.makeText(
                             requireActivity(),
                             responseRegister?.message,
@@ -66,17 +65,20 @@ class RegisterFragment : Fragment() {
                         findNavController().navigate(R.id.action_RegisterFragment_to_LoginFragment)
 
                     }
-                    is NetworkResult.Error->{
-                        Toast.makeText(requireContext(),
-                            response.message.toString()
-                            , Toast.LENGTH_SHORT).show()
+
+                    is NetworkResult.Error -> {
+                        Toast.makeText(
+                            requireContext(),
+                            response.message.toString(), Toast.LENGTH_SHORT
+                        ).show()
                         applyLoadProgressStateRegister(false)
                     }
-                    is NetworkResult.Loading->{
+
+                    is NetworkResult.Loading -> {
                         applyLoadProgressStateRegister(true)
                     }
                 }
-            })
+            }
         }
     }
 
@@ -92,9 +94,9 @@ class RegisterFragment : Fragment() {
         binding?.btnRegister?.isEnabled = !onProcess
 
         if (onProcess){
-            binding?.pgRegister?.animateLoadingProcessData(true)
+            binding?.maskedViewPgRegister?.animateLoadingProcessData(true)
         }else{
-            binding?.pgRegister?.animateLoadingProcessData(false)
+            binding?.maskedViewPgRegister?.animateLoadingProcessData(false)
         }
     }
 }

@@ -23,6 +23,7 @@
     <string name="button_add_data_story">Button Add Data Story</string>
     <string name="username">Username</string>
     <string name="register">Register</string>
+    <string name="loading_please_wait">Loading....Please wait</string>
     <string name="select_image_input_type">Select Image Input Type</string>
     <string name="language_settings">Language Settings</string>
     <string name="input_password_error_message">Passwords must be at least 8 characters</string>
@@ -34,4 +35,6 @@
     <string name="title_select_image">Select Image Action</string>
     <string name="lbl_camera">Camera</string>
     <string name="lbl_gallery">Gallery</string>
+    <string name="insert_input_upload_validation_message">Please insert input description of the picture and Input picture</string>
+    <string name="all_permission_device_are_denied">All permission device are denied</string>
 </resources>

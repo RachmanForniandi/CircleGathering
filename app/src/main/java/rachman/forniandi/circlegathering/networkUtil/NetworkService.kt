@@ -27,7 +27,7 @@ interface NetworkService {
 
     @Multipart
     @POST("stories")
-    fun insertStories(
+    suspend fun insertStories(
                       @Header("Authorization")token:String,
                       @Part("description")description:RequestBody,
                       @Part("file") file:MultipartBody.Part):Response<ResponseAddStory>

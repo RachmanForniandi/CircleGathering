@@ -11,13 +11,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import rachman.forniandi.circlegathering.R
 import rachman.forniandi.circlegathering.activities.MainActivity
-import rachman.forniandi.circlegathering.activities.MainActivity.Companion.OBTAINED_TOKEN
-import rachman.forniandi.circlegathering.activities.MainActivity.Companion.OBTAINED_USERNAME
 import rachman.forniandi.circlegathering.databinding.FragmentLoginBinding
 import rachman.forniandi.circlegathering.networkUtil.NetworkListener
 import rachman.forniandi.circlegathering.utils.NetworkResult
@@ -66,7 +65,6 @@ class LoginFragment : Fragment() {
         }
 
         binding.txtLinkToRegister.setOnClickListener (Navigation.createNavigateOnClickListener(R.id.action_LoginFragment_to_RegisterFragment))
-
     }
 
     private fun actionLogin() {
@@ -76,43 +74,27 @@ class LoginFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch{
 
             loginViewModel.actionLogin(email, password)
-            loginViewModel.loginResponse.observe(viewLifecycleOwner,{
-                    response->
-                when(response){
-                    is NetworkResult.Loading->{
+            loginViewModel.loginResponse.observe(viewLifecycleOwner) { response ->
+                when (response) {
+                    is NetworkResult.Loading -> {
                         applyLoadProgressStateLogin(true)
                     }
-                    is NetworkResult.Success->{
-                        applyLoadProgressStateLogin(false)
-                        /*val responseLogin =response.data?.loginResult
-                        val bundleLogin = Bundle()
 
-                        responseLogin.let { token->
-                            responseLogin?.token?.let { loginViewModel.actionSaveAuthToken(it)
-                                bundleLogin.putString(OBTAINED_TOKEN,responseLogin.token)
-                            }
-                        }.also { name->
-                            responseLogin?.name?.let {
-                                loginViewModel.actionSaveAuthUsername(it)
-                                bundleLogin.putString(OBTAINED_USERNAME,responseLogin.name)
-                            }
-                        }
-*/
-                        /*val intent = Intent(requireActivity(), MainActivity::class.java)
-                        intent.putExtras(bundleLogin)
-                        startActivity(intent)*/
+                    is NetworkResult.Success -> {
+                        applyLoadProgressStateLogin(false)
                         startActivity(Intent(requireActivity(), MainActivity::class.java))
                         requireActivity().finish()
                     }
-                    is NetworkResult.Error->{
-                        applyLoadProgressStateLogin(false)
-                        Toast.makeText(requireContext(),
-                            response.message.toString()
-                            , Toast.LENGTH_SHORT).show()
-                    }
 
+                    is NetworkResult.Error -> {
+                        applyLoadProgressStateLogin(false)
+                        Snackbar.make(
+                            binding.root,
+                            response.message.toString(), Snackbar.LENGTH_SHORT
+                        ).show()
+                    }
                 }
-            })
+            }
         }
 
     }
