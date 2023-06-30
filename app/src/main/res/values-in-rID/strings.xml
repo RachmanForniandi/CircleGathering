@@ -8,6 +8,12 @@
     <string name="login">Masuk</string>
     <string name="stories">Cerita</string>
     <string name="logout">Keluar</string>
+    <string name="yes">Iya</string>
+    <string name="no">Tidak</string>
+    <string name="exit">keluar ?</string>
+    <string name="are_you_sure_do_you_want_to_exit">Apakah anda yakin ingin keluar dari aplikasi?</string>
+    <string name="name">Nama</string>
+    <string name="description">Deskripsi</string>
     <string name="prompt_name">Nama Anda</string>
     <string name="prompt_email">Email Anda</string>
     <string name="prompt_password">Kata Sandi Anda</string>
@@ -17,11 +23,18 @@
     <string name="button_add_data_story">tombol tambah data cerita</string>
     <string name="username">Nama Pengguna</string>
     <string name="register">Daftar</string>
+    <string name="loading_please_wait">Memuat....Mohon menunggu</string>
+    <string name="select_image_input_type">Pilih jenis input gambar</string>
     <string name="language_settings">Pengaturan Bahasa</string>
     <string name="input_password_error_message">Kata Sandi harus memiliki sedikitnya 6 karakter</string>
     <string name="input_name_error_message">Nama tidak boleh kosong!</string>
     <string name="image_on_login_page">gambar di halaman login</string>
     <string name="image_data_error">Gambar Gangguan tidak ada data</string>
     <string name="no_internet_connection">Tidak ada sambungan internet</string>
-
+    <string name="image_contentDescription">gambar</string>
+    <string name="title_select_image">Aksi pilih gambar</string>
+    <string name="lbl_camera">Kamera</string>
+    <string name="lbl_gallery">Galeri</string>
+    <string name="insert_input_upload_validation_message">Mohon masukan Input Deskripsi gambar dan Input gambar</string>
+    <string name="all_permission_device_are_denied">Semua izin perangkat ditolak</string>
 </resources>

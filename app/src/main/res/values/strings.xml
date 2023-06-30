@@ -8,6 +8,12 @@
     <string name="password">Password</string>
     <string name="stories">Stories</string>
     <string name="logout">Logout</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="exit">Exit ?</string>
+    <string name="are_you_sure_do_you_want_to_exit">Are you sure you want to exit from application?</string>
+    <string name="name">Name</string>
+    <string name="description">Description</string>
     <string name="prompt_name">Your Name</string>
     <string name="prompt_email">Your Email</string>
     <string name="prompt_password">Your Password</string>
@@ -17,10 +23,18 @@
     <string name="button_add_data_story">Button Add Data Story</string>
     <string name="username">Username</string>
     <string name="register">Register</string>
+    <string name="loading_please_wait">Loading....Please wait</string>
+    <string name="select_image_input_type">Select Image Input Type</string>
     <string name="language_settings">Language Settings</string>
     <string name="input_password_error_message">Passwords must be at least 8 characters</string>
     <string name="input_name_error_message">Name musn\'t be empty!</string>
     <string name="image_data_error">Error No Data</string>
     <string name="no_internet_connection">No Internet Connection</string>
     <string name="image_on_login_page">Image On Login Page</string>
+    <string name="image_contentDescription">image</string>
+    <string name="title_select_image">Select Image Action</string>
+    <string name="lbl_camera">Camera</string>
+    <string name="lbl_gallery">Gallery</string>
+    <string name="insert_input_upload_validation_message">Please insert input description of the picture and Input picture</string>
+    <string name="all_permission_device_are_denied">All permission device are denied</string>
 </resources>

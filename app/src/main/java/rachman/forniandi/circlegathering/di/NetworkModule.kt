@@ -1,4 +1,4 @@
-package rachman.forniandi.circlegathering.networkUtil
+package rachman.forniandi.circlegathering.di
 
 import dagger.Module
 import dagger.Provides
@@ -10,6 +10,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 import dagger.hilt.components.SingletonComponent
+import rachman.forniandi.circlegathering.networkUtil.NetworkService
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -44,7 +45,7 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun provideApiService(retrofit: Retrofit):NetworkService{
+    fun provideApiService(retrofit: Retrofit): NetworkService {
         return retrofit.create(NetworkService::class.java)
     }
 }

@@ -25,8 +25,6 @@ class RegisterFragment : Fragment() {
     private var _binding: FragmentRegisterBinding? = null
     private val binding get() = _binding
     private val registerViewModel:AuthViewModel by viewModels()
-    //private val actionNavRegister= findNavController().navigate(R.id.action_RegisterFragment_to_LoginFragment)
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -54,30 +52,33 @@ class RegisterFragment : Fragment() {
 
         lifecycleScope.launch {
             registerViewModel.actionRegister(username,email, password)
-            registerViewModel.registerResponse.observe(viewLifecycleOwner,{
-                    response->
-                when(response){
-                    is NetworkResult.Success->{
+            registerViewModel.registerResponse.observe(viewLifecycleOwner) { response ->
+                when (response) {
+                    is NetworkResult.Success -> {
                         applyLoadProgressStateRegister(false)
-                        val responseRegister =response.data
+                        val responseRegister = response.data
                         Toast.makeText(
                             requireActivity(),
                             responseRegister?.message,
                             Toast.LENGTH_SHORT
                         ).show()
-                        //actionNavRegister
+                        findNavController().navigate(R.id.action_RegisterFragment_to_LoginFragment)
+
                     }
-                    is NetworkResult.Error->{
+
+                    is NetworkResult.Error -> {
+                        Toast.makeText(
+                            requireContext(),
+                            response.message.toString(), Toast.LENGTH_SHORT
+                        ).show()
                         applyLoadProgressStateRegister(false)
-                        Toast.makeText(requireContext(),
-                            response.message.toString()
-                            , Toast.LENGTH_SHORT).show()
                     }
-                    is NetworkResult.Loading->{
+
+                    is NetworkResult.Loading -> {
                         applyLoadProgressStateRegister(true)
                     }
                 }
-            })
+            }
         }
     }
 
@@ -87,14 +88,15 @@ class RegisterFragment : Fragment() {
     }
 
     private fun applyLoadProgressStateRegister(onProcess:Boolean){
+        binding?.etUsername?.isEnabled = !onProcess
         binding?.etEmail?.isEnabled = !onProcess
         binding?.etPassword?.isEnabled = !onProcess
         binding?.btnRegister?.isEnabled = !onProcess
 
         if (onProcess){
-            binding?.pgRegister?.animateLoadingProcessData(true)
+            binding?.maskedViewPgRegister?.animateLoadingProcessData(true)
         }else{
-            binding?.pgRegister?.animateLoadingProcessData(false)
+            binding?.maskedViewPgRegister?.animateLoadingProcessData(false)
         }
     }
 }
