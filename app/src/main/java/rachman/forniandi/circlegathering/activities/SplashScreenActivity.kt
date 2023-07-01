@@ -10,8 +10,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import rachman.forniandi.circlegathering.LoginRegister.LoginRegisterActivity
 import rachman.forniandi.circlegathering.R
-import rachman.forniandi.circlegathering.activities.MainActivity.Companion.OBTAINED_TOKEN
-import rachman.forniandi.circlegathering.activities.MainActivity.Companion.OBTAINED_USERNAME
 import rachman.forniandi.circlegathering.viewModels.SplashScreenViewModel
 import java.util.*
 import kotlin.concurrent.schedule

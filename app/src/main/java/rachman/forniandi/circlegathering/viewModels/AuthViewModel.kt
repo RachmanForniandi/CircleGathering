@@ -126,7 +126,7 @@ class AuthViewModel @Inject constructor(
         }
     }*/
 
-    fun saveBackOnline(backOnline:Boolean)=
+    private fun saveBackOnline(backOnline:Boolean)=
         viewModelScope.launch(Dispatchers.IO) {
             repository.online.saveBackOnline(backOnline)
         }

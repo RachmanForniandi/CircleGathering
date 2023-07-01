@@ -69,7 +69,7 @@ class LoginFragment : Fragment() {
 
     private fun actionLogin() {
         val email = binding.etEmail.text.toString().trim()
-        val password = binding.etPassword.text.toString()
+        val password = binding.etPassword.text.toString().trim()
 
         viewLifecycleOwner.lifecycleScope.launch{
 

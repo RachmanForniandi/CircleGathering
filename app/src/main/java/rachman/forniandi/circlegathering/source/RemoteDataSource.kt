@@ -27,11 +27,18 @@ class RemoteDataSource @Inject constructor(
         return networkService.getAllStories(addedBearerToken)
     }
 
-    suspend fun addDataStories(bearerToken:String,description:RequestBody,file:MultipartBody.Part):Response<ResponseAddStory>{
-        return networkService.insertStories(bearerToken,description, file)
+    suspend fun addDataStories(bearerToken:String,
+                               file:MultipartBody.Part,
+                               description:RequestBody):Response<ResponseAddStory>{
+        val addedBearerToken = makeBearerToken(bearerToken)
+        return networkService.insertStories(addedBearerToken,file,description)
     }
 
     private fun makeBearerToken(token: String): String {
         return ConstantsMain.TOKEN_BEARER+token
     }
+    /*private fun makeBearerTokenToRequestBody(token: RequestBody): RequestBody {
+        val convertTokenRequestBody= (ConstantsMain.TOKEN_BEARER+token).toRequestBody("multipart/form-data".toMediaTypeOrNull())
+        return convertTokenRequestBody
+    }*/
 }

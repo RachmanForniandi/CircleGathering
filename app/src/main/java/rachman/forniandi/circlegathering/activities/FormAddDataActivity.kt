@@ -18,6 +18,7 @@ import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
@@ -37,7 +38,12 @@ import com.karumi.dexter.listener.PermissionGrantedResponse
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.karumi.dexter.listener.single.PermissionListener
+import dagger.hilt.android.AndroidEntryPoint
+import id.zelory.compressor.Compressor
+import id.zelory.compressor.constraint.quality
+import id.zelory.compressor.constraint.size
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -54,7 +60,7 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
 import java.util.UUID
-
+@AndroidEntryPoint
 class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
 
     private lateinit var binding:ActivityFormAddDataBinding
@@ -82,17 +88,13 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
                 }
 
                 R.id.btn_upload_data_confirm->{
-                    val description =binding.etDescription.text.toString()
-                    descriptionToRequestBody = description.toRequestBody("multipart/form-data".toMediaTypeOrNull())
+                    val description =binding.etDescription.text.toString().trim()
                     val insertImg = File(mImgPath)
-                    val requestBodyInput = insertImg.asRequestBody("multipart/form-data".toMediaTypeOrNull())
-                    fileBodyMultipart =MultipartBody.Part.createFormData("image",insertImg.name,requestBodyInput)
                     if (description.isEmpty() && mImgPath.isEmpty()){
-                        Snackbar.make(binding.root, getString(R.string.insert_input_upload_validation_message), Snackbar.LENGTH_SHORT).show()
+                        Snackbar.make(binding.root, getString(R.string.insert_input_upload_validation_message),
+                            Snackbar.LENGTH_SHORT).show()
                     }else{
-                        lifecycleScope.launch {
-                            executeUploadData()
-                        }
+                        executeUploadData(insertImg,description)
                     }
                     return
                 }
@@ -100,28 +102,46 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    private fun executeUploadData() {
-            viewModel.doUploadStoriesData(descriptionToRequestBody,fileBodyMultipart)
-            viewModel.inputDataResponse.observe(this@FormAddDataActivity) { response ->
-                when (response) {
-                    is NetworkResult.Loading -> {
-                        applyLoadProgressStateUpload(true)
-                    }
-
-                    is NetworkResult.Success -> {
-                        applyLoadProgressStateUpload(false)
-                        startActivity(Intent(this, MainActivity::class.java))
-                        this.finish()
-                    }
-
-                    is NetworkResult.Error -> {
-                        applyLoadProgressStateUpload(false)
-                        Snackbar.make(
-                            binding.root,
-                            response.message.toString(), Snackbar.LENGTH_SHORT).show()
-                    }
+    private fun executeUploadData(insertImg: File, description: String) {
+        lifecycleScope.launch {
+                val fileToCompressProcess = Compressor.compress(this@FormAddDataActivity, insertImg) {
+                    quality(50)
+                    size(1_000_000)
                 }
-            }
+                descriptionToRequestBody = description.toRequestBody("text/plain".toMediaType())
+
+                val requestBodyInput = fileToCompressProcess.asRequestBody("image/jpeg".toMediaType())
+                fileBodyMultipart = MultipartBody.Part.createFormData("image", insertImg.name, requestBodyInput)
+
+
+                viewModel.doUploadStoriesData(fileBodyMultipart,descriptionToRequestBody)
+
+                Log.e("test_input_upload_file",""+ fileBodyMultipart)
+                viewModel.inputDataResponse.observe(this@FormAddDataActivity) { response ->
+                    when (response) {
+                        is NetworkResult.Loading -> {
+                            applyLoadProgressStateUpload(true)
+                        }
+
+                        is NetworkResult.Success -> {
+                            applyLoadProgressStateUpload(false)
+                            Snackbar.make(
+                                binding.root,
+                                response.message.toString(), Snackbar.LENGTH_SHORT).show()
+                            startActivity(Intent(this@FormAddDataActivity, MainActivity::class.java))
+                            finish()
+                        }
+
+                        is NetworkResult.Error -> {
+                            applyLoadProgressStateUpload(false)
+                            Snackbar.make(
+                                binding.root,
+                                response.message.toString(), Snackbar.LENGTH_SHORT).show()
+                        }
+                    }
+                    Log.e("test_response_view_upload",""+viewModel.inputDataResponse)
+                }
+        }
     }
 
     private fun customOptionImageInputSelectionDialog(){
@@ -130,11 +150,9 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
         optionTakeImageDialog.setContentView(binding.root)
 
         binding.txtOptionCamera.setOnClickListener {
-            //Toast.makeText(this,"Option Camera Selected",Toast.LENGTH_SHORT).show()
             Dexter.withContext(this)
                 .withPermissions(
                     Manifest.permission.READ_EXTERNAL_STORAGE,
-                    //Manifest.permission.WRITE_EXTERNAL_STORAGE,
                     Manifest.permission.CAMERA
                 ).withListener(object : MultiplePermissionsListener {
                     override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
@@ -142,7 +160,6 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
                             if (report.areAllPermissionsGranted()){
                                 val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
                                 startActivityForResult(intent, CAMERA)
-                                //Toast.makeText(this@FormAddDataActivity,"Option Camera Selected",Toast.LENGTH_SHORT).show()
                             }
                         }
                     }
@@ -268,6 +285,7 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
             }
         }
     }
+
 
     private fun saveImageToInternalStorage(thumbnail: Bitmap): String {
         val wrapper = ContextWrapper(applicationContext)
