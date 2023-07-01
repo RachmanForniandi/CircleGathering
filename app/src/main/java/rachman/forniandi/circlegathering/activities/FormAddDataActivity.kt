@@ -106,7 +106,7 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
         lifecycleScope.launch {
                 val fileToCompressProcess = Compressor.compress(this@FormAddDataActivity, insertImg) {
                     quality(50)
-                    size(1_000_000)
+                    size(1000)
                 }
                 descriptionToRequestBody = description.toRequestBody("text/plain".toMediaType())
 

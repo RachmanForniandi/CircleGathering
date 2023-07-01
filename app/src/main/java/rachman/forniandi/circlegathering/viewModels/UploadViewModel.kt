@@ -11,10 +11,8 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import rachman.forniandi.circlegathering.models.addStory.ResponseAddStory
 import rachman.forniandi.circlegathering.repositories.MainRepository
 import rachman.forniandi.circlegathering.utils.NetworkResult
@@ -46,8 +44,8 @@ class UploadViewModel @Inject constructor(
                 //Log.e("check_token_upload",""+tokenForUpload)
                 val uploadDataFeedback = repository.remoteMain.addDataStories(tokenForUpload,filePicture,description)
                 Log.e("check_token_upload_bearer",""+tokenForUpload)
-                Log.e("check_file_picture",""+filePicture)
-                Log.e("check_description",""+description)
+                Log.e("check_file_picture","parameter_file:"+ filePicture)
+                Log.e("check_description","parameter_description:"+ description)
                 inputDataResponse.value  = handledUploadDataStoriesResponse(uploadDataFeedback)
             }catch (e: Exception){
                 inputDataResponse.value  = NetworkResult.Error("Upload Error")
@@ -71,7 +69,6 @@ class UploadViewModel @Inject constructor(
             }
 
         }
-        //Log.e("result_Response2:",""+response.message())
     }
 
 
