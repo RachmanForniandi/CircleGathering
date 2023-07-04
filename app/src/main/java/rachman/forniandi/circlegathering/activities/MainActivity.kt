@@ -17,6 +17,7 @@ import rachman.forniandi.circlegathering.LoginRegister.LoginRegisterActivity
 import rachman.forniandi.circlegathering.R
 import rachman.forniandi.circlegathering.adapters.MainAdapter
 import rachman.forniandi.circlegathering.databinding.ActivityMainBinding
+import rachman.forniandi.circlegathering.models.allStories.ListStoryItem
 import rachman.forniandi.circlegathering.utils.NetworkResult
 import rachman.forniandi.circlegathering.viewModels.MainViewModel
 
@@ -26,7 +27,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private val viewModel: MainViewModel by viewModels()
-    private val adapter by lazy { MainAdapter() }
+    private lateinit var mainAdapter :MainAdapter
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,8 +42,8 @@ class MainActivity : AppCompatActivity() {
         binding.mainViewModel= viewModel
 
         setUserName()
-        setSwipeRefreshAtMainPage()
         showDataStoriesOnMain()
+        setSwipeRefreshAtMainPage()
         requestDataRemoteStories()
         binding.fabAddStory.setOnClickListener {
             val intentToAddData = Intent(this,FormAddDataActivity::class.java)
@@ -71,7 +72,7 @@ class MainActivity : AppCompatActivity() {
             when (response) {
                 is NetworkResult.Success -> {
                     hideShimmerEffect()
-                    response.data?.let { adapter.setData(it) }
+                    response.data?.let { mainAdapter.setData(it) }
                     binding.swipeRefreshMain.isRefreshing = false
                 }
 
@@ -92,7 +93,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showDataStoriesOnMain() {
-        binding.listDataStories.adapter = adapter
+        mainAdapter = MainAdapter(arrayListOf())
+        mainAdapter.setOnClickListener(object :MainAdapter.OnStoryClickListener{
+            override fun onClick(position: Int, story: ListStoryItem) {
+                val toDetailStory = Intent(this@MainActivity,DetailStoryActivity::class.java)
+                toDetailStory.putExtra(DETAIL_STORY,story)
+                startActivity(toDetailStory)
+            }
+        })
+        binding.listDataStories.adapter = mainAdapter
         showShimmerEffect()
     }
 
@@ -143,4 +152,9 @@ class MainActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
+
+    companion object{
+        const val DETAIL_STORY="detail_story"
+    }
+
 }

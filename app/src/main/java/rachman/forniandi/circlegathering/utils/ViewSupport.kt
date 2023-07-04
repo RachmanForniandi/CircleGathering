@@ -18,7 +18,7 @@ import java.util.*
     this.text = formattedDate
 }*/
 
-/*@SuppressLint("SimpleDateFormat")
+@SuppressLint("SimpleDateFormat")
 fun getStringDate(date: String?): String? {
     val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     val outputDate = SimpleDateFormat("EEE, dd MMM yyy KK:mm")
@@ -29,7 +29,7 @@ fun getStringDate(date: String?): String? {
         e.printStackTrace()
     }
     return outputDate.format(d)
-}*/
+}
 
 
 fun View.animateLoadingProcessData(isVisible: Boolean, duration: Long = 300) {
