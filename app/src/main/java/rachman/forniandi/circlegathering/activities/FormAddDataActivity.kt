@@ -108,13 +108,13 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun executeUploadData(insertImg: File, description: String) {
         lifecycleScope.launch {
-                /*val fileToCompressProcess = Compressor.compress(this@FormAddDataActivity, insertImg) {
+                val fileToCompressProcess = Compressor.compress(this@FormAddDataActivity, insertImg) {
                     quality(50)
-                    size(1000)
-                }*/
-                //val requestBodyInput = fileToCompressProcess.asRequestBody("image/jpeg".toMediaType())
-            val requestBodyInput = insertImg.asRequestBody("image/*".toMediaTypeOrNull())
-            fileBodyMultipart = MultipartBody.Part.createFormData("image", insertImg.name, requestBodyInput)
+                    size(1_000_000)
+                }
+                val requestBodyInput = fileToCompressProcess.asRequestBody("image/jpeg".toMediaType())
+                // requestBodyInput = insertImg.asRequestBody("image/*".toMediaTypeOrNull())
+                fileBodyMultipart = MultipartBody.Part.createFormData("image", insertImg.name, requestBodyInput)
 
                 descriptionToRequestBody = description.toRequestBody("text/plain".toMediaType())
 
@@ -293,7 +293,7 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
         }
     }*/
 
-    /*override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK){
 
@@ -356,7 +356,7 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
                     getString(R.string.all_permission_device_are_denied), Snackbar.LENGTH_SHORT).show()
             }
         }
-    }*/
+    }
 
 
     private fun saveImageToInternalStorage(thumbnail: Bitmap): String {

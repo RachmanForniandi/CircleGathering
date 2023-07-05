@@ -44,8 +44,8 @@ class UploadViewModel @Inject constructor(
                 //Log.e("check_token_upload",""+tokenForUpload)
                 val uploadDataFeedback = repository.remoteMain.addDataStories(tokenForUpload,filePicture,description)
                 Log.e("check_token_upload_bearer",""+tokenForUpload)
-                Log.e("check_file_picture","parameter_file:"+ filePicture)
-                Log.e("check_description","parameter_description:"+ description)
+                Log.e("check_file_picture",""+ filePicture)
+                Log.e("check_description",""+ description)
                 inputDataResponse.value  = handledUploadDataStoriesResponse(uploadDataFeedback)
             }catch (e: Exception){
                 inputDataResponse.value  = NetworkResult.Error("Upload Error")
