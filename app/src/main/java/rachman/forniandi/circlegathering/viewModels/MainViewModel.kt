@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
@@ -28,8 +29,6 @@ class MainViewModel @Inject constructor(
 ): AndroidViewModel(application) {
 
     var getAllStoriesResponse: MutableLiveData<NetworkResult<ResponseAllStories>> = MutableLiveData()
-    //var inputDataResponse: MutableLiveData<NetworkResult<ResponseAddStory>> = MutableLiveData()
-
     fun getUserName()= sessionPreferences.getUsername().asLiveData()
 
     fun signOutUser() = viewModelScope.launch {
@@ -40,8 +39,8 @@ class MainViewModel @Inject constructor(
     }
 
     /*fun getUserLoginStatus()= sessionPreferences.getLoginUserStatus().asLiveData()
-
 */
+
     fun doShowAllStoriesData()= viewModelScope.launch {
         actionSafeCallShowAllStories()
     }
@@ -52,6 +51,7 @@ class MainViewModel @Inject constructor(
             try {
                 val tokenAuth= sessionPreferences.getTheTokenAuth().first()
                 val storiesFeedback = repository.remoteMain.showStories(tokenAuth)
+                Log.e("check_token_auth",""+tokenAuth)
                 getAllStoriesResponse.value  = handledAllStoriesResponse(storiesFeedback)
             }catch (e: Exception){
                 getAllStoriesResponse.value  = NetworkResult.Error("Data not Available.")
@@ -73,39 +73,6 @@ class MainViewModel @Inject constructor(
             }
         }
     }
-
-
-    /*fun doUploadStoriesData()= viewModelScope.launch {
-        actionSafeCallUploadStories()
-    }
-
-    private suspend fun actionSafeCallUploadStories() {
-        inputDataResponse.value = NetworkResult.Loading()
-        if(hasInternetConnectionForMain()){
-            try {
-                val tokenForUpload= sessionPreferences.getTheTokenAuth().first()
-                val uploadDataFeedback = repository.remoteMain.addDataStories(tokenForUpload)
-                inputDataResponse.value  = handledUploadDataStoriesResponse(storiesFeedback)
-            }catch (e: Exception){
-                inputDataResponse.value  = NetworkResult.Error("Data not Available.")
-            }
-        }
-    }
-
-    private fun handledUploadDataStoriesResponse(response: Response<ResponseAddStory>): NetworkResult<ResponseAddStory>? {
-        when{
-            response.message().toString().contains("timeout")->{
-                return NetworkResult.Error("Timeout")
-            }
-            response.isSuccessful -> {
-                val dataStories = response.body()
-                return NetworkResult.Success(dataStories )
-            }
-            else->{
-                return NetworkResult.Error(response.message())
-            }
-        }
-    }*/
 
 
     private fun hasInternetConnectionForMain():Boolean{

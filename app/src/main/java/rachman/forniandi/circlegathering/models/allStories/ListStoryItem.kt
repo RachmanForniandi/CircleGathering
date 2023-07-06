@@ -3,6 +3,7 @@ package rachman.forniandi.circlegathering.models.allStories
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
+import java.io.Serializable
 
 @Parcelize
 data class ListStoryItem(
@@ -27,4 +28,4 @@ data class ListStoryItem(
 
 	/*@field:SerializedName("lat")
 	val lat: Any? = null*/
-) : Parcelable
+) :  Parcelable
