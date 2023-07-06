@@ -6,6 +6,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,6 +29,12 @@ class UploadViewModel @Inject constructor(
     application: Application
 ): AndroidViewModel(application) {
 
+    private val _uploadResponse = MutableLiveData<NetworkResult<ResponseAddStory>>()
+    val uploadResponseLiveData:LiveData<NetworkResult<ResponseAddStory>>
+        get() = _uploadResponse
+
+
+
     var inputDataResponse: MutableLiveData<NetworkResult<ResponseAddStory>> = MutableLiveData()
 
     fun doUploadStoriesData(filePicture: MultipartBody.Part,description: RequestBody )= viewModelScope.launch {
@@ -48,7 +55,8 @@ class UploadViewModel @Inject constructor(
                 Log.e("check_description","parameter_description:"+ description)
                 inputDataResponse.value  = handledUploadDataStoriesResponse(uploadDataFeedback)
             }catch (e: Exception){
-                inputDataResponse.value  = NetworkResult.Error("Upload Error")
+                //inputDataResponse.value  = NetworkResult.Error("Upload Error")
+                _uploadResponse.postValue(NetworkResult.Error("Upload Error"))
             }
 
             Log.e("response_value:",""+inputDataResponse.value)
@@ -58,13 +66,16 @@ class UploadViewModel @Inject constructor(
     private fun handledUploadDataStoriesResponse(response: Response<ResponseAddStory>): NetworkResult<ResponseAddStory> {
         return when{
             response.message().toString().contains("timeout")->{
+                _uploadResponse.postValue(NetworkResult.Error("Timeout"))
                 NetworkResult.Error("Timeout")
             }
             response.isSuccessful -> {
                 val dataStories = response.body()
-                NetworkResult.Success(dataStories )
+                _uploadResponse.postValue(NetworkResult.Success(dataStories))
+                NetworkResult.Success(dataStories)
             }
             else->{
+                _uploadResponse.postValue(NetworkResult.Error(response.message()))
                 NetworkResult.Error(response.message())
             }
 

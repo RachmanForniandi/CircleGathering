@@ -130,7 +130,7 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
                 viewModel.doUploadStoriesData(fileBodyMultipart,descriptionToRequestBody)
 
                 Log.e("test_input_upload_file",""+ fileBodyMultipart)
-                viewModel.inputDataResponse.observe(this@FormAddDataActivity) { response ->
+                viewModel.uploadResponseLiveData.observe(this@FormAddDataActivity) { response ->
                     when (response) {
                         is NetworkResult.Loading -> {
                             applyLoadProgressStateUpload(true)
