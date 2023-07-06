@@ -9,6 +9,7 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
@@ -21,6 +22,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
@@ -56,7 +58,10 @@ import rachman.forniandi.circlegathering.databinding.CustomDialogImageSelectionB
 import rachman.forniandi.circlegathering.di.NetworkModule_ProvideApiServiceFactory.create
 import rachman.forniandi.circlegathering.utils.NetworkResult
 import rachman.forniandi.circlegathering.utils.animateLoadingProcessData
+import rachman.forniandi.circlegathering.utils.createCustomTempFileImg
+import rachman.forniandi.circlegathering.utils.uriImgToFileImg
 import rachman.forniandi.circlegathering.viewModels.UploadViewModel
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -69,6 +74,7 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
 
     private lateinit var binding:ActivityFormAddDataBinding
     private val viewModel: UploadViewModel by viewModels()
+    private var inputFile: File? = null
     private var mImgPath:String =""
     private lateinit var descriptionToRequestBody: RequestBody
     private lateinit var fileBodyMultipart : MultipartBody.Part
@@ -92,13 +98,14 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
                 }
 
                 R.id.btn_upload_data_confirm->{
-                    val description =binding.etDescription.text.toString().trim()
-                    val insertImg = File(mImgPath)
-                    if (description.isEmpty() && mImgPath.isEmpty()){
+                    //val insertImg = File(mImgPath)
+                    if (inputFile == null){
                         Snackbar.make(binding.root, getString(R.string.insert_input_upload_validation_message),
                             Snackbar.LENGTH_SHORT).show()
                     }else{
-                        executeUploadData(insertImg,description)
+                        val description =binding.etDescription.text.toString().trim()
+                        val reduceImageFirst = actionReduceImg(inputFile as File)
+                        executeUploadData(reduceImageFirst,description)
                     }
                     return
                 }
@@ -106,15 +113,17 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    private fun executeUploadData(insertImg: File, description: String) {
+
+
+    private fun executeUploadData(reduceImageFirst: File, description: String) {
         lifecycleScope.launch {
-                val fileToCompressProcess = Compressor.compress(this@FormAddDataActivity, insertImg) {
+                /*val fileToCompressProcess = Compressor.compress(this@FormAddDataActivity, insertImg) {
                     quality(50)
                     size(1_000_000)
-                }
-                val requestBodyInput = fileToCompressProcess.asRequestBody("image/jpeg".toMediaType())
+                }*/
+                val requestBodyInput = reduceImageFirst.asRequestBody("image/jpeg".toMediaType())
                 // requestBodyInput = insertImg.asRequestBody("image/*".toMediaTypeOrNull())
-                fileBodyMultipart = MultipartBody.Part.createFormData("image", insertImg.name, requestBodyInput)
+                fileBodyMultipart = MultipartBody.Part.createFormData("image", reduceImageFirst.name, requestBodyInput)
 
                 descriptionToRequestBody = description.toRequestBody("text/plain".toMediaType())
 
@@ -147,7 +156,23 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
                 }
         }
     }
+    private fun actionReduceImg(insertImg: File): File {
+        val decodeToBitmap = BitmapFactory.decodeFile(insertImg.path)
 
+        var compressQuality = 100
+        var streamLength: Int
+        do {
+            val bmpStream = ByteArrayOutputStream()
+            decodeToBitmap.compress(Bitmap.CompressFormat.JPEG, compressQuality, bmpStream)
+            val bmpPicByteArray = bmpStream.toByteArray()
+            streamLength = bmpPicByteArray.size
+            compressQuality -= 5
+        } while (streamLength > 1000000)
+
+        decodeToBitmap.compress(Bitmap.CompressFormat.JPEG, compressQuality, FileOutputStream(insertImg))
+
+        return insertImg
+    }
     private fun customOptionImageInputSelectionDialog(){
         val optionTakeImageDialog= Dialog(this)
         val binding: CustomDialogImageSelectionBinding = CustomDialogImageSelectionBinding.inflate(layoutInflater)
@@ -163,8 +188,18 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
                         report?.let {
                             if (report.areAllPermissionsGranted()){
                                 val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                                startActivityForResult(intent, CAMERA)
-                                //launcherIntentCamera.launch(intent)
+                                //startActivityForResult(intent, CAMERA)
+                                intent.resolveActivity(packageManager)
+                                createCustomTempFileImg(application).also {
+                                    val photoURICamera: Uri = FileProvider.getUriForFile(
+                                        this@FormAddDataActivity,
+                                        packageName,
+                                        it
+                                    )
+                                    mImgPath = it.absolutePath
+                                    intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURICamera)
+                                    launcherIntentCamera.launch(intent)
+                                }
                             }
                         }
                     }
@@ -185,12 +220,14 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
                     Manifest.permission.READ_EXTERNAL_STORAGE
                 ).withListener(object : PermissionListener {
                     override fun onPermissionGranted(response: PermissionGrantedResponse?) {
-                        val galleryIntent = Intent(
-                            Intent.ACTION_PICK,
-                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                        val galleryIntent = Intent()
+                        galleryIntent.action= Intent.ACTION_GET_CONTENT
+                        galleryIntent.type = "image/*"
+                        val pickImg = Intent.createChooser(galleryIntent, "Choose a Picture")
+                        //MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
 
-                        startActivityForResult(galleryIntent, GALLERY)
-                        //launcherIntentGallery.launch(galleryIntent)
+                        //startActivityForResult(galleryIntent, GALLERY)
+                        launcherIntentGallery.launch(pickImg)
                     }
 
                     override fun onPermissionDenied(response: PermissionDeniedResponse?) {
@@ -227,16 +264,20 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
             }.show()
     }
 
-    /*private val launcherIntentCamera = registerForActivityResult(
+    private val launcherIntentCamera = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {
-        if (it.resultCode == CAMERA) {
-            val thumbnail = it.data?.getSerializableExtra("data") as Bitmap
+        if (it.resultCode == RESULT_OK) {
+            /*val thumbnail = it.data?.getSerializableExtra("data") as Bitmap
             Glide.with(this)
                 .load(thumbnail)
                 .centerCrop()
                 .into(binding.imgDisplayInput)
-            mImgPath = saveImageToInternalStorage(thumbnail)
+            mImgPath = saveImageToInternalStorage(thumbnail)*/
+            val filePicCamera = File(mImgPath)
+            inputFile= filePicCamera
+            val resultCamera = BitmapFactory.decodeFile(inputFile?.path)
+            binding.imgDisplayInput.setImageBitmap(resultCamera)
 
             Log.i("imgPath", mImgPath)
 
@@ -249,11 +290,14 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
     private val launcherIntentGallery = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result->
-        if (result.resultCode == GALLERY) {
-            val selectedPhotoUri= result?.data?.data
+        if (result.resultCode == RESULT_OK) {
+            val selectedPhotoUri= result?.data?.data as Uri
+
+            val filePicGallery = uriImgToFileImg(selectedPhotoUri,this@FormAddDataActivity)
+            inputFile = filePicGallery
             binding.imgDisplayInput.setImageURI(selectedPhotoUri)
 
-            Glide.with(this)
+            /*Glide.with(this)
                 .load(selectedPhotoUri)
                 .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -283,17 +327,17 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
                         return false
                     }
                 })
-                .into(binding.imgDisplayInput)
+                .into(binding.imgDisplayInput)*/
 
             binding.imgAddInput.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.ic_vector_edit))
-        }else if (result.resultCode == Activity.RESULT_CANCELED){
+        } else if (result.resultCode == Activity.RESULT_CANCELED){
             Snackbar.make(
                 binding.root,
                 getString(R.string.all_permission_device_are_denied), Snackbar.LENGTH_SHORT).show()
         }
-    }*/
+    }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    /*override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK){
 
@@ -356,10 +400,10 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
                     getString(R.string.all_permission_device_are_denied), Snackbar.LENGTH_SHORT).show()
             }
         }
-    }
+    }*/
 
 
-    private fun saveImageToInternalStorage(thumbnail: Bitmap): String {
+    /*private fun saveImageToInternalStorage(thumbnail: Bitmap): String {
         val wrapper = ContextWrapper(applicationContext)
 
         var file = wrapper.getDir(IMG_DIRECTORY, Context.MODE_PRIVATE)
@@ -375,7 +419,7 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
             e.printStackTrace()
         }
         return file.absolutePath
-    }
+    }*/
 
     private fun applyLoadProgressStateUpload(onProcess:Boolean){
         binding.etDescription.isEnabled = !onProcess

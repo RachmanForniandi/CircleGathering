@@ -144,14 +144,6 @@ class AuthViewModel @Inject constructor(
             else -> false
         }
     }
-    /*fun getLoginUserStatus() = sessionPreferences.getLoginUserStatus()
-
-    suspend fun deleteCredentialUser(){
-        sessionPreferences.run {
-            deleteTokenAuth()
-            setLoginUserStatus(false)
-        }
-    }*/
 
     fun showNetworkStatus(){
         if (!networkStatus){
@@ -164,6 +156,16 @@ class AuthViewModel @Inject constructor(
             }
         }
     }
+    /*fun getLoginUserStatus() = sessionPreferences.getLoginUserStatus()
+
+    suspend fun deleteCredentialUser(){
+        sessionPreferences.run {
+            deleteTokenAuth()
+            setLoginUserStatus(false)
+        }
+    }*/
+
+
 
 
 
