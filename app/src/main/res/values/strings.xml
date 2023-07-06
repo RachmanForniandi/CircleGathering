@@ -37,4 +37,7 @@
     <string name="lbl_gallery">Gallery</string>
     <string name="insert_input_upload_validation_message">Please insert input description of the picture and Input picture</string>
     <string name="all_permission_device_are_denied">All permission device are denied</string>
+    <string name="cancel">Cancel</string>
+    <string name="go_to_settings">Ke halaman pengaturan</string>
+    <string name="message_setting_permissions">It Looks like you have turned off permissions required for this feature. It can be enabled under Application Settings.</string>
 </resources>
