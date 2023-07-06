@@ -37,4 +37,7 @@
     <string name="lbl_gallery">Galeri</string>
     <string name="insert_input_upload_validation_message">Mohon masukan Input Deskripsi gambar dan Input gambar</string>
     <string name="all_permission_device_are_denied">Semua izin perangkat ditolak</string>
+    <string name="cancel">Batal</string>
+    <string name="go_to_settings">Ke halaman pengaturan</string>
+    <string name="message_setting_permissions">Sepertinya anda telah mematikan perijinan untuk fitur ini. Perijinan dapat di setujui di halaman pengaturan.</string>
 </resources>
