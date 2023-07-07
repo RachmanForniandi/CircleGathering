@@ -140,6 +140,7 @@ class MainActivity : AppCompatActivity() {
             R.id.menu_logout ->{
                 viewModel.signOutUser()
                 val intentToAuth = Intent(this,LoginRegisterActivity::class.java)
+                intentToAuth.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 startActivity(intentToAuth)
                 finish()
                 true
