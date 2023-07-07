@@ -8,9 +8,9 @@
         <variable
             name="dataStory"
             type="rachman.forniandi.circlegathering.models.allStories.ListStoryItem" />
-        <variable
+        <!--<variable
             name="convertFormatDateTime"
-            type="rachman.forniandi.circlegathering.utils.ConstantsMain" />
+            type="rachman.forniandi.circlegathering.utils.ConstantsMain" />-->
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -33,7 +33,7 @@
                 <ImageView
                     android:id="@+id/img_story"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"
+                    android:layout_height="300dp"
                     android:src="@drawable/place_holder"
                     android:scaleType="fitXY"
                     loadImageUrl="@{dataStory.photoUrl}"
@@ -42,12 +42,12 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/txt_title_story"
+                    android:id="@+id/txt_username_story"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginStart="4dp"
-                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginBottom="8dp"
                     android:text="@{dataStory.name}"
                     android:textSize="16sp"
                     android:textStyle="bold"
@@ -55,7 +55,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     tools:text="Title" />
 
-                <TextView
+                <!--<TextView
                     android:id="@+id/txt_date_story"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -67,7 +67,7 @@
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/img_story"
-                    tools:text="dd/MM/YYYY" />
+                    tools:text="dd/MM/YYYY" />-->
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

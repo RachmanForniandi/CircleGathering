@@ -40,4 +40,5 @@
     <string name="cancel">Batal</string>
     <string name="go_to_settings">Ke halaman pengaturan</string>
     <string name="message_setting_permissions">Sepertinya anda telah mematikan perijinan untuk fitur ini. Perijinan dapat di setujui di halaman pengaturan.</string>
+    <string name="lbl_add_story">Tambah Cerita</string>
 </resources>

@@ -20,7 +20,7 @@ class MainAdapter(private val listStory: ArrayList<ListStoryItem>):RecyclerView.
 
         fun bind(resultStory:ListStoryItem){
             view.dataStory = resultStory
-            view.convertFormatDateTime = ConstantsMain()
+            //view.convertFormatDateTime = ConstantsMain()
             view.executePendingBindings()
         }
     }

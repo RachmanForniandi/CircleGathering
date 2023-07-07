@@ -25,8 +25,13 @@ class DetailStoryActivity : AppCompatActivity() {
             parsingAttributeDetailStory(detailDataStory)
         }
 
+        setSupportActionBar(binding.toolbarDetailStory)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
 
     }
+
+
 
     private fun parsingAttributeDetailStory(detailDataStory: ListStoryItem?) {
         Log.d("test_detail_2","test $detailDataStory")
