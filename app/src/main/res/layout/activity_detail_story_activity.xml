@@ -11,10 +11,14 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary"
+        app:title="@string/detail_stories"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:titleTextColor="@color/white"/>
+        app:titleTextColor="@color/white">
+
+
+    </androidx.appcompat.widget.Toolbar>
 
     <ImageView
         android:id="@+id/img_detail_story"

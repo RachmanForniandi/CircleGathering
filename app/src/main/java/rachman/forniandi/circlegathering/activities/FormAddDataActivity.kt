@@ -69,6 +69,10 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
         binding.imgAddInput.setOnClickListener(this)
         binding.btnUploadDataConfirm.setOnClickListener(this)
 
+        setSupportActionBar(binding.toolbarAddData)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+
     }
     override fun onClick(view: View?) {
         if (view != null){
