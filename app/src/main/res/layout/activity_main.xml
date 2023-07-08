@@ -30,7 +30,7 @@
                 android:layout_margin="4dp"
                 android:text="@string/all_stories"
                 android:textColor="@color/white"
-                android:textSize="28sp"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
         </androidx.appcompat.widget.Toolbar>
