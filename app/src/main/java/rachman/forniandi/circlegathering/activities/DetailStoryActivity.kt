@@ -31,8 +31,6 @@ class DetailStoryActivity : AppCompatActivity() {
 
     }
 
-
-
     private fun parsingAttributeDetailStory(detailDataStory: ListStoryItem?) {
         Log.d("test_detail_2","test $detailDataStory")
         if (detailDataStory != null){
@@ -56,5 +54,7 @@ class DetailStoryActivity : AppCompatActivity() {
         }
     }
 
-
+    companion object {
+        const val EXTRA_ID_DETAIL_STORY = "extra_id_detail_story"
+    }
 }

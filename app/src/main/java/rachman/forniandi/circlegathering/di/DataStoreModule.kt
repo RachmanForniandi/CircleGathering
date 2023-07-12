@@ -10,6 +10,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import rachman.forniandi.circlegathering.stackWidgets.SourceForWidgetStoryUseCase
+import rachman.forniandi.circlegathering.stackWidgets.WidgetDataActuator
 import rachman.forniandi.circlegathering.utils.ConstantsMain.Companion.PREFERENCES_NAME
 import rachman.forniandi.circlegathering.utils.SessionPrefSource
 import rachman.forniandi.circlegathering.utils.SessionPreferences
@@ -24,6 +26,11 @@ abstract class DataStoreModule {
     @Binds
     @Singleton
     abstract fun provideAuthUserFeaturePreferences(sessionPreferences: SessionPrefSource): SessionPreferences
+
+
+    @Binds
+    @Singleton
+    abstract fun provideFeatureWidgetStory(widgetDataActuator: WidgetDataActuator):SourceForWidgetStoryUseCase
 
     companion object{
         @Provides

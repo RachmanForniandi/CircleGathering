@@ -44,4 +44,11 @@
     <string name="detail_stories">Detail Cerita</string>
     <string name="add_stories">Tambah Cerita</string>
     <string name="confirm">Konfirmasi</string>
+    <string name="story_image_widget_version">Gambar cerita versi Widget</string>
+    <string name="appwidget_text">Contoh</string>
+    <string name="add_widget">Tambah widget</string>
+    <string name="app_widget_description">Ini adalah deskripsi dari widget</string>
+    <string name="empty">kosong</string>
+    <string name="notification_title">Lihat cerita baru hari ini</string>
+    <string name="notification_subtitle">Tekan untuk lebih lengkapnya</string>
 </resources>
