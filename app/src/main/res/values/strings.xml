@@ -44,4 +44,11 @@
     <string name="detail_stories">Detail Stories</string>
     <string name="add_stories">Add Stories</string>
     <string name="confirm">Confirm</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+    <string name="app_widget_description">This is an app widget description</string>
+    <string name="story_image_widget_version">Story Image Widget Version</string>
+    <string name="empty">empty</string>
+    <string name="notification_title">Checkout new story today</string>
+    <string name="notification_subtitle">Tap for more details</string>
 </resources>

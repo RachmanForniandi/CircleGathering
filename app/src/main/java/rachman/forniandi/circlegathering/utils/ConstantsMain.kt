@@ -17,6 +17,10 @@ class ConstantsMain {
         const val PREFERENCES_BACK_ONLINE = "backOnline"
         const val TOKEN_BEARER = "Bearer "
 
+        const val KEY_FOR_WIDGET_WORKER = "story_work"
+        const val NOTIFICATION_ID = "Gathering_notification_id"
+        const val NOTIFICATION_NAME = "Gathering"
+        const val NOTIFICATION_CHANNEL ="Gathering_channel_01"
         @BindingAdapter("loadImageUrl")
         @JvmStatic
         fun loadImageUrl(imageView: ImageView, imgUrl:String){
@@ -39,4 +43,6 @@ class ConstantsMain {
         }
         return outputDate.format(d)
     }
+
+
 }
