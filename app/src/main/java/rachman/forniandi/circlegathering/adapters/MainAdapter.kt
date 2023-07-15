@@ -1,7 +1,6 @@
 package rachman.forniandi.circlegathering.adapters
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -51,7 +50,7 @@ class MainAdapter(private val listStory: ArrayList<ListStoryItem>):RecyclerView.
         fun onClick(position: Int, story: ListStoryItem)
     }
 
-    fun setData(storyData:ResponseAllStories){
+    fun setData(storyData: ResponseAllStories){
         val dataDiffUtil = StoryDiffUtil(story,storyData.listStory)
         val diffUtilResult = DiffUtil.calculateDiff(dataDiffUtil)
         story = storyData.listStory

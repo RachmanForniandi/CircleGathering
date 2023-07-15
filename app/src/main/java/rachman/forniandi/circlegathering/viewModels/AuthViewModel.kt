@@ -109,22 +109,6 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    /*fun actionSaveUserCredential(token: String) {
-        viewModelScope.launch {
-            repository.store.keepAuthToken(token)
-        }
-    }*/
-    /*fun actionSaveAuthToken(token: String) {
-        viewModelScope.launch {
-            repository.store.keepAuthToken(token)
-        }
-    }*/
-
-    /*fun actionSaveAuthUsername(name: String) {
-        viewModelScope.launch {
-            repository.store.keepDataUsername(name)
-        }
-    }*/
 
     private fun saveBackOnline(backOnline:Boolean)=
         viewModelScope.launch(Dispatchers.IO) {
@@ -156,17 +140,5 @@ class AuthViewModel @Inject constructor(
             }
         }
     }
-    /*fun getLoginUserStatus() = sessionPreferences.getLoginUserStatus()
-
-    suspend fun deleteCredentialUser(){
-        sessionPreferences.run {
-            deleteTokenAuth()
-            setLoginUserStatus(false)
-        }
-    }*/
-
-
-
-
 
 }

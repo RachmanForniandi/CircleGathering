@@ -21,7 +21,7 @@ private val Context.dataStore by preferencesDataStore(PREFERENCES_NAME)
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class DataStoreModule {
+abstract class AppModule {
 
     @Binds
     @Singleton
@@ -30,7 +30,7 @@ abstract class DataStoreModule {
 
     @Binds
     @Singleton
-    abstract fun provideFeatureWidgetStory(widgetDataActuator: WidgetDataActuator):SourceForWidgetStoryUseCase
+    abstract fun provideFeatureWidgetStory(widgetDataActuator: WidgetDataActuator): SourceForWidgetStoryUseCase
 
     companion object{
         @Provides

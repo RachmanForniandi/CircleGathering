@@ -135,7 +135,6 @@
             android:textStyle="bold"
             android:visibility="invisible"
             readApiResponse="@{mainViewModel.getAllStoriesResponse}"
-            readApiResponseForText ="@{mainViewModel.getAllStoriesResponse}"
             app:layout_constraintEnd_toEndOf="@id/img_error"
             app:layout_constraintStart_toStartOf="@id/img_error"
             app:layout_constraintTop_toBottomOf="@id/img_error" />

@@ -5,6 +5,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -12,22 +13,32 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
 import rachman.forniandi.circlegathering.LoginRegister.LoginRegisterActivity
 import rachman.forniandi.circlegathering.R
 import rachman.forniandi.circlegathering.adapters.MainAdapter
 import rachman.forniandi.circlegathering.databinding.ActivityMainBinding
 import rachman.forniandi.circlegathering.models.allStories.ListStoryItem
+import rachman.forniandi.circlegathering.models.allStories.ResponseAllStories
+import rachman.forniandi.circlegathering.utils.NetworkListener
 import rachman.forniandi.circlegathering.utils.NetworkResult
 import rachman.forniandi.circlegathering.viewModels.MainViewModel
 
-
+@ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
+    private var dataRequested = false
     private lateinit var binding: ActivityMainBinding
     private val viewModel: MainViewModel by viewModels()
     private lateinit var mainAdapter :MainAdapter
+    private lateinit var networkListener: NetworkListener
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,6 +60,20 @@ class MainActivity : AppCompatActivity() {
             val intentToAddData = Intent(this,FormAddDataActivity::class.java)
             startActivity(intentToAddData)
         }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(state = Lifecycle.State.STARTED) {
+                networkListener = NetworkListener()
+                networkListener.checkNetworkAvailability(this@MainActivity)
+                    .collect { status->
+                        Log.d("NetworkListener",status.toString())
+                        viewModel.networkStatus = status
+                        viewModel.showNetworkStatus()
+                        readDbLocalStories()
+                    }
+            }
+        }
+
     }
 
     private fun setUserName() {
@@ -105,6 +130,21 @@ class MainActivity : AppCompatActivity() {
         showShimmerEffect()
     }
 
+    private fun readDbLocalStories(){
+        lifecycleScope.launch {
+            viewModel.readStoriesLocal.observe(this@MainActivity){ db ->
+                if (db.isNotEmpty() && dataRequested){
+                    mainAdapter.setData(db.first().listStoryItem as ResponseAllStories)
+                    hideShimmerEffect()
+                }else{
+                    if (!dataRequested){
+                        requestDataRemoteStories()
+                    }
+                }
+            }
+        }
+    }
+
     private fun showShimmerEffect() {
         binding.shimmerFrameLayout.startShimmer()
         binding.shimmerFrameLayout.visibility = View.VISIBLE
@@ -117,6 +157,7 @@ class MainActivity : AppCompatActivity() {
         binding.listDataStories.visibility = View.VISIBLE
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         Builder(this)
             .setTitle(getString(R.string.exit))

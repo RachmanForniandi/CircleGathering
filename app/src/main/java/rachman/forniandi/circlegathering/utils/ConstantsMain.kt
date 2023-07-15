@@ -17,6 +17,8 @@ class ConstantsMain {
         const val PREFERENCES_BACK_ONLINE = "backOnline"
         const val TOKEN_BEARER = "Bearer "
 
+
+        const val STORY_TABLE ="story_table"
         const val KEY_FOR_WIDGET_WORKER = "story_work"
         const val NOTIFICATION_ID = "Gathering_notification_id"
         const val NOTIFICATION_NAME = "Gathering"

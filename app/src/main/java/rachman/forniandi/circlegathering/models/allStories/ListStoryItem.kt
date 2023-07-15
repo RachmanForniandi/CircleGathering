@@ -20,12 +20,12 @@ data class ListStoryItem(
 	@field:SerializedName("description")
 	val description: String? = null,
 
-	/*@field:SerializedName("lon")
-	val lon: Any? = null,*/
+	@field:SerializedName("lon")
+	val lon: Double? = null,
 
 	@field:SerializedName("id")
 	val id: String? = null,
 
-	/*@field:SerializedName("lat")
-	val lat: Any? = null*/
+	@field:SerializedName("lat")
+	val lat:  Double?= null
 ) :  Parcelable
