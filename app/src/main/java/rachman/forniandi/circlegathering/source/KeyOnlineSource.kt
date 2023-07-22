@@ -11,6 +11,7 @@ import dagger.hilt.android.scopes.ActivityRetainedScoped
 import rachman.forniandi.circlegathering.utils.ConstantsMain
 import javax.inject.Inject
 
+/*
 private val Context.dataStore by preferencesDataStore(ConstantsMain.PREFERENCES_NAME)
 @ActivityRetainedScoped
 class KeyOnlineSource @Inject constructor(@ApplicationContext private val context: Context){
@@ -26,4 +27,4 @@ class KeyOnlineSource @Inject constructor(@ApplicationContext private val contex
             preferences[PreferenceKeys.backOnline] = backOnline
         }
     }
-}
+}*/

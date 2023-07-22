@@ -51,4 +51,5 @@
     <string name="empty">empty</string>
     <string name="notification_title">Checkout new story today</string>
     <string name="notification_subtitle">Tap for more details</string>
+    <string name="try_again">Try Again</string>
 </resources>

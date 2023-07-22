@@ -5,6 +5,7 @@ import android.widget.RemoteViewsService
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+/*
 @AndroidEntryPoint
 class StoryStackWidgetService : RemoteViewsService() {
 
@@ -14,4 +15,4 @@ class StoryStackWidgetService : RemoteViewsService() {
     override fun onGetViewFactory(intent: Intent?): RemoteViewsFactory {
         return StoryStackRemoteViewFactory(this.applicationContext,widgetUseCase)
     }
-}
+}*/

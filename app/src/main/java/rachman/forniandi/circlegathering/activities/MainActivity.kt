@@ -44,7 +44,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //binding = ActivityMainBinding.inflate(layoutInflater)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
         setSupportActionBar(binding.toolbarMain)
@@ -61,6 +60,14 @@ class MainActivity : AppCompatActivity() {
             startActivity(intentToAddData)
         }
 
+
+        /*binding.btnRetryStories.setOnClickListener {
+            requestDataRemoteStories()
+        }*/
+        viewModel.readBackOnline.observe(this){
+            viewModel.backOnline=it
+        }
+
         lifecycleScope.launch {
             repeatOnLifecycle(state = Lifecycle.State.STARTED) {
                 networkListener = NetworkListener()
@@ -74,6 +81,12 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+    }
+    override fun onResume() {
+        super.onResume()
+        if (viewModel.recyclerViewState != null){
+            binding.listDataStories.layoutManager?.onRestoreInstanceState(viewModel.recyclerViewState)
+        }
     }
 
     private fun setUserName() {
@@ -103,6 +116,7 @@ class MainActivity : AppCompatActivity() {
 
                 is NetworkResult.Error -> {
                     hideShimmerEffect()
+                    loadStoriesFromCache()
                     Toast.makeText(
                         this,
                         response.message.toString(), Toast.LENGTH_SHORT
@@ -117,8 +131,18 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun loadStoriesFromCache(){
+        lifecycleScope.launch {
+            viewModel.readStoriesLocal.observe(this@MainActivity){ db->
+                if (db.isNotEmpty()){
+                    mainAdapter.setData(db.first().listStoryItem)
+                }
+            }
+        }
+    }
+
     private fun showDataStoriesOnMain() {
-        mainAdapter = MainAdapter(arrayListOf())
+        mainAdapter = MainAdapter()
         mainAdapter.setOnClickListener(object :MainAdapter.OnStoryClickListener{
             override fun onClick(position: Int, story: ListStoryItem) {
                 val toDetailStory = Intent(this@MainActivity,DetailStoryActivity::class.java)
@@ -134,11 +158,13 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch {
             viewModel.readStoriesLocal.observe(this@MainActivity){ db ->
                 if (db.isNotEmpty() && dataRequested){
-                    mainAdapter.setData(db.first().listStoryItem as ResponseAllStories)
+                    Log.d("MainActivity", "storiesDatabase called!")
+                    mainAdapter.setData(db.first().listStoryItem)
                     hideShimmerEffect()
                 }else{
                     if (!dataRequested){
                         requestDataRemoteStories()
+                        dataRequested = true
                     }
                 }
             }
@@ -157,7 +183,6 @@ class MainActivity : AppCompatActivity() {
         binding.listDataStories.visibility = View.VISIBLE
     }
 
-    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         Builder(this)
             .setTitle(getString(R.string.exit))
@@ -195,6 +220,8 @@ class MainActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
+
+
 
     companion object{
         const val DETAIL_STORY="detail_story"

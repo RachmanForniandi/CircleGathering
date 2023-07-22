@@ -12,6 +12,7 @@ import kotlinx.coroutines.runBlocking
 import rachman.forniandi.circlegathering.R
 import rachman.forniandi.circlegathering.models.allStories.ListStoryItem
 
+/*
 internal class StoryStackRemoteViewFactory(private val mContext: Context,
 private val widgetUseCase: SourceForWidgetStoryUseCase) : RemoteViewsService.RemoteViewsFactory {
     private val storyItemBitmap = arrayListOf<Bitmap>()
@@ -78,4 +79,4 @@ private val widgetUseCase: SourceForWidgetStoryUseCase) : RemoteViewsService.Rem
         return false
     }
 
-}
+}*/

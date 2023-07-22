@@ -10,7 +10,7 @@ import rachman.forniandi.circlegathering.models.allStories.ResponseAllStories
 import rachman.forniandi.circlegathering.networkUtil.StoryDiffUtil
 import rachman.forniandi.circlegathering.utils.ConstantsMain
 
-class MainAdapter(private val listStory: ArrayList<ListStoryItem>):RecyclerView.Adapter<MainAdapter.MainHolder>() {
+class MainAdapter:RecyclerView.Adapter<MainAdapter.MainHolder>() {
 
     private var story= emptyList<ListStoryItem>()
     private var onClickListener: OnStoryClickListener?= null

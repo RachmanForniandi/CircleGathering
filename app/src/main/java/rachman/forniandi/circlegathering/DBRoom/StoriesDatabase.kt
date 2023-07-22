@@ -2,6 +2,7 @@ package rachman.forniandi.circlegathering.DBRoom
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import rachman.forniandi.circlegathering.DBRoom.entities.StoriesEntity
 
 
@@ -10,6 +11,7 @@ import rachman.forniandi.circlegathering.DBRoom.entities.StoriesEntity
     version = 1,
     exportSchema = false
 )
+@TypeConverters(StoriesTypeConverter::class)
 abstract class StoriesDatabase:RoomDatabase() {
     abstract fun storiesDao():StoriesDao
 }

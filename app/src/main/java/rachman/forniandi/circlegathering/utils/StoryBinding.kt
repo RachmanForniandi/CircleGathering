@@ -1,8 +1,10 @@
 package rachman.forniandi.circlegathering.utils
 
 import android.view.View
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.view.isGone
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.databinding.BindingAdapter
@@ -13,56 +15,69 @@ import rachman.forniandi.circlegathering.models.allStories.ResponseAllStories
 
 class StoryBinding {
 
-    companion object{
-        @BindingAdapter("readApiResponse", "readDatabase",requireAll = true)
+    companion object {
+        @BindingAdapter("checkValidateDataVisibility",requireAll = true)
         @JvmStatic
-        fun handleReadDataErrors(textView: TextView,
-                                 imageView: ImageView,
-                                 recyclerView: RecyclerView,
-                                 mainAdapter: MainAdapter?,
-                                 dbStoriesEntity: List<StoriesEntity>?,
-                                 apiResponse:NetworkResult<ResponseAllStories>?,
+        fun checkValidateDataVisibility(
+            view: View,
+            apiResponse:NetworkResult<ResponseAllStories>
         ) {
-            if (apiResponse is NetworkResult.Error && dbStoriesEntity.isNullOrEmpty()) {
-                textView.visibility =View.VISIBLE
-                textView.text = apiResponse.message.toString()
+            when (apiResponse) {
+                is NetworkResult.Loading -> {
+                    when (view) {
+                        is ImageView -> {
+                            view.visibility = View.GONE
+                        }
 
-                imageView.visibility =View.VISIBLE
-                recyclerView.visibility = View.INVISIBLE
-            }else{
-                textView.visibility =View.INVISIBLE
-                imageView.visibility =View.INVISIBLE
-                recyclerView.visibility= View.VISIBLE
-                dbStoriesEntity.let { mainAdapter?.setData(it as ResponseAllStories) }
+                        /*is Button -> {
+                            view.visibility = View.GONE
+                            view.isClickable = false
+                        }*/
+
+                        is TextView -> {
+                            view.visibility = View.GONE
+                        }
+                    }
+                }
+
+                is NetworkResult.Success -> {
+                    when (view) {
+                        is ImageView -> {
+                            view.visibility = View.GONE
+                        }
+
+                        /*is Button -> {
+                            view.visibility = View.GONE
+                            view.isClickable = false
+                        }*/
+
+                        is TextView -> {
+                            view.visibility = View.GONE
+                        }
+                    }
+                }
+
+                is NetworkResult.Error -> {
+                    when (view) {
+                        is ImageView -> {
+                            view.visibility = View.VISIBLE
+                        }
+
+                        /*is Button -> {
+                            view.visibility = View.VISIBLE
+                            view.isClickable = true
+                        }*/
+
+                        is TextView -> {
+                            view.visibility = View.VISIBLE
+                        }
+                    }
+                }
+
             }
-            /*when(view){
-                is RecyclerView->{
-                    view.isInvisible =apiResponse is NetworkResult.Error
-                }
 
-                is ImageView ->{
-                    view.isVisible =apiResponse is NetworkResult.Error
-                }
-                is TextView ->{
-                    view.isVisible =apiResponse is NetworkResult.Error
-                    view.text = apiResponse?.message.toString()
-                }
-            }*/
         }
 
-        /*@BindingAdapter("readApiResponseForText", requireAll = true)
-        @JvmStatic
-        fun errorTextViewVisibility(textView: TextView, apiResponse:NetworkResult<ResponseAllStories>?) {
-            if (apiResponse is NetworkResult.Error) {
-                textView.visibility = View.VISIBLE
-                textView.text = apiResponse.message.toString()
-            } else if (apiResponse is NetworkResult.Loading) {
-                textView.visibility = View.INVISIBLE
-            } else if (apiResponse is NetworkResult.Success) {
-                textView.visibility = View.INVISIBLE
-            }
-        }*/
     }
-
 
 }

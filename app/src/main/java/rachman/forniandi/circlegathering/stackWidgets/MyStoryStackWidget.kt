@@ -16,13 +16,12 @@ import androidx.work.WorkManager
 import rachman.forniandi.circlegathering.R
 import rachman.forniandi.circlegathering.activities.DetailStoryActivity
 import rachman.forniandi.circlegathering.utils.ConstantsMain
-import rachman.forniandi.circlegathering.utils.supportWorker.CoreWorker
 import java.util.concurrent.TimeUnit
 
 /**
  * Implementation of App Widget functionality.
  */
-class MyStoryStackWidget : AppWidgetProvider() {
+/*class MyStoryStackWidget : AppWidgetProvider() {
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
@@ -127,7 +126,7 @@ class MyStoryStackWidget : AppWidgetProvider() {
 
         }
     }
-}
+}*/
 
 
 
