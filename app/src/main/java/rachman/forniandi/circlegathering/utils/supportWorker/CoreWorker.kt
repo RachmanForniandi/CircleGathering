@@ -17,9 +17,9 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import rachman.forniandi.circlegathering.R
 import rachman.forniandi.circlegathering.activities.MainActivity
+import rachman.forniandi.circlegathering.stackWidgets.MyStoryStackWidget
 import rachman.forniandi.circlegathering.utils.ConstantsMain
 
-/*
 class CoreWorker (
     context: Context,
     params: WorkerParameters
@@ -113,4 +113,3 @@ class CoreWorker (
         return bitmap
     }
 }
-*/

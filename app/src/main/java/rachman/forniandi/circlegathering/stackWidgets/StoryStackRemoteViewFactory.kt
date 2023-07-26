@@ -3,34 +3,26 @@ package rachman.forniandi.circlegathering.stackWidgets
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.os.FileUtils
 import android.os.Handler
 import android.util.Log
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import android.widget.Toast
 import androidx.core.os.bundleOf
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.asLiveData
 import com.bumptech.glide.Glide
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import okhttp3.internal.toImmutableList
 import rachman.forniandi.circlegathering.DBRoom.StoriesDao
 import rachman.forniandi.circlegathering.DBRoom.StoriesDatabase
 import rachman.forniandi.circlegathering.DBRoom.entities.StoriesEntity
 import rachman.forniandi.circlegathering.R
 import rachman.forniandi.circlegathering.models.allStories.ListStoryItem
-import rachman.forniandi.circlegathering.repositories.MainRepository
-import rachman.forniandi.circlegathering.source.LocalDataSource
 import java.lang.StringBuilder
+
 
 internal class StoryStackRemoteViewFactory(private val mContext: Context) : RemoteViewsService.RemoteViewsFactory {
     private val mWidgetItems = arrayListOf<Bitmap>()
@@ -53,6 +45,7 @@ internal class StoryStackRemoteViewFactory(private val mContext: Context) : Remo
 
     override fun onDataSetChanged() {
         fetchDataFromDbRoom()
+
         /*try {
             val resultData = fetchDataFromDbRoom()
             val bitmapDisplay = resultData.apply {
@@ -72,6 +65,7 @@ internal class StoryStackRemoteViewFactory(private val mContext: Context) : Remo
             e.printStackTrace()
         }
         MyStoryStackWidget.notifyDataSetChanged(mContext)*/
+
     }
 
     override fun onDestroy() {
