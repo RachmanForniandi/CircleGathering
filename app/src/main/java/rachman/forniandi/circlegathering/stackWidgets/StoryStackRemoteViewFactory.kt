@@ -3,28 +3,59 @@ package rachman.forniandi.circlegathering.stackWidgets
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.os.FileUtils
+import android.os.Handler
+import android.util.Log
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
+import android.widget.Toast
 import androidx.core.os.bundleOf
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.asLiveData
 import com.bumptech.glide.Glide
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import okhttp3.internal.toImmutableList
+import rachman.forniandi.circlegathering.DBRoom.StoriesDao
+import rachman.forniandi.circlegathering.DBRoom.StoriesDatabase
+import rachman.forniandi.circlegathering.DBRoom.entities.StoriesEntity
 import rachman.forniandi.circlegathering.R
 import rachman.forniandi.circlegathering.models.allStories.ListStoryItem
+import rachman.forniandi.circlegathering.repositories.MainRepository
+import rachman.forniandi.circlegathering.source.LocalDataSource
+import java.lang.StringBuilder
 
-/*
-internal class StoryStackRemoteViewFactory(private val mContext: Context,
-private val widgetUseCase: SourceForWidgetStoryUseCase) : RemoteViewsService.RemoteViewsFactory {
-    private val storyItemBitmap = arrayListOf<Bitmap>()
-    private val stories = arrayListOf<ListStoryItem>()
+internal class StoryStackRemoteViewFactory(private val mContext: Context) : RemoteViewsService.RemoteViewsFactory {
+    private val mWidgetItems = arrayListOf<Bitmap>()
+    private val mData = arrayListOf<ListStoryItem>()
+    private var stories = listOf<StoriesEntity>()
+    private lateinit var dao: StoriesDao
+
 
     override fun onCreate() {
+        dao = StoriesDatabase(mContext.applicationContext).storiesDao()
+        fetchDataFromDbRoom()
     }
 
-    override fun onDataSetChanged() = runBlocking {
-        try {
-            val resultData = widgetUseCase.callDataStories().first()
-            val bitmapDisplay = resultData.map {
+    private fun fetchDataFromDbRoom() {
+        CoroutineScope(Dispatchers.Main.immediate).launch {
+            stories = dao.readStories().flatMapConcat { it.asFlow() }.toList()
+        }
+    }
+
+
+    override fun onDataSetChanged() {
+        fetchDataFromDbRoom()
+        /*try {
+            val resultData = fetchDataFromDbRoom()
+            val bitmapDisplay = resultData.apply {
                 Glide.with(mContext)
                     .asBitmap()
                     .load(it.photoUrl)
@@ -32,30 +63,67 @@ private val widgetUseCase: SourceForWidgetStoryUseCase) : RemoteViewsService.Rem
                     .submit()
                     .get()
             }
-            storyItemBitmap.clear()
+            mWidgetItems.clear()
             stories.clear()
-            storyItemBitmap.addAll(bitmapDisplay)
+            mWidgetItems.addAll(bitmapDisplay)
             stories.addAll(resultData)
 
         }catch (e:Exception){
             e.printStackTrace()
         }
-        MyStoryStackWidget.notifyDataSetChanged(mContext)
+        MyStoryStackWidget.notifyDataSetChanged(mContext)*/
     }
 
     override fun onDestroy() {
+        Handler(mContext.mainLooper).post {
+            Toast.makeText(
+                mContext,
+                mContext.getString(R.string.msg_text_widget_removed),
+                Toast.LENGTH_LONG
+            ).show()
+        }
     }
 
     override fun getCount(): Int {
-        return stories.size
+        return mWidgetItems.size
     }
 
-    override fun getViewAt(positionItem: Int): RemoteViews {
+    override fun getViewAt(position: Int): RemoteViews {
         val remoteViewItems = RemoteViews(mContext.packageName, R.layout.item_widget_story).apply {
-            setImageViewBitmap(R.id.iv_widget, storyItemBitmap[positionItem])
+            setImageViewBitmap(R.id.iv_widget,mWidgetItems[position])
+        }
+        val storiesItem = stories[position].listStoryItem.listStory
+        try {
+
+                mWidgetItems.clear()
+                for (item in storiesItem){
+                    val bitmap: Bitmap = Glide.with(mContext.applicationContext)
+                        .asBitmap()
+                        .load(item.photoUrl)
+                        .override(256, 256)
+                        .submit()
+                        .get()
+                    mData.add(item)
+                    mWidgetItems.add(bitmap)
+                }
+        }catch (e:Exception){
+            Handler(mContext.mainLooper).post {
+                Toast.makeText(
+                    mContext,
+
+                    StringBuilder(mContext.getString(R.string.msg_text_failed_fetch_data))
+                        .append(" : ")
+                        .append(e.message),
+                    Toast.LENGTH_SHORT
+                ).show()
+                Log.e("test_widget", "Failed fetch data : ${e.message}")
+                e.printStackTrace()
+            }
+            MyStoryStackWidget.notifyDataSetChanged(mContext)
         }
 
-        val keyExtras = bundleOf(MyStoryStackWidget.KEY_EXTRA_ITEM to stories[positionItem].id)
+
+        val keyExtras = bundleOf(MyStoryStackWidget.KEY_EXTRA_ITEM to stories[position].id)
 
         val prepareIntent = Intent().putExtras(keyExtras)
 
@@ -79,4 +147,4 @@ private val widgetUseCase: SourceForWidgetStoryUseCase) : RemoteViewsService.Rem
         return false
     }
 
-}*/
+}

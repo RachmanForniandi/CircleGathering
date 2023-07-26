@@ -5,15 +5,21 @@ import android.annotation.SuppressLint
 import android.app.Application
 import android.content.ContentResolver
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Environment
+import android.os.StrictMode
 import android.view.View
 import android.widget.TextView
 import rachman.forniandi.circlegathering.R
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
+import java.net.HttpURLConnection
+import java.net.URL
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -37,6 +43,24 @@ fun getStringDate(date: String?): String? {
         e.printStackTrace()
     }
     return outputDate.format(d)
+}
+
+fun bitmapFromURL(context: Context, urlString: String): Bitmap {
+    return try {
+        /* allow access content from URL internet */
+        val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
+        StrictMode.setThreadPolicy(policy)
+
+        /* fetch image data from URL */
+        val url = URL(urlString)
+        val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
+        connection.doInput = true
+        connection.connect()
+        val input: InputStream = connection.inputStream
+        BitmapFactory.decodeStream(input)
+    } catch (e: IOException) {
+        BitmapFactory.decodeResource(context.resources, R.drawable.error_placeholder)
+    }
 }
 
 

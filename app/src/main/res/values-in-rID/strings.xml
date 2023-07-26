@@ -52,4 +52,6 @@
     <string name="notification_title">Lihat cerita baru hari ini</string>
     <string name="notification_subtitle">Tekan untuk lebih lengkapnya</string>
     <string name="try_again">Coba lagi</string>
+    <string name="msg_text_failed_fetch_data">Gagal memperoleh data</string>
+    <string name="msg_text_widget_removed">Widget terhapus</string>
 </resources>

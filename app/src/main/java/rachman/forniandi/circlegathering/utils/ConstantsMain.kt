@@ -4,6 +4,10 @@ import android.annotation.SuppressLint
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import coil.load
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.toList
 import rachman.forniandi.circlegathering.R
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -33,6 +37,9 @@ class ConstantsMain {
             }
         }
     }
+
+    suspend fun <T> Flow<List<T>>.flattenToList() =
+        flatMapConcat { it.asFlow() }.toList()
 
     @SuppressLint("SimpleDateFormat")
     fun getStringDate(date: String?): String? {

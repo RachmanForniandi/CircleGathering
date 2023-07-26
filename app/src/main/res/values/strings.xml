@@ -52,4 +52,6 @@
     <string name="notification_title">Checkout new story today</string>
     <string name="notification_subtitle">Tap for more details</string>
     <string name="try_again">Try Again</string>
+    <string name="msg_text_failed_fetch_data">Failed fetch data</string>
+    <string name="msg_text_widget_removed">Widget Removed</string>
 </resources>

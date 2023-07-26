@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit
 /**
  * Implementation of App Widget functionality.
  */
-/*class MyStoryStackWidget : AppWidgetProvider() {
+class MyStoryStackWidget : AppWidgetProvider() {
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
@@ -57,7 +57,7 @@ import java.util.concurrent.TimeUnit
     override fun onEnabled(context: Context) {
         val workerSupport = WorkManager.getInstance(context)
 
-        val constraintBuilder = Constraints.Builder()
+        /*val constraintBuilder = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
 
@@ -70,7 +70,7 @@ import java.util.concurrent.TimeUnit
             ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE,
             settingWorkRequest
 
-        )
+        )*/
     }
 
     override fun onDisabled(context: Context) {
@@ -126,7 +126,7 @@ import java.util.concurrent.TimeUnit
 
         }
     }
-}*/
+}
 
 
 
