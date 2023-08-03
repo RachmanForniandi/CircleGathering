@@ -45,27 +45,6 @@ internal class StoryStackRemoteViewFactory(private val mContext: Context) : Remo
 
     override fun onDataSetChanged() {
         fetchDataFromDbRoom()
-
-        /*try {
-            val resultData = fetchDataFromDbRoom()
-            val bitmapDisplay = resultData.apply {
-                Glide.with(mContext)
-                    .asBitmap()
-                    .load(it.photoUrl)
-                    .override(256, 256)
-                    .submit()
-                    .get()
-            }
-            mWidgetItems.clear()
-            stories.clear()
-            mWidgetItems.addAll(bitmapDisplay)
-            stories.addAll(resultData)
-
-        }catch (e:Exception){
-            e.printStackTrace()
-        }
-        MyStoryStackWidget.notifyDataSetChanged(mContext)*/
-
     }
 
     override fun onDestroy() {
@@ -83,13 +62,11 @@ internal class StoryStackRemoteViewFactory(private val mContext: Context) : Remo
     }
 
     override fun getViewAt(position: Int): RemoteViews {
-        val remoteViewItems = RemoteViews(mContext.packageName, R.layout.item_widget_story).apply {
-            setImageViewBitmap(R.id.iv_widget,mWidgetItems[position])
-        }
+        val remoteViewItems = RemoteViews(mContext.packageName, R.layout.item_widget_story)
         val storiesItem = stories[position].listStoryItem.listStory
         try {
 
-                mWidgetItems.clear()
+                //mWidgetItems.clear()
                 for (item in storiesItem){
                     val bitmap: Bitmap = Glide.with(mContext.applicationContext)
                         .asBitmap()
@@ -99,6 +76,7 @@ internal class StoryStackRemoteViewFactory(private val mContext: Context) : Remo
                         .get()
                     mData.add(item)
                     mWidgetItems.add(bitmap)
+                    remoteViewItems.setImageViewBitmap(R.id.iv_widget,mWidgetItems[position])
                 }
         }catch (e:Exception){
             Handler(mContext.mainLooper).post {
@@ -113,9 +91,7 @@ internal class StoryStackRemoteViewFactory(private val mContext: Context) : Remo
                 Log.e("test_widget", "Failed fetch data : ${e.message}")
                 e.printStackTrace()
             }
-            MyStoryStackWidget.notifyDataSetChanged(mContext)
         }
-
 
         val keyExtras = bundleOf(MyStoryStackWidget.KEY_EXTRA_ITEM to stories[position].id)
 

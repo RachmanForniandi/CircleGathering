@@ -78,6 +78,22 @@ class StoryBinding {
 
         }
 
+        /*@BindingAdapter("checkEnableClickButton",requireAll = true)
+        @JvmStatic
+        fun checkEnableClickButton(
+            button: Button,
+            apiResponse:NetworkResult<ResponseAllStories>
+        ) {
+            if (apiResponse is NetworkResult.Error) {
+                button.visibility = View.VISIBLE
+                button.isClickable = true
+            }else{
+                button.visibility = View.GONE
+                button.isClickable = false
+            }
+
+        }*/
+
     }
 
 }

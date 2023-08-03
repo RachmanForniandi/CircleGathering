@@ -19,6 +19,7 @@ import rachman.forniandi.circlegathering.R
 import rachman.forniandi.circlegathering.activities.MainActivity
 import rachman.forniandi.circlegathering.stackWidgets.MyStoryStackWidget
 import rachman.forniandi.circlegathering.utils.ConstantsMain
+import rachman.forniandi.circlegathering.utils.SupportWidget
 
 class CoreWorker (
     context: Context,
@@ -27,7 +28,7 @@ class CoreWorker (
     override fun doWork(): Result {
         return try {
             sendNotification()
-            MyStoryStackWidget.notifyDataSetChanged(applicationContext)
+            SupportWidget.notifyDataSetChanged(applicationContext)
             Result.success()
         } catch (e: Exception) {
             Result.failure()
@@ -41,7 +42,8 @@ class CoreWorker (
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         intent.putExtra(ConstantsMain.NOTIFICATION_ID,notification_id)
 
-        val notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE)as NotificationManager
+        val notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE)as
+                NotificationManager
 
         val titleNotification = applicationContext.getString(R.string.notification_title)
         val subtitleNotification = applicationContext.getString(R.string.notification_subtitle)

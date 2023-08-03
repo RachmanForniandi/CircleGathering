@@ -27,6 +27,7 @@ import rachman.forniandi.circlegathering.models.allStories.ListStoryItem
 import rachman.forniandi.circlegathering.models.allStories.ResponseAllStories
 import rachman.forniandi.circlegathering.utils.NetworkListener
 import rachman.forniandi.circlegathering.utils.NetworkResult
+import rachman.forniandi.circlegathering.utils.SupportWidget
 import rachman.forniandi.circlegathering.viewModels.MainViewModel
 
 @ExperimentalCoroutinesApi
@@ -111,6 +112,7 @@ class MainActivity : AppCompatActivity() {
                 is NetworkResult.Success -> {
                     hideShimmerEffect()
                     response.data?.let { mainAdapter.setData(it) }
+                    SupportWidget.notifyDataSetChanged(this@MainActivity)
                     binding.swipeRefreshMain.isRefreshing = false
                 }
 

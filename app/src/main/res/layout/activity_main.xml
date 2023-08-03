@@ -4,12 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <variable
-            name="view"
+        <import
             type="android.view.View" />
         <variable
             name="mainViewModel"
             type="rachman.forniandi.circlegathering.viewModels.MainViewModel" />
+        <variable
+            name="apiResponse"
+            type="rachman.forniandi.circlegathering.utils.NetworkResult" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -151,6 +153,7 @@
             app:layout_constraintEnd_toEndOf="@id/txt_error"
             app:layout_constraintStart_toStartOf="@id/txt_error"
             app:layout_constraintTop_toBottomOf="@id/txt_error"
+            android:clickable="@{apiResponse.Error ? View.}"
             tools:clickable="false"
             tools:visibility="gone"/>-->
 
