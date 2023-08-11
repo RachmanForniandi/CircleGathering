@@ -1,5 +1,7 @@
 package rachman.forniandi.circlegathering.stackWidgets
 
+
+
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -9,41 +11,41 @@ import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import android.widget.Toast
 import androidx.core.os.bundleOf
+import androidx.lifecycle.asLiveData
 import com.bumptech.glide.Glide
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.observeOn
 import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import rachman.forniandi.circlegathering.DBRoom.StoriesDao
 import rachman.forniandi.circlegathering.DBRoom.StoriesDatabase
 import rachman.forniandi.circlegathering.DBRoom.entities.StoriesEntity
 import rachman.forniandi.circlegathering.R
 import rachman.forniandi.circlegathering.models.allStories.ListStoryItem
-import java.lang.StringBuilder
+import rachman.forniandi.circlegathering.repositories.MainRepository
 
-
-internal class StoryStackRemoteViewFactory(private val mContext: Context) : RemoteViewsService.RemoteViewsFactory {
+internal class StoryStackRemoteViewFactory(private val mContext: Context,
+private val repository: MainRepository) : RemoteViewsService.RemoteViewsFactory {
     private val mWidgetItems = arrayListOf<Bitmap>()
     private val mData = arrayListOf<ListStoryItem>()
-    private var stories = listOf<StoriesEntity>()
-    private lateinit var dao: StoriesDao
-
+    private lateinit var stories : List<StoriesEntity>
 
     override fun onCreate() {
-        dao = StoriesDatabase(mContext.applicationContext).storiesDao()
-        fetchDataFromDbRoom()
     }
 
     private fun fetchDataFromDbRoom() {
-        CoroutineScope(Dispatchers.Main.immediate).launch {
-            stories = dao.readStories().flatMapConcat { it.asFlow() }.toList()
+        runBlocking {
+            stories = repository.localMain.readDbStories().flatMapConcat { it.asFlow() }.toList()
+            //stories = dao.readStories().flatMapConcat { it.asFlow() }.toList()
+            Log.d("debugRoom",""+stories)
         }
+
     }
 
-
-    override fun onDataSetChanged() {
+    override fun onDataSetChanged(){
         fetchDataFromDbRoom()
     }
 
@@ -63,21 +65,22 @@ internal class StoryStackRemoteViewFactory(private val mContext: Context) : Remo
 
     override fun getViewAt(position: Int): RemoteViews {
         val remoteViewItems = RemoteViews(mContext.packageName, R.layout.item_widget_story)
-        val storiesItem = stories[position].listStoryItem.listStory
-        try {
+        val storiesItem = stories[position].responseAllStories.listStory
 
-                //mWidgetItems.clear()
-                for (item in storiesItem){
-                    val bitmap: Bitmap = Glide.with(mContext.applicationContext)
-                        .asBitmap()
-                        .load(item.photoUrl)
-                        .override(256, 256)
-                        .submit()
-                        .get()
-                    mData.add(item)
-                    mWidgetItems.add(bitmap)
-                    remoteViewItems.setImageViewBitmap(R.id.iv_widget,mWidgetItems[position])
-                }
+        try {
+            for (item in storiesItem){
+                val bitmap: Bitmap = Glide.with(mContext)
+                    .asBitmap()
+                    .load(item.photoUrl)
+                    .override(256, 256)
+                    .submit()
+                    .get()
+                mData.add(item)
+                mWidgetItems.add(bitmap)
+                remoteViewItems.setImageViewBitmap(R.id.iv_widget,mWidgetItems[position])
+            Log.e("urlPhoto",item.photoUrl)
+            }
+
         }catch (e:Exception){
             Handler(mContext.mainLooper).post {
                 Toast.makeText(

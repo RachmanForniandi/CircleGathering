@@ -137,7 +137,7 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch {
             viewModel.readStoriesLocal.observe(this@MainActivity){ db->
                 if (db.isNotEmpty()){
-                    mainAdapter.setData(db.first().listStoryItem)
+                    mainAdapter.setData(db.first().responseAllStories)
                 }
             }
         }
@@ -161,7 +161,7 @@ class MainActivity : AppCompatActivity() {
             viewModel.readStoriesLocal.observe(this@MainActivity){ db ->
                 if (db.isNotEmpty() && dataRequested){
                     Log.d("MainActivity", "storiesDatabase called!")
-                    mainAdapter.setData(db.first().listStoryItem)
+                    mainAdapter.setData(db.first().responseAllStories)
                     hideShimmerEffect()
                 }else{
                     if (!dataRequested){
@@ -169,7 +169,9 @@ class MainActivity : AppCompatActivity() {
                         dataRequested = true
                     }
                 }
+                Log.e("testBaca2","test ${viewModel.readStoriesLocal}")
             }
+
         }
     }
 

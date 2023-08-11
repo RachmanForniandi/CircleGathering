@@ -12,7 +12,7 @@ import rachman.forniandi.circlegathering.di.DatabaseModule_ProvideDatabaseFactor
 @Database(
     entities = [StoriesEntity::class],
     version = 1,
-    exportSchema = false
+    exportSchema = true
 )
 @TypeConverters(StoriesTypeConverter::class)
 abstract class StoriesDatabase:RoomDatabase() {

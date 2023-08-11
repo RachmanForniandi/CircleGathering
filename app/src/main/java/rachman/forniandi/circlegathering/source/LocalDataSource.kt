@@ -1,5 +1,6 @@
 package rachman.forniandi.circlegathering.source
 
+import android.util.Log
 import kotlinx.coroutines.flow.Flow
 import rachman.forniandi.circlegathering.DBRoom.StoriesDao
 import rachman.forniandi.circlegathering.DBRoom.entities.StoriesEntity
@@ -14,5 +15,6 @@ class LocalDataSource @Inject constructor(
 
     fun readDbStories(): Flow<List<StoriesEntity>>{
         return storiesDao.readStories()
+        Log.d("testRead","${storiesDao.readStories()}")
     }
 }

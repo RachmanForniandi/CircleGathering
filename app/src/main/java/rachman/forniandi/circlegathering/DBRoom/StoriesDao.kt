@@ -16,5 +16,4 @@ interface StoriesDao {
     @Query("SELECT * FROM story_table ORDER BY id ASC")
     fun readStories(): Flow<List<StoriesEntity>>
 
-
 }

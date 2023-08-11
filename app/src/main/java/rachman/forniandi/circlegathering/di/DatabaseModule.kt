@@ -19,7 +19,9 @@ object DatabaseModule {
     @Provides
     fun provideDatabase(@ApplicationContext context: Context)=
         Room.databaseBuilder(context,
-            StoriesDatabase::class.java,DATABASE_NAME).build()
+            StoriesDatabase::class.java,DATABASE_NAME)
+            .addMigrations()
+            .build()
 
     @Singleton
     @Provides

@@ -47,7 +47,6 @@ class MainViewModel @Inject constructor(
 
     //room
     val readStoriesLocal:LiveData<List<StoriesEntity>> = repository.localMain.readDbStories().asLiveData()
-
     var readBackOnline = dataStoreRepository.readBackOnline.asLiveData()
 
 
@@ -55,6 +54,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             repository.localMain.insertStories(storiesEntity)
         }
+
     //logout & clear token dari data store
     fun signOutUser() = viewModelScope.launch {
         dataStoreRepository.run {
