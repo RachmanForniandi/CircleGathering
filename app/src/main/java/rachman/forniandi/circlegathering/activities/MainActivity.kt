@@ -147,8 +147,11 @@ class MainActivity : AppCompatActivity() {
         mainAdapter = MainAdapter()
         mainAdapter.setOnClickListener(object :MainAdapter.OnStoryClickListener{
             override fun onClick(position: Int, story: ListStoryItem) {
+
                 val toDetailStory = Intent(this@MainActivity,DetailStoryActivity::class.java)
-                toDetailStory.putExtra(DETAIL_STORY,story)
+                val bundleDetail = Bundle()
+                bundleDetail.putSerializable(DETAIL_STORY,story)
+                toDetailStory.putExtra(DETAIL_STORY,bundleDetail)
                 startActivity(toDetailStory)
             }
         })

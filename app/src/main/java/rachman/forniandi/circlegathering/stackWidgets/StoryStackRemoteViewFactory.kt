@@ -27,19 +27,25 @@ import rachman.forniandi.circlegathering.R
 import rachman.forniandi.circlegathering.models.allStories.ListStoryItem
 import rachman.forniandi.circlegathering.repositories.MainRepository
 
-internal class StoryStackRemoteViewFactory(private val mContext: Context,
-private val repository: MainRepository) : RemoteViewsService.RemoteViewsFactory {
+internal class StoryStackRemoteViewFactory(private val mContext: Context) : RemoteViewsService.RemoteViewsFactory {
+
+    private var dbRoom:StoriesDatabase
     private val mWidgetItems = arrayListOf<Bitmap>()
     private val mData = arrayListOf<ListStoryItem>()
     private lateinit var stories : List<StoriesEntity>
+
+    init {
+        dbRoom = StoriesDatabase(mContext)
+    }
 
     override fun onCreate() {
     }
 
     private fun fetchDataFromDbRoom() {
         runBlocking {
-            stories = repository.localMain.readDbStories().flatMapConcat { it.asFlow() }.toList()
+            //stories = repository.localMain.readDbStories().flatMapConcat { it.asFlow() }.toList()
             //stories = dao.readStories().flatMapConcat { it.asFlow() }.toList()
+            stories = dbRoom.storiesDao().readStories().flatMapConcat { it.asFlow() }.toList()
             Log.d("debugRoom",""+stories)
         }
 
@@ -47,6 +53,7 @@ private val repository: MainRepository) : RemoteViewsService.RemoteViewsFactory 
 
     override fun onDataSetChanged(){
         fetchDataFromDbRoom()
+        println("checkMethodRoom" + fetchDataFromDbRoom())
     }
 
     override fun onDestroy() {
@@ -78,7 +85,7 @@ private val repository: MainRepository) : RemoteViewsService.RemoteViewsFactory 
                 mData.add(item)
                 mWidgetItems.add(bitmap)
                 remoteViewItems.setImageViewBitmap(R.id.iv_widget,mWidgetItems[position])
-            Log.e("urlPhoto",item.photoUrl)
+                item.photoUrl?.let { Log.e("urlPhoto", it) }
             }
 
         }catch (e:Exception){

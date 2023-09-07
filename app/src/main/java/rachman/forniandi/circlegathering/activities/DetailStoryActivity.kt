@@ -20,10 +20,10 @@ class DetailStoryActivity : AppCompatActivity() {
         binding = ActivityDetailStoryActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        if (intent.hasExtra(DETAIL_STORY)){
-            detailDataStory = intent.getParcelableExtra<ListStoryItem>(DETAIL_STORY)
-            parsingAttributeDetailStory(detailDataStory)
-        }
+        val bundleReceive =intent.getBundleExtra(DETAIL_STORY)
+        detailDataStory = bundleReceive?.getSerializable(DETAIL_STORY)as ListStoryItem
+        parsingAttributeDetailStory(detailDataStory)
+
 
         setSupportActionBar(binding.toolbarDetailStory)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -45,7 +45,7 @@ class DetailStoryActivity : AppCompatActivity() {
             Glide
                 .with(this@DetailStoryActivity)
                 .load(detailDataStory.photoUrl)
-                .centerCrop()
+                .fitCenter()
                 .placeholder(R.drawable.place_holder)
                 .error(R.drawable.error_placeholder)
                 .into(binding.imgDetailStory)

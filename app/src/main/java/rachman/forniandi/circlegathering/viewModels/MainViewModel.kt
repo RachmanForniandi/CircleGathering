@@ -82,6 +82,7 @@ class MainViewModel @Inject constructor(
                 getAllStoriesResponse.value  = handledAllStoriesResponse(storiesFeedback)
 
                 val allStories = getAllStoriesResponse.value?.data
+                Log.e("check_story",""+allStories)
                 if (allStories != null){
                     offlineCacheStories(allStories)
                 }

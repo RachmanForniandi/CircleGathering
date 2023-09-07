@@ -1,23 +1,22 @@
 package rachman.forniandi.circlegathering.utils
 
 import android.annotation.SuppressLint
-import android.appwidget.AppWidgetManager
-import android.content.ComponentName
-import android.content.Context
-import android.content.Intent
-import android.util.Log
+import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import coil.load
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.Target
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.toList
 import rachman.forniandi.circlegathering.R
-import rachman.forniandi.circlegathering.stackWidgets.MyStoryStackWidget
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 class ConstantsMain {
 
@@ -37,10 +36,34 @@ class ConstantsMain {
         @BindingAdapter("loadImageUrl")
         @JvmStatic
         fun loadImageUrl(imageView: ImageView, imgUrl:String){
-            imageView.load(imgUrl){
+            /*imageView.load(imgUrl){
                 crossfade(600)
                 error(R.drawable.error_placeholder)
-            }
+            }*/
+            imgUrl.let {
+                    /*Glide
+                        .with(imageView)
+                        .load(imgUrl)
+                        .centerCrop()
+                        .placeholder(R.drawable.place_holder)
+                        .error(R.drawable.error_placeholder)
+                        .into(imageView)*/
+                Glide.with(imageView)
+                    .load(imgUrl)
+                    .timeout(15000)
+                    .fitCenter()
+                    .placeholder(R.drawable.place_holder)
+                    .error(R.drawable.error_placeholder)
+                    .into(imageView)
+                }
+            /*Picasso
+                .get()
+                .load(imgUrl)
+                .resize(120, 60)
+                .centerCrop()
+                .placeholder(R.drawable.place_holder)
+                .error(R.drawable.error_placeholder)
+                .into(imageView)*/
         }
     }
 
