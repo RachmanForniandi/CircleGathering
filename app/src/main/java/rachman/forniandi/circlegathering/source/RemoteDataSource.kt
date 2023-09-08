@@ -38,9 +38,4 @@ class RemoteDataSource @Inject constructor(
         return ConstantsMain.TOKEN_BEARER+token
     }
 
-
-    /*private fun makeBearerTokenToRequestBody(token: RequestBody): RequestBody {
-        val convertTokenRequestBody= (ConstantsMain.TOKEN_BEARER+token).toRequestBody("multipart/form-data".toMediaTypeOrNull())
-        return convertTokenRequestBody
-    }*/
 }

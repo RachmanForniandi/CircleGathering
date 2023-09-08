@@ -12,6 +12,7 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
+import com.squareup.picasso.Picasso
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flatMapConcat
@@ -42,19 +43,22 @@ class ConstantsMain {
         fun loadImageUrl(imageView: ImageView, imgUrl:String){
             /*imageView.load(imgUrl){
                 crossfade(600)
+                placeholder(R.drawable.place_holder)
                 error(R.drawable.error_placeholder)
             }*/
-            imgUrl.let {
+            //imgUrl.let {
                     /*Glide
-                        .with(imageView)
+                        .with(imageView.context)
                         .load(imgUrl)
                         .centerCrop()
+                        .timeout(1500)
                         .placeholder(R.drawable.place_holder)
                         .error(R.drawable.error_placeholder)
                         .into(imageView)*/
-                Glide.with(imageView.context)
+                /*Glide.with(imageView.context)
                     .load(imgUrl)
                     .centerCrop()
+                    .timeout(1500)
                     .apply(RequestOptions()
                         .placeholder(R.drawable.place_holder)
                         .error(R.drawable.error_placeholder))
@@ -79,16 +83,16 @@ class ConstantsMain {
                             return false
                         }
                     })
-                    .into(imageView)
-                }
-            /*Picasso
+                    .into(imageView)*/
+                //}
+            Picasso
                 .get()
                 .load(imgUrl)
-                .resize(120, 60)
+                .fit()
                 .centerCrop()
                 .placeholder(R.drawable.place_holder)
                 .error(R.drawable.error_placeholder)
-                .into(imageView)*/
+                .into(imageView)
         }
     }
 

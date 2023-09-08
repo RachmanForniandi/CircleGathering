@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 import dagger.hilt.components.SingletonComponent
 import rachman.forniandi.circlegathering.networkUtil.NetworkService
+import rachman.forniandi.circlegathering.utils.ConstantsMain
 
 @Module
 @InstallIn(SingletonComponent::class)
