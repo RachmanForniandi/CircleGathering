@@ -3,6 +3,7 @@ package rachman.forniandi.circlegathering.models.allStories
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
+import java.io.Serializable
 
 
 data class ResponseAllStories(
@@ -17,28 +18,26 @@ data class ResponseAllStories(
 	val message: String
 )
 
-/*
-@Parcelize
-data class ListStoryItem(
+/*data class ListStoryItem(
 
 	@field:SerializedName("photoUrl")
-	val photoUrl: String,
+	val photoUrl: String?,
 
 	@field:SerializedName("createdAt")
-	val createdAt: String,
+	val createdAt: String?,
 
 	@field:SerializedName("name")
-	val name: String,
+	val name: String?,
 
 	@field:SerializedName("description")
-	val description: String,
+	val description: String?,
 
 	@field:SerializedName("lon")
-	val lon: Double,
+	val lon: Double?,
 
 	@field:SerializedName("id")
-	val id: String,
+	val id: String?,
 
 	@field:SerializedName("lat")
-	val lat:  Double
-) :  Parcelable*/
+	val lat:  Double?
+) : Serializable*/

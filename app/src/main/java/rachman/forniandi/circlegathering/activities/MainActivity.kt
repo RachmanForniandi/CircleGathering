@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
     private var dataRequested = false
     private lateinit var binding: ActivityMainBinding
     private val viewModel: MainViewModel by viewModels()
-    private lateinit var mainAdapter :MainAdapter
+    private val mainAdapter by lazy { MainAdapter() }
     private lateinit var networkListener: NetworkListener
 
 
@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity() {
             val intentToAddData = Intent(this,FormAddDataActivity::class.java)
             startActivity(intentToAddData)
         }
-
+        binding.swipeRefreshMain.isRefreshing = true
 
         /*binding.btnRetryStories.setOnClickListener {
             requestDataRemoteStories()
@@ -105,7 +105,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun requestDataRemoteStories() {
-        binding.swipeRefreshMain.isRefreshing = true
+        //binding.swipeRefreshMain.isRefreshing = true
         viewModel.doShowAllStoriesData()
         viewModel.getAllStoriesResponse.observe(this) { response ->
             when (response) {
@@ -144,7 +144,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showDataStoriesOnMain() {
-        mainAdapter = MainAdapter()
+        //mainAdapter = MainAdapter()
+
+        binding.listDataStories.adapter = mainAdapter
         mainAdapter.setOnClickListener(object :MainAdapter.OnStoryClickListener{
             override fun onClick(position: Int, story: ListStoryItem) {
 
@@ -155,7 +157,6 @@ class MainActivity : AppCompatActivity() {
                 startActivity(toDetailStory)
             }
         })
-        binding.listDataStories.adapter = mainAdapter
         showShimmerEffect()
     }
 
@@ -190,6 +191,7 @@ class MainActivity : AppCompatActivity() {
         binding.listDataStories.visibility = View.VISIBLE
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         Builder(this)
             .setTitle(getString(R.string.exit))
