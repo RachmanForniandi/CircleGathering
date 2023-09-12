@@ -17,7 +17,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import rachman.forniandi.circlegathering.DBRoom.entities.StoriesEntity
-import rachman.forniandi.circlegathering.models.allStories.ListStoryItem
 import rachman.forniandi.circlegathering.models.allStories.ResponseAllStories
 import rachman.forniandi.circlegathering.repositories.MainRepository
 import rachman.forniandi.circlegathering.utils.DataStoreRepository
@@ -82,6 +81,7 @@ class MainViewModel @Inject constructor(
                 getAllStoriesResponse.value  = handledAllStoriesResponse(storiesFeedback)
 
                 val allStories = getAllStoriesResponse.value?.data
+                Log.e("check_story",""+allStories)
                 if (allStories != null){
                     offlineCacheStories(allStories)
                 }

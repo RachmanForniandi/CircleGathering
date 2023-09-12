@@ -25,20 +25,20 @@ import java.lang.StringBuilder
 
 
 internal class StoryStackRemoteViewFactory(private val mContext: Context) : RemoteViewsService.RemoteViewsFactory {
+    private var dbRoom=StoriesDatabase(mContext)
     private val mWidgetItems = arrayListOf<Bitmap>()
     private val mData = arrayListOf<ListStoryItem>()
-    private var stories = listOf<StoriesEntity>()
-    private lateinit var dao: StoriesDao
+    private lateinit var stories : List<StoriesEntity>
 
 
     override fun onCreate() {
-        dao = StoriesDatabase(mContext.applicationContext).storiesDao()
-        fetchDataFromDbRoom()
+
     }
 
     private fun fetchDataFromDbRoom() {
-        CoroutineScope(Dispatchers.Main.immediate).launch {
-            stories = dao.readStories().flatMapConcat { it.asFlow() }.toList()
+        CoroutineScope(Dispatchers.Main).launch {
+            stories = dbRoom.storiesDao().readStories().flatMapConcat { it.asFlow() }.toList()
+            Log.d("debugRoom",""+stories)
         }
     }
 
@@ -77,6 +77,7 @@ internal class StoryStackRemoteViewFactory(private val mContext: Context) : Remo
                     mData.add(item)
                     mWidgetItems.add(bitmap)
                     remoteViewItems.setImageViewBitmap(R.id.iv_widget,mWidgetItems[position])
+                    item.photoUrl.let { Log.e("urlPhoto", it) }
                 }
         }catch (e:Exception){
             Handler(mContext.mainLooper).post {
