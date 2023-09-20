@@ -15,6 +15,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import rachman.forniandi.circlegathering.models.addStory.ResponseAddStory
 import rachman.forniandi.circlegathering.repositories.MainRepository
+import rachman.forniandi.circlegathering.repositories.MainRepositorySecond
 import rachman.forniandi.circlegathering.utils.DataStoreRepository
 import rachman.forniandi.circlegathering.utils.NetworkResult
 import rachman.forniandi.circlegathering.utils.SessionPreferences

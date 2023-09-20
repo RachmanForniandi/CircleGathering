@@ -7,9 +7,9 @@ import javax.inject.Inject
 
 @ViewModelScoped
 class MainRepository@Inject constructor(
-    remoteDataSource: RemoteDataSource,
-    localDataSource: LocalDataSource
+    remoteDataSource: RemoteDataSource
+    //localDataSource: LocalDataSource
 ){
     val remoteMain = remoteDataSource
-    val localMain = localDataSource
+    //val localMain = localDataSource
 }

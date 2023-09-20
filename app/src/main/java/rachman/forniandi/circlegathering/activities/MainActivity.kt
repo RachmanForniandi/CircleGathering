@@ -28,7 +28,7 @@ import rachman.forniandi.circlegathering.models.allStories.ResponseAllStories
 import rachman.forniandi.circlegathering.utils.NetworkListener
 import rachman.forniandi.circlegathering.utils.NetworkResult
 import rachman.forniandi.circlegathering.utils.SupportWidget
-import rachman.forniandi.circlegathering.viewModels.MainViewModel
+import rachman.forniandi.circlegathering.viewModels.MainViewModelSecond
 
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
 
     private var dataRequested = false
     private lateinit var binding: ActivityMainBinding
-    private val viewModel: MainViewModel by viewModels()
+    private val viewModel: MainViewModelSecond by viewModels()
     private lateinit var mainAdapter :MainAdapter
     private lateinit var networkListener: NetworkListener
 
@@ -107,7 +107,7 @@ class MainActivity : AppCompatActivity() {
     private fun requestDataRemoteStories() {
         binding.swipeRefreshMain.isRefreshing = true
         viewModel.doShowAllStoriesData()
-        viewModel.getAllStoriesResponse.observe(this) { response ->
+            viewModel.getAllStoriesResponse.observe(this) { response ->
             when (response) {
                 is NetworkResult.Success -> {
                     hideShimmerEffect()
@@ -119,10 +119,7 @@ class MainActivity : AppCompatActivity() {
                 is NetworkResult.Error -> {
                     hideShimmerEffect()
                     loadStoriesFromCache()
-                    Toast.makeText(
-                        this,
-                        response.message.toString(), Toast.LENGTH_SHORT
-                    ).show()
+                    Toast.makeText(this,response.message.toString(), Toast.LENGTH_SHORT).show()
                     binding.swipeRefreshMain.isRefreshing = false
                 }
 

@@ -8,7 +8,7 @@
             type="android.view.View" />
         <variable
             name="mainViewModel"
-            type="rachman.forniandi.circlegathering.viewModels.MainViewModel" />
+            type="rachman.forniandi.circlegathering.viewModels.MainViewModelSecond" />
         <variable
             name="apiResponse"
             type="rachman.forniandi.circlegathering.utils.NetworkResult" />

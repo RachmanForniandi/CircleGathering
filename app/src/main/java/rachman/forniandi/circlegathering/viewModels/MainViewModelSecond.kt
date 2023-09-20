@@ -18,19 +18,16 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import rachman.forniandi.circlegathering.DBRoom.entities.StoriesEntity
 import rachman.forniandi.circlegathering.models.allStories.ResponseAllStories
-import rachman.forniandi.circlegathering.repositories.MainRepository
+import rachman.forniandi.circlegathering.repositories.MainRepositorySecond
 import rachman.forniandi.circlegathering.utils.DataStoreRepository
 import rachman.forniandi.circlegathering.utils.NetworkResult
-import rachman.forniandi.circlegathering.utils.SessionPreferences
 import retrofit2.Response
 import java.lang.Exception
 import javax.inject.Inject
 
-
-/*
 @HiltViewModel
-class MainViewModel @Inject constructor(
-    private val repository: MainRepository,
+class MainViewModelSecond @Inject constructor(
+    private val repository: MainRepositorySecond,
     private val dataStoreRepository: DataStoreRepository,
     application: Application
 ): AndroidViewModel(application) {
@@ -40,34 +37,13 @@ class MainViewModel @Inject constructor(
 
     var recyclerViewState: Parcelable? = null
 
-    //untuk retrofit
     var getAllStoriesResponse: MutableLiveData<NetworkResult<ResponseAllStories>> = MutableLiveData()
-
-    //datastore get variable name
-    fun getUserName()= dataStoreRepository.getUsername().asLiveData()
-
-    //room
-    val readStoriesLocal:LiveData<List<StoriesEntity>> = repository.localMain.readDbStories().asLiveData()
-
     var readBackOnline = dataStoreRepository.readBackOnline.asLiveData()
+    val readStoriesLocal: LiveData<List<StoriesEntity>> = repository.daoStories.readStories().asLiveData()
 
 
-    private fun insertDataStoriesLocalDb(storiesEntity: StoriesEntity)=
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.localMain.insertStories(storiesEntity)
-        }
-    //logout & clear token dari data store
-    fun signOutUser() = viewModelScope.launch {
-        dataStoreRepository.run {
-            deleteTokenAuth()
-            setLoginUserStatus(false)
-        }
-    }
-
-    private fun saveBackOnline(backOnline:Boolean)=
-        viewModelScope.launch(Dispatchers.IO) {
-            dataStoreRepository.saveBackOnline(backOnline)
-        }
+    fun getUserName()= dataStoreRepository.getUsername().asLiveData()
+    //val doShowAllStoriesData= repository.getDataStories().asLiveData()
 
     fun doShowAllStoriesData()= viewModelScope.launch {
         actionSafeCallShowAllStories()
@@ -77,16 +53,16 @@ class MainViewModel @Inject constructor(
         getAllStoriesResponse.value = NetworkResult.Loading()
         if(hasInternetConnectionForMain()){
             try {
-                val tokenAuth= dataStoreRepository.getTheTokenAuth().first()
-                val storiesFeedback = repository.remoteMain.showStories(tokenAuth)
-                Log.e("check_token_auth",""+tokenAuth)
-                getAllStoriesResponse.value  = handledAllStoriesResponse(storiesFeedback)
+                //val tokenAuth= dataStoreRepository.getTheTokenAuth().first()
+                repository.getDataStories().asLiveData()
+                /*getAllStoriesResponse.value =handledAllStoriesResponse()
+                Log.e("check_feedback",""+storiesFeedback)*/
 
-                val allStories = getAllStoriesResponse.value?.data
-                Log.e("check_story",""+allStories)
-                if (allStories != null){
+                /*val allStories = getAllStoriesResponse.value?.data
+                Log.e("check_story",""+allStories)*/
+                /*if (allStories != null){
                     offlineCacheStories(allStories)
-                }
+                }*/
             }catch (e: Exception){
                 getAllStoriesResponse.value  = NetworkResult.Error("Data not Available.")
             }
@@ -96,8 +72,8 @@ class MainViewModel @Inject constructor(
     }
 
 
-
-    private fun handledAllStoriesResponse(response: Response<ResponseAllStories>): NetworkResult<ResponseAllStories>? {
+    //nanti gak dipakai lg fungsi ini
+    /*private fun handledAllStoriesResponse(response: Response<ResponseAllStories>): NetworkResult<ResponseAllStories>? {
         return when{
             response.message().toString().contains("timeout")->{
                 NetworkResult.Error("Timeout")
@@ -116,11 +92,18 @@ class MainViewModel @Inject constructor(
                 NetworkResult.Error(response.message())
             }
         }
+    }*/
+    fun signOutUser() = viewModelScope.launch {
+        dataStoreRepository.run {
+            deleteTokenAuth()
+            setLoginUserStatus(false)
+        }
     }
-    private fun offlineCacheStories(allStories: ResponseAllStories) {
-        val storiesEntity = StoriesEntity(allStories)
-        insertDataStoriesLocalDb(storiesEntity)
-    }
+
+    private fun saveBackOnline(backOnline:Boolean)=
+        viewModelScope.launch(Dispatchers.IO) {
+            dataStoreRepository.saveBackOnline(backOnline)
+        }
 
     fun showNetworkStatus(){
         if (!networkStatus){
@@ -133,7 +116,6 @@ class MainViewModel @Inject constructor(
             }
         }
     }
-
 
     private fun hasInternetConnectionForMain():Boolean{
         val connectivityManager = getApplication<Application>().getSystemService(
@@ -149,4 +131,3 @@ class MainViewModel @Inject constructor(
         }
     }
 }
-*/

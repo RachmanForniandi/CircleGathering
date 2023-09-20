@@ -5,6 +5,7 @@ import androidx.room.PrimaryKey
 import rachman.forniandi.circlegathering.models.allStories.ListStoryItem
 import rachman.forniandi.circlegathering.models.allStories.ResponseAllStories
 import rachman.forniandi.circlegathering.utils.ConstantsMain.Companion.STORY_TABLE
+import javax.inject.Singleton
 
 @Entity(tableName = STORY_TABLE)
 class StoriesEntity (var listStoryItem: ResponseAllStories){
