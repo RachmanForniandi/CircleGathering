@@ -55,4 +55,5 @@
     <string name="msg_text_failed_fetch_data">Gagal memperoleh data</string>
     <string name="msg_text_widget_removed">Widget terhapus</string>
     <string name="button_refresh_data_on_widget">Tombol penyegaran data di widget</string>
+    <string name="error">Galat !!</string>
 </resources>

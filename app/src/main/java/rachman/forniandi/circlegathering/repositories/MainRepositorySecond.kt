@@ -9,7 +9,10 @@ import rachman.forniandi.circlegathering.DBRoom.StoriesDatabase
 import rachman.forniandi.circlegathering.DBRoom.entities.StoriesEntity
 import rachman.forniandi.circlegathering.models.allStories.ResponseAllStories
 import rachman.forniandi.circlegathering.networkUtil.NetworkService
+import rachman.forniandi.circlegathering.source.LocalDataSource
+import rachman.forniandi.circlegathering.source.RemoteDataSource
 import rachman.forniandi.circlegathering.utils.DataStoreRepository
+import rachman.forniandi.circlegathering.utils.NetworkHelper
 import rachman.forniandi.circlegathering.utils.NetworkResult
 import rachman.forniandi.circlegathering.utils.networkBoundResource
 import retrofit2.Response
@@ -18,26 +21,29 @@ import javax.inject.Inject
 @ViewModelScoped
 class MainRepositorySecond @Inject constructor(
     private val database: StoriesDatabase,
-    private val networkService: NetworkService,
-    private val dataStoreRepository: DataStoreRepository
+    private val remoteDataSource: RemoteDataSource,
+    private val localDataSource: LocalDataSource,
+    private val dataStoreRepository: DataStoreRepository,
+    private val networkHelper: NetworkHelper
 ){
     val daoStories = database.storiesDao()
-    private var responseOfStories=  runBlocking { networkService.getAllStories(dataStoreRepository.getTheTokenAuth().first()) }
+    //private var responseOfStories=  runBlocking { remoteDataSource.showStories(dataStoreRepository.getTheTokenAuth().first()) }
     private var convertResponseToEntity:StoriesEntity?=null
 
     fun getDataStories() = networkBoundResource(
         // pass in the logic to query data from the database
         query = {
-            daoStories.readStories()
+            //daoStories.readStories()
+                localDataSource.readDbStories()
         },
         // pass in the logic to fetch data from the api
         fetch = {
             delay(2000)
-            responseOfStories
-            val allStories =handledAllStoriesResponse(responseOfStories)?.data
+            runBlocking { remoteDataSource.showStories(dataStoreRepository.getTheTokenAuth().first()) }
+            /*val allStories =handledAllStoriesResponse(responseOfStories)?.data
             if (allStories != null){
                 offlineCacheStories(allStories)
-            }
+            }*/
 
             dataStoreRepository.getUsername()
         },
@@ -45,13 +51,13 @@ class MainRepositorySecond @Inject constructor(
         //pass in the logic to save the result to the local cache
         saveFetchResult = {
             database.withTransaction {
-                convertResponseToEntity?.let { it1 -> daoStories.insertStories(it1) }
+                convertResponseToEntity?.let { entityStories -> localDataSource.insertStories(entityStories) }
             }
         },
 
         //pass in the logic to determine if the networking call should be made
-        shouldFetch = {candys ->
-            candys.isEmpty()
+        shouldFetch = {
+            networkHelper.hasInternetConnectionForMain()
         }
     )
 

@@ -96,9 +96,13 @@ fun uriImgToFileImg(selectedImg: Uri, context: Context): File {
     return myFile
 }
 
+fun View.visible() {
+    visibility = View.VISIBLE
+}
 
-
-
+fun View.gone() {
+    visibility = View.GONE
+}
 
 fun View.animateLoadingProcessData(isVisible: Boolean, duration: Long = 300) {
     ObjectAnimator

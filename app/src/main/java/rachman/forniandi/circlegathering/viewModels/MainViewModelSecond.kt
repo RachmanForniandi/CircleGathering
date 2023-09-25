@@ -14,6 +14,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import rachman.forniandi.circlegathering.DBRoom.entities.StoriesEntity
@@ -43,33 +44,51 @@ class MainViewModelSecond @Inject constructor(
 
 
     fun getUserName()= dataStoreRepository.getUsername().asLiveData()
-    //val doShowAllStoriesData= repository.getDataStories().asLiveData()
+    val doShowAllStoriesData=repository.getDataStories().asLiveData()
 
-    fun doShowAllStoriesData()= viewModelScope.launch {
-        actionSafeCallShowAllStories()
-    }
 
-    private suspend fun actionSafeCallShowAllStories() {
+    /*private fun actionSafeCallShowAllStories() {
         getAllStoriesResponse.value = NetworkResult.Loading()
         if(hasInternetConnectionForMain()){
             try {
                 //val tokenAuth= dataStoreRepository.getTheTokenAuth().first()
-                repository.getDataStories().asLiveData()
-                /*getAllStoriesResponse.value =handledAllStoriesResponse()
-                Log.e("check_feedback",""+storiesFeedback)*/
+                val response =repository.getDataStories()
+                getAllStoriesResponse.value = handledAllStoriesResponse(response)
+                *//*Log.e("check_feedback",""+storiesFeedback)*//*
 
-                /*val allStories = getAllStoriesResponse.value?.data
-                Log.e("check_story",""+allStories)*/
-                /*if (allStories != null){
+                *//*val allStories = getAllStoriesResponse.value?.data
+                Log.e("check_story",""+allStories)*//*
+                *//*if (allStories != null){
                     offlineCacheStories(allStories)
-                }*/
+                }*//*
             }catch (e: Exception){
                 getAllStoriesResponse.value  = NetworkResult.Error("Data not Available.")
             }
         }else{
             getAllStoriesResponse.value  = NetworkResult.Error("No Internet Connection.")
         }
-    }
+    }*/
+
+    /*private fun handledAllStoriesResponse(response: Flow<NetworkResult<List<StoriesEntity>>>): NetworkResult<ResponseAllStories>? {
+        return when{
+            response.message().toString().contains("timeout")->{
+                NetworkResult.Error("Timeout")
+            }
+
+            response.body()!!.listStory.isEmpty()->{
+                val storiesData = response.body()
+                return NetworkResult.Success(storiesData)
+            }
+            response.isSuccessful -> {
+                val dataStories = response.body()
+                return NetworkResult.Success(dataStories)
+            }
+
+            else->{
+                NetworkResult.Error(response.message())
+            }
+        }
+    }*/
 
 
     //nanti gak dipakai lg fungsi ini

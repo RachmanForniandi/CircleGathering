@@ -28,6 +28,8 @@ import rachman.forniandi.circlegathering.models.allStories.ResponseAllStories
 import rachman.forniandi.circlegathering.utils.NetworkListener
 import rachman.forniandi.circlegathering.utils.NetworkResult
 import rachman.forniandi.circlegathering.utils.SupportWidget
+import rachman.forniandi.circlegathering.utils.gone
+import rachman.forniandi.circlegathering.utils.visible
 import rachman.forniandi.circlegathering.viewModels.MainViewModelSecond
 
 @ExperimentalCoroutinesApi
@@ -37,7 +39,7 @@ class MainActivity : AppCompatActivity() {
     private var dataRequested = false
     private lateinit var binding: ActivityMainBinding
     private val viewModel: MainViewModelSecond by viewModels()
-    private lateinit var mainAdapter :MainAdapter
+    private val mainAdapter by lazy { MainAdapter() }
     private lateinit var networkListener: NetworkListener
 
 
@@ -50,7 +52,7 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbarMain)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         binding.lifecycleOwner = this
-        binding.mainViewModel= viewModel
+        //binding.mainViewModel= viewModel
 
         setUserName()
         showDataStoriesOnMain()
@@ -62,9 +64,9 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        /*binding.btnRetryStories.setOnClickListener {
+        binding.btnRetryStories.setOnClickListener {
             requestDataRemoteStories()
-        }*/
+        }
         viewModel.readBackOnline.observe(this){
             viewModel.backOnline=it
         }
@@ -105,13 +107,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun requestDataRemoteStories() {
-        binding.swipeRefreshMain.isRefreshing = true
-        viewModel.doShowAllStoriesData()
-            viewModel.getAllStoriesResponse.observe(this) { response ->
-            when (response) {
+            binding.swipeRefreshMain.isRefreshing = true
+            viewModel.doShowAllStoriesData.observe(this) { response ->
+                when (response) {
                 is NetworkResult.Success -> {
                     hideShimmerEffect()
-                    response.data?.let { mainAdapter.setData(it) }
+                    binding.listDataStories.visible()
+                    //response.data?.let { mainAdapter.setData(it) }
                     SupportWidget.notifyDataSetChanged(this@MainActivity)
                     binding.swipeRefreshMain.isRefreshing = false
                 }
@@ -119,14 +121,24 @@ class MainActivity : AppCompatActivity() {
                 is NetworkResult.Error -> {
                     hideShimmerEffect()
                     loadStoriesFromCache()
+                    binding.listDataStories.gone()
+                    binding.imgError.visible()
+                    binding.btnRetryStories.visible()
+                    binding.btnRetryStories.isEnabled = true
                     Toast.makeText(this,response.message.toString(), Toast.LENGTH_SHORT).show()
                     binding.swipeRefreshMain.isRefreshing = false
                 }
 
                 is NetworkResult.Loading -> {
-                    showShimmerEffect()
+                    if (!binding.swipeRefreshMain.isRefreshing){
+                        showShimmerEffect()
+                        //binding.listDataStories.gone()
+                    }
+
                 }
+
             }
+
         }
     }
 
@@ -141,7 +153,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showDataStoriesOnMain() {
-        mainAdapter = MainAdapter()
+        //mainAdapter = MainAdapter()
+        binding.listDataStories.adapter = mainAdapter
         mainAdapter.setOnClickListener(object :MainAdapter.OnStoryClickListener{
             override fun onClick(position: Int, story: ListStoryItem) {
                 val toDetailStory = Intent(this@MainActivity,DetailStoryActivity::class.java)
@@ -149,7 +162,6 @@ class MainActivity : AppCompatActivity() {
                 startActivity(toDetailStory)
             }
         })
-        binding.listDataStories.adapter = mainAdapter
         showShimmerEffect()
     }
 
@@ -187,11 +199,8 @@ class MainActivity : AppCompatActivity() {
             .setTitle(getString(R.string.exit))
             .setMessage(getString(R.string.are_you_sure_do_you_want_to_exit))
             .setNegativeButton(getString(R.string.no), null)
-            .setPositiveButton(getString(R.string.yes), object : DialogInterface.OnClickListener {
-                override fun onClick(arg0: DialogInterface?, arg1: Int) {
-                    super@MainActivity.onBackPressed()
-                }
-            }).create().show()
+            .setPositiveButton(getString(R.string.yes)
+            ) { no,yes -> super@MainActivity.onBackPressed() }.create().show()
     }
 
 

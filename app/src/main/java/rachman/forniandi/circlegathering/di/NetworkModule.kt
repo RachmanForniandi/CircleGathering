@@ -1,8 +1,10 @@
 package rachman.forniandi.circlegathering.di
 
+import android.content.Context
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.OkHttpClient
 import rachman.forniandi.circlegathering.utils.ConstantsMain.Companion.BASE_URL
 import retrofit2.Retrofit
@@ -11,6 +13,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 import dagger.hilt.components.SingletonComponent
 import rachman.forniandi.circlegathering.networkUtil.NetworkService
+import rachman.forniandi.circlegathering.utils.NetworkHelper
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -48,4 +51,11 @@ object NetworkModule {
     fun provideApiService(retrofit: Retrofit): NetworkService {
         return retrofit.create(NetworkService::class.java)
     }
+
+    @Provides
+    @Singleton
+    fun provideNetworkHelper(
+        @ApplicationContext context: Context
+    ): NetworkHelper =
+        NetworkHelper(context)
 }
