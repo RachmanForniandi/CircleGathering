@@ -52,7 +52,6 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbarMain)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         binding.lifecycleOwner = this
-        //binding.mainViewModel= viewModel
 
         setUserName()
         showDataStoriesOnMain()
@@ -108,7 +107,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun requestDataRemoteStories() {
             binding.swipeRefreshMain.isRefreshing = true
-            viewModel.doShowAllStoriesData.observe(this) { response ->
+            viewModel.doShowAllStoriesData().observe(this) { response ->
                 when (response) {
                 is NetworkResult.Success -> {
                     hideShimmerEffect()
@@ -153,7 +152,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showDataStoriesOnMain() {
-        //mainAdapter = MainAdapter()
         binding.listDataStories.adapter = mainAdapter
         mainAdapter.setOnClickListener(object :MainAdapter.OnStoryClickListener{
             override fun onClick(position: Int, story: ListStoryItem) {

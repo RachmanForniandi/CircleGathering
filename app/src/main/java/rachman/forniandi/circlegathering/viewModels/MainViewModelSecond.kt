@@ -5,7 +5,6 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Parcelable
-import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -44,7 +43,43 @@ class MainViewModelSecond @Inject constructor(
 
 
     fun getUserName()= dataStoreRepository.getUsername().asLiveData()
-    val doShowAllStoriesData=repository.getDataStories().asLiveData()
+
+    suspend fun doShowAllStoriesData()=viewModelScope.launch {
+        getAllStoriesResponse.value = NetworkResult.Loading()
+        if(hasInternetConnectionForMain()){
+            try {
+                val tokenAuth= dataStoreRepository.getTheTokenAuth().first()
+                val response=repository.getDataStories(tokenAuth)
+                getAllStoriesResponse.value = response
+
+            }catch (e:Exception){
+                getAllStoriesResponse.value  = NetworkResult.Error("Data not Available.")
+            }
+            getAllStoriesResponse.value  = NetworkResult.Error("No Internet Connection.")
+        }
+
+    }
+
+    private fun handledAllStoriesResponse(response: Response<ResponseAllStories>): NetworkResult<ResponseAllStories>? {
+        return when{
+            response.message().toString().contains("timeout")->{
+                NetworkResult.Error("Timeout")
+            }
+
+            response.body()!!.listStory.isEmpty()->{
+                val storiesData = response.body()
+                return NetworkResult.Success(storiesData)
+            }
+            response.isSuccessful -> {
+                val dataStories = response.body()
+                return NetworkResult.Success(dataStories)
+            }
+
+            else->{
+                NetworkResult.Error(response.message())
+            }
+        }
+    }
 
 
     /*private fun actionSafeCallShowAllStories() {

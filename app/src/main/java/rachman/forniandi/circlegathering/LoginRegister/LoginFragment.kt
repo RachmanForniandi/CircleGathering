@@ -115,4 +115,6 @@ class LoginFragment : Fragment() {
             binding.maskedViewPgLogin.animateLoadingProcessData(false)
         }
     }
+
+
 }

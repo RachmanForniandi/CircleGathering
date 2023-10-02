@@ -5,11 +5,13 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import rachman.forniandi.circlegathering.models.allStories.ResponseAllStories
+import retrofit2.Response
 
 inline fun <ResultType, RequestType> networkBoundResource(
     crossinline query: () -> Flow<ResultType>,
-    crossinline fetch: suspend () -> RequestType,
-    crossinline saveFetchResult: suspend (RequestType) -> Unit,
+    crossinline fetch: suspend () -> Response<ResponseAllStories>,
+    crossinline saveFetchResult: suspend (Response<ResponseAllStories>) -> Unit,
     crossinline shouldFetch: (ResultType) -> Boolean = { true }
 ) = flow {
 //First step, fetch data from the local cache

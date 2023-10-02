@@ -3,17 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!--<data>
-        <import
-            type="android.view.View" />
-        &lt;!&ndash;<variable
-            name="mainViewModel"
-            type="rachman.forniandi.circlegathering.viewModels.MainViewModelSecond" />
-        <variable
-            name="apiResponse"
-            type="rachman.forniandi.circlegathering.utils.NetworkResult" />&ndash;&gt;
-    </data>-->
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
