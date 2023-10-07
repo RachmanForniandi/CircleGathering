@@ -6,8 +6,10 @@ import kotlinx.coroutines.delay
 import rachman.forniandi.circlegathering.DBRoom.StoriesDatabase
 import rachman.forniandi.circlegathering.DBRoom.entities.StoriesEntity
 import rachman.forniandi.circlegathering.models.allStories.ResponseAllStories
+import rachman.forniandi.circlegathering.networkUtil.NetworkService
 import rachman.forniandi.circlegathering.source.LocalDataSource
 import rachman.forniandi.circlegathering.source.RemoteDataSource
+import rachman.forniandi.circlegathering.utils.ConstantsMain
 import rachman.forniandi.circlegathering.utils.NetworkHelper
 import rachman.forniandi.circlegathering.utils.NetworkResult
 import rachman.forniandi.circlegathering.utils.networkBoundResource
@@ -36,7 +38,7 @@ class MainRepositorySecond @Inject constructor(
         // pass in the logic to fetch data from the api
         fetch = {
             delay(2000)
-            remoteDataSource.showStories(token)
+            remoteDataSource.showStories(ConstantsMain.TOKEN_BEARER+token)
             //allStories=handledAllStoriesResponse(responseStories!!)
             //convertResponseToEntity =allStories?.let { StoriesEntity(it) }
 
@@ -46,6 +48,7 @@ class MainRepositorySecond @Inject constructor(
         //pass in the logic to save the result to the local cache
         saveFetchResult = {
         database.withTransaction {
+            //offlineCacheStories(it)
                 convertResponseToEntity?.let { entityStories -> localDataSource.insertStories(entityStories) }
             }
         }
@@ -67,7 +70,7 @@ class MainRepositorySecond @Inject constructor(
     }
 
 
-    private fun handledAllStoriesResponse(response: Response<ResponseAllStories>): NetworkResult<ResponseAllStories>? {
+    /*private fun handledAllStoriesResponse(response: Response<ResponseAllStories>): NetworkResult<ResponseAllStories>? {
         return when{
             response.message().toString().contains("timeout")->{
                 NetworkResult.Error("Timeout")
@@ -86,5 +89,5 @@ class MainRepositorySecond @Inject constructor(
                 NetworkResult.Error(response.message())
             }
         }
-    }
+    }*/
 }

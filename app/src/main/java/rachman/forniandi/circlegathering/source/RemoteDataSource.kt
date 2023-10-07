@@ -22,7 +22,7 @@ class RemoteDataSource @Inject constructor(
         return networkService.registerUser(username,email, password)
     }
 
-    suspend fun showStories(authorization:String):Response<ResponseAllStories>{
+    suspend fun showStories(authorization:String):ResponseAllStories{
         val addedBearerToken = makeBearerToken(authorization)
         return networkService.getAllStories(addedBearerToken)
     }

@@ -106,8 +106,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun requestDataRemoteStories() {
-            binding.swipeRefreshMain.isRefreshing = true
-            viewModel.doShowAllStoriesData().observe(this) { response ->
+        binding.swipeRefreshMain.isRefreshing = true
+        viewModel.doShowAllStoriesData()
+            /*viewModel.doShowAllStoriesData().observe(this) { response ->
                 when (response) {
                 is NetworkResult.Success -> {
                     hideShimmerEffect()
@@ -138,7 +139,7 @@ class MainActivity : AppCompatActivity() {
 
             }
 
-        }
+        }*/
     }
 
     private fun loadStoriesFromCache(){

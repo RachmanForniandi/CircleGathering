@@ -10,8 +10,8 @@ import retrofit2.Response
 
 inline fun <ResultType, RequestType> networkBoundResource(
     crossinline query: () -> Flow<ResultType>,
-    crossinline fetch: suspend () -> Response<ResponseAllStories>,
-    crossinline saveFetchResult: suspend (Response<ResponseAllStories>) -> Unit,
+    crossinline fetch: suspend () -> RequestType,
+    crossinline saveFetchResult: suspend (RequestType) -> Unit,
     crossinline shouldFetch: (ResultType) -> Boolean = { true }
 ) = flow {
 //First step, fetch data from the local cache

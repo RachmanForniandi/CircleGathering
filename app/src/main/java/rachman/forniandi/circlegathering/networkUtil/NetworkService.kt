@@ -36,6 +36,6 @@ interface NetworkService {
     @GET("stories")
     suspend fun getAllStories(
         @Header("Authorization")authorization:String
-    ):Response<ResponseAllStories>
+    ):ResponseAllStories
 
 }
