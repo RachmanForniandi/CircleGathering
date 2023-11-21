@@ -11,49 +11,58 @@ import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import android.widget.Toast
 import androidx.core.os.bundleOf
-import androidx.lifecycle.asLiveData
 import com.bumptech.glide.Glide
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapConcat
-import kotlinx.coroutines.flow.observeOn
 import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import rachman.forniandi.circlegathering.DBRoom.StoriesDao
 import rachman.forniandi.circlegathering.DBRoom.StoriesDatabase
 import rachman.forniandi.circlegathering.DBRoom.entities.StoriesEntity
 import rachman.forniandi.circlegathering.R
 import rachman.forniandi.circlegathering.models.allStories.ListStoryItem
-import rachman.forniandi.circlegathering.repositories.MainRepository
 
-internal class StoryStackRemoteViewFactory(private val mContext: Context) : RemoteViewsService.RemoteViewsFactory {
+class StoryStackRemoteViewFactory(private val mContext: Context) : RemoteViewsService.RemoteViewsFactory {
 
-    private var dbRoom:StoriesDatabase
+    private var dbRoom:StoriesDatabase = StoriesDatabase(mContext)
+    private var daoData:StoriesDao=dbRoom.storiesDao()
     private val mWidgetItems = arrayListOf<Bitmap>()
-    private val mData = arrayListOf<ListStoryItem>()
+    //private val mData = arrayListOf<ListStoryItem>()
     private lateinit var stories : List<StoriesEntity>
 
-    init {
-        dbRoom = StoriesDatabase(mContext)
-    }
-
     override fun onCreate() {
+        //not used yet
+        //daoData =dbRoom.storiesDao()
+        //fetchDataFromDbRoom()
     }
 
-    private fun fetchDataFromDbRoom() {
+    /*private fun fetchDataFromDbRoom() {
         runBlocking {
             //stories = repository.localMain.readDbStories().flatMapConcat { it.asFlow() }.toList()
             //stories = dao.readStories().flatMapConcat { it.asFlow() }.toList()
-            stories = dbRoom.storiesDao().readStories().flatMapConcat { it.asFlow() }.toList()
+            stories = daoData.readStories().flatMapConcat { it.asFlow() }.toList()
             Log.d("debugRoom",""+stories)
         }
 
-    }
+    }*/
 
+
+    @OptIn(ExperimentalCoroutinesApi::class)
     override fun onDataSetChanged(){
-        fetchDataFromDbRoom()
-        println("checkMethodRoom" + fetchDataFromDbRoom())
+        /*fetchDataFromDbRoom()
+
+        println("checkMethodRoom" + fetchDataFromDbRoom())*/
+        CoroutineScope(Dispatchers.Main.immediate).launch  {
+            //stories = repository.localMain.readDbStories().flatMapConcat { it.asFlow() }.toList()
+            //stories = dao.readStories().flatMapConcat { it.asFlow() }.toList()
+            stories = daoData.readStories().flatMapConcat { it.asFlow() }.toList()
+            Log.d("debugRoom",""+ stories)
+        }
     }
 
     override fun onDestroy() {
@@ -75,18 +84,15 @@ internal class StoryStackRemoteViewFactory(private val mContext: Context) : Remo
         val storiesItem = stories[position].responseAllStories.listStory
 
         try {
-            for (item in storiesItem){
-                val bitmap: Bitmap = Glide.with(mContext)
-                    .asBitmap()
-                    .load(item.photoUrl)
-                    .override(256, 256)
-                    .submit()
-                    .get()
-                mData.add(item)
-                mWidgetItems.add(bitmap)
-                remoteViewItems.setImageViewBitmap(R.id.iv_widget,mWidgetItems[position])
-                item.photoUrl?.let { Log.e("urlPhoto", it) }
-            }
+
+            val bitmap: Bitmap = Glide.with(mContext)
+                .asBitmap()
+                .load(storiesItem.get(0).photoUrl)
+                .submit()
+                .get()
+
+            mWidgetItems.addAll(listOf(bitmap))
+            remoteViewItems.setImageViewBitmap(R.id.iv_widget,mWidgetItems[position])
 
         }catch (e:Exception){
             Handler(mContext.mainLooper).post {
@@ -120,7 +126,7 @@ internal class StoryStackRemoteViewFactory(private val mContext: Context) : Remo
     }
 
     override fun getItemId(p0: Int): Long {
-        return 0
+        return 0L
     }
 
     override fun hasStableIds(): Boolean {

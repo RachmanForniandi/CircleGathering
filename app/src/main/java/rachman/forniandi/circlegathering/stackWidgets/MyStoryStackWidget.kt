@@ -49,6 +49,7 @@ class MyStoryStackWidget : AppWidgetProvider() {
 
         val viewsWidget = RemoteViews(context.packageName, R.layout.my_story_stack_widget)
         viewsWidget.setRemoteAdapter(R.id.stack_view,intentFirst)
+        viewsWidget.setEmptyView(R.id.stack_view,R.id.empty_view)
 
         initiateStackItems(viewsWidget, context, appWidgetId)
         initiateClickLabelWidgetToApps(viewsWidget, context)
@@ -71,7 +72,7 @@ class MyStoryStackWidget : AppWidgetProvider() {
             } else 0
         )
         views.setPendingIntentTemplate(R.id.stack_view,clickPendingIntentForUpdate)
-        views.setEmptyView(R.id.stack_view,R.id.empty_view)
+
     }
     private fun initiateClickRefresh(views: RemoteViews, context: Context) {
         val refreshIntent = Intent(context, MyStoryStackWidget::class.java)

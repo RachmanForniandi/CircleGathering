@@ -43,8 +43,6 @@
             android:id="@+id/stack_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/custom_background_widget"
-            android:backgroundTint="@color/indigo_900"
             android:loopViews="true" />
 
         <TextView

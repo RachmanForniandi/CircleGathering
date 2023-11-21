@@ -4,12 +4,14 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import com.bumptech.glide.Glide
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import rachman.forniandi.circlegathering.R
 import rachman.forniandi.circlegathering.activities.MainActivity.Companion.DETAIL_STORY
 import rachman.forniandi.circlegathering.databinding.ActivityDetailStoryActivityBinding
 import rachman.forniandi.circlegathering.models.allStories.ListStoryItem
 import rachman.forniandi.circlegathering.utils.getStringDate
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class DetailStoryActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDetailStoryActivityBinding
     private var detailDataStory: ListStoryItem?= null
