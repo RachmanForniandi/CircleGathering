@@ -55,4 +55,5 @@
     <string name="msg_text_failed_fetch_data">Failed fetch data</string>
     <string name="msg_text_widget_removed">Widget Removed</string>
     <string name="button_refresh_data_on_widget">button refresh data on widget</string>
+    <string name="camera_x">Camera X</string>
 </resources>

@@ -21,3 +21,15 @@ Vapp/src/main/java/rachman/forniandi/circlegathering/activities/SplashScreenActi
 Napp/src/main/java/rachman/forniandi/circlegathering/activities/MainActivity.kt,3\f\3f4b4690b306df3ac12ef99feea05d362dfae410
 {
 Kapp/src/main/java/rachman/forniandi/circlegathering/adapters/MainAdapter.kt,d\6\d6e409ed54a69ac613cbd3d02dc27c0afde2101c
+
+Oapp/src/main/java/rachman/forniandi/circlegathering/viewModels/MainViewModel.kt,7\d\7d5c9ba2a8e5850be09b1c805d9dbc9da1bfd5b2
+Ä
+Papp/src/main/java/rachman/forniandi/circlegathering/utils/DataStoreRepository.kt,d\0\d039accd090e920fdd0d7b370f89c7a22da7f229
+è
+_app/src/main/java/rachman/forniandi/circlegathering/stackWidgets/StoryStackRemoteViewFactory.kt,4\2\42c2488604499d6ed96140c850aa2bfe9af9560c
+v
+Fapp/src/main/java/rachman/forniandi/circlegathering/di/WidgetModule.kt,6\1\61d911c7ff728a23aa622a4cdad80482440434d2
+x
+Happ/src/main/java/rachman/forniandi/circlegathering/DBRoom/StoriesDao.kt,e\7\e7ab24e9add0c3012dd7214fbb295a1601fafc58
+P
+ app/src/main/AndroidManifest.xml,8\c\8c55c3ccc257e5907959013f99656e4c8ec3903e

@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
     private var dataRequested = false
     private lateinit var binding: ActivityMainBinding
     private val viewModel: MainViewModel by viewModels()
-    private val mainAdapter by lazy { MainAdapter() }
+    private val mainAdapter by lazy { MainAdapter(this@MainActivity) }
     private lateinit var networkListener: NetworkListener
 
 
@@ -45,12 +45,14 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+
+        setContentView(binding.root)
 
         setSupportActionBar(binding.toolbarMain)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        binding.lifecycleOwner = this
-        binding.mainViewModel= viewModel
+        /*binding.lifecycleOwner = this
+        binding.mainViewModel= viewModel*/
 
         setUserName()
         showDataStoriesOnMain()
@@ -77,7 +79,7 @@ class MainActivity : AppCompatActivity() {
                         Log.d("NetworkListener",status.toString())
                         viewModel.networkStatus = status
                         viewModel.showNetworkStatus()
-                        readDbLocalStories()
+                        //readDbLocalStories()
                     }
             }
         }
@@ -114,20 +116,24 @@ class MainActivity : AppCompatActivity() {
                     response.data?.let { mainAdapter.setData(it) }
                     SupportWidget.notifyDataSetChanged(this@MainActivity)
                     binding.swipeRefreshMain.isRefreshing = false
+                    Log.e("MainActivity","Network Success called")
                 }
 
                 is NetworkResult.Error -> {
+
                     hideShimmerEffect()
-                    loadStoriesFromCache()
+                    //loadStoriesFromCache()
                     Toast.makeText(
                         this,
                         response.message.toString(), Toast.LENGTH_SHORT
                     ).show()
                     binding.swipeRefreshMain.isRefreshing = false
+                    Log.e("MainActivity","Network Error called")
                 }
 
                 is NetworkResult.Loading -> {
                     showShimmerEffect()
+                    Log.e("MainActivity","Network Loading called")
                 }
             }
         }
