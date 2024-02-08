@@ -6,6 +6,7 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -18,6 +19,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
@@ -60,12 +62,47 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var descriptionToRequestBody: RequestBody
     private lateinit var fileBodyMultipart : MultipartBody.Part
 
+    companion object {
+        const val CAMERA_X_RESULT = 200
+
+        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
+        private const val REQUEST_CODE_PERMISSIONS = 10
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_CODE_PERMISSIONS) {
+            if (!allPermissionsGranted()) {
+                Toast.makeText(
+                    this,
+                    "Tidak mendapatkan permission.",
+                    Toast.LENGTH_SHORT
+                ).show()
+                finish()
+            }
+        }
+    }
+
+    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
+        ContextCompat.checkSelfPermission(baseContext, it) == PackageManager.PERMISSION_GRANTED
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityFormAddDataBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        if (!allPermissionsGranted()) {
+            ActivityCompat.requestPermissions(
+                this,
+                REQUIRED_PERMISSIONS,
+                REQUEST_CODE_PERMISSIONS
+            )
+        }
         binding.imgAddInput.setOnClickListener(this)
         binding.btnUploadDataConfirm.setOnClickListener(this)
 
@@ -83,7 +120,6 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
                 }
 
                 R.id.btn_upload_data_confirm->{
-                    //val insertImg = File(mImgPath)
                     if (inputFile == null){
                         Snackbar.make(binding.root, getString(R.string.insert_input_upload_validation_message),
                             Snackbar.LENGTH_SHORT).show()
@@ -156,66 +192,38 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
         optionTakeImageDialog.setContentView(binding.root)
 
         binding.txtOptionCamera.setOnClickListener {
-            Dexter.withContext(this)
-                .withPermissions(
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.CAMERA
-                ).withListener(object : MultiplePermissionsListener {
-                    override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
-                        report?.let {
-                            if (report.areAllPermissionsGranted()){
-                                val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                                intent.resolveActivity(packageManager)
-                                createCustomTempFileImg(application).also {
-                                    val photoURICamera: Uri = FileProvider.getUriForFile(
-                                        this@FormAddDataActivity,
-                                        packageName,
-                                        it
-                                    )
-                                    mImgPath = it.absolutePath
-                                    intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURICamera)
-                                    launcherIntentCamera.launch(intent)
-                                }
-                            }
-                        }
-                    }
-
-                    override fun onPermissionRationaleShouldBeShown(
-                        permissions: MutableList<PermissionRequest>?,
-                        token: PermissionToken?) {
-                        showRationalDialogForPermissions()
-                    }
-                }).onSameThread()
-                .check()
+            takeActionCamera()
             optionTakeImageDialog.dismiss()
         }
 
         binding.txtOptionGallery.setOnClickListener {
-            Dexter.withContext(this@FormAddDataActivity)
-                .withPermission(
-                    Manifest.permission.READ_EXTERNAL_STORAGE
-                ).withListener(object : PermissionListener {
-                    override fun onPermissionGranted(response: PermissionGrantedResponse?) {
-                        val galleryIntent = Intent()
-                        galleryIntent.action= Intent.ACTION_GET_CONTENT
-                        galleryIntent.type = "image/*"
-                        val pickImg = Intent.createChooser(galleryIntent, "Choose a Picture")
-                        launcherIntentGallery.launch(pickImg)
-                    }
-
-                    override fun onPermissionDenied(response: PermissionDeniedResponse?) {
-                        Toast.makeText(this@FormAddDataActivity,"You have denied the storage permission to select image.",
-                            Toast.LENGTH_SHORT).show()
-                    }
-
-                    override fun onPermissionRationaleShouldBeShown(permission: PermissionRequest?, token: PermissionToken?) {
-                        showRationalDialogForPermissions()
-                    }
-                }).onSameThread()
-                .check()
+            takeActionGallery()
             optionTakeImageDialog.dismiss()
         }
         optionTakeImageDialog.show()
+    }
+
+    private fun takeActionCamera() {
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        intent.resolveActivity(packageManager)
+        createCustomTempFileImg(application).also {
+            val photoURICamera: Uri = FileProvider.getUriForFile(
+                this@FormAddDataActivity,
+                packageName,
+                it
+            )
+            mImgPath = it.absolutePath
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURICamera)
+            launcherIntentCamera.launch(intent)
+        }
+    }
+
+    private fun takeActionGallery() {
+        val galleryIntent = Intent()
+        galleryIntent.action= Intent.ACTION_GET_CONTENT
+        galleryIntent.type = "image/*"
+        val pickImg = Intent.createChooser(galleryIntent, "Choose a Picture")
+        launcherIntentGallery.launch(pickImg)
     }
 
     private fun showRationalDialogForPermissions() {
@@ -239,8 +247,8 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
 
     private val launcherIntentCamera = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
-    ) {
-        if (it.resultCode == RESULT_OK) {
+    ) {result->
+        if (result.resultCode == RESULT_OK) {
             val filePicCamera = File(mImgPath)
             inputFile= filePicCamera
             val resultCamera = BitmapFactory.decodeFile(inputFile?.path)
@@ -249,8 +257,8 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
             Log.i("imgPath", mImgPath)
 
             binding.imgAddInput.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.ic_vector_edit))
-        }else if (it.resultCode == Activity.RESULT_CANCELED){
-            Snackbar.make(binding.root, getString(R.string.all_permission_device_are_denied), Snackbar.LENGTH_SHORT).show()
+        }else if (result.resultCode == Activity.RESULT_CANCELED){
+            Log.e("Canceled","Canceled")
         }
     }
 
@@ -266,10 +274,7 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
 
             binding.imgAddInput.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.ic_vector_edit))
         } else if (result.resultCode == Activity.RESULT_CANCELED){
-            Snackbar.make(
-                binding.root,
-                getString(R.string.all_permission_device_are_denied), Snackbar.LENGTH_SHORT).show()
-        }
+            Log.e("Canceled","Canceled")}
     }
 
     private fun applyLoadProgressStateUpload(onProcess:Boolean){
