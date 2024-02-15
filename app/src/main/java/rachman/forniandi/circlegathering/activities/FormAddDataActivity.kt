@@ -195,12 +195,21 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
             takeActionCamera()
             optionTakeImageDialog.dismiss()
         }
+        binding.txtOptionCameraX.setOnClickListener {
+            takeActionCameraX()
+            optionTakeImageDialog.dismiss()
+        }
 
         binding.txtOptionGallery.setOnClickListener {
             takeActionGallery()
             optionTakeImageDialog.dismiss()
         }
         optionTakeImageDialog.show()
+    }
+
+    private fun takeActionCameraX() {
+        val intent = Intent(this, CameraXActivity::class.java)
+        launcherIntentCameraX.launch(intent)
     }
 
     private fun takeActionCamera() {
@@ -259,6 +268,14 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
             binding.imgAddInput.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.ic_vector_edit))
         }else if (result.resultCode == Activity.RESULT_CANCELED){
             Log.e("Canceled","Canceled")
+        }
+    }
+
+    private val launcherIntentCameraX = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result->
+        if (result.resultCode == CAMERA_X_RESULT){
+
         }
     }
 
