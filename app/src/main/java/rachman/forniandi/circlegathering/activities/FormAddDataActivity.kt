@@ -22,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import com.karumi.dexter.Dexter
@@ -58,6 +59,7 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var binding:ActivityFormAddDataBinding
     private val viewModel: UploadViewModel by viewModels()
     private var inputFile: File? = null
+    private var imgUriCamX:Uri? =null
     private var mImgPath:String =""
     private lateinit var descriptionToRequestBody: RequestBody
     private lateinit var fileBodyMultipart : MultipartBody.Part
@@ -275,7 +277,15 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
         ActivityResultContracts.StartActivityForResult()
     ) { result->
         if (result.resultCode == CAMERA_X_RESULT){
+            mImgPath= result.data?.getStringExtra(CameraXActivity.EXTRA_CAMERAX_IMAGE)!!
+            checkUriImageCamX(mImgPath)
+        }
+    }
 
+    private fun checkUriImageCamX(mImgPath: String) {
+        val imgToUri = mImgPath.toUri()
+        imgToUri.let {
+            binding.imgDisplayInput.setImageURI(it)
         }
     }
 
