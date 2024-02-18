@@ -1,5 +1,6 @@
 package rachman.forniandi.circlegathering.activities
 
+import android.annotation.SuppressLint
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -9,6 +10,9 @@ import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
+import androidx.camera.core.ImageCapture.FLASH_MODE_OFF
+import androidx.camera.core.ImageCapture.FLASH_MODE_ON
+import androidx.camera.core.ImageCapture.FlashMode
 import rachman.forniandi.circlegathering.R
 import rachman.forniandi.circlegathering.databinding.ActivityCameraXBinding
 
@@ -17,6 +21,8 @@ class CameraXActivity : AppCompatActivity() {
     private lateinit var binding:ActivityCameraXBinding
     private var cameraSelector: CameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
     private var imageCapture: ImageCapture? = null
+    private var flashMode = FLASH_MODE_OFF
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +47,20 @@ class CameraXActivity : AppCompatActivity() {
             )
         }
         supportActionBar?.hide()
+    }
+
+    @SuppressLint("UseCompatLoadingForDrawables")
+    private fun setFlashModeListener(){
+        binding.imgButtonFlash.setOnClickListener {
+            if (FLASH_MODE_OFF == flashMode){
+                flashMode = FLASH_MODE_ON
+                binding.imgButtonFlash.setImageDrawable(getDrawable(R.drawable.ic_flash_on_black_48dp))
+            }else{
+                binding.imgButtonFlash.setImageDrawable(getDrawable(R.drawable.ic_flash_off_black_48dp))
+                flashMode = FLASH_MODE_OFF
+            }
+            //bindCamera()
+        }
     }
 
     private val orientationEventListener by lazy {

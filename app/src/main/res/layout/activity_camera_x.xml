@@ -22,6 +22,15 @@
         app:srcCompat="@drawable/ic_capture" />
 
     <ImageView
+        android:id="@+id/img_button_flash"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_flash_off_black_48dp" />
+
+    <ImageView
         android:id="@+id/img_switch_position_camera"
         android:layout_width="40dp"
         android:layout_height="40dp"
