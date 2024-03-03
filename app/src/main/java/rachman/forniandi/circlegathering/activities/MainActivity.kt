@@ -51,8 +51,6 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.toolbarMain)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        /*binding.lifecycleOwner = this
-        binding.mainViewModel= viewModel*/
 
         setUserName()
         showDataStoriesOnMain()
@@ -116,6 +114,10 @@ class MainActivity : AppCompatActivity() {
                     response.data?.let { mainAdapter.setData(it) }
                     SupportWidget.notifyDataSetChanged(this@MainActivity)
                     binding.swipeRefreshMain.isRefreshing = false
+                    binding.imgError.visibility = View.GONE
+                    binding.txtError.visibility = View.GONE
+                    binding.btnRetryStory.visibility = View.GONE
+                    binding.btnRetryStory.isClickable = false
                     Log.e("MainActivity","Network Success called")
                 }
 
@@ -128,6 +130,10 @@ class MainActivity : AppCompatActivity() {
                         response.message.toString(), Toast.LENGTH_SHORT
                     ).show()
                     binding.swipeRefreshMain.isRefreshing = false
+                    binding.imgError.visibility = View.VISIBLE
+                    binding.txtError.visibility = View.VISIBLE
+                    binding.btnRetryStory.visibility = View.VISIBLE
+                    binding.btnRetryStory.isClickable = true
                     Log.e("MainActivity","Network Error called")
                 }
 
@@ -150,8 +156,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showDataStoriesOnMain() {
-        //mainAdapter = MainAdapter()
-
         binding.listDataStories.adapter = mainAdapter
         mainAdapter.setOnClickListener(object :MainAdapter.OnStoryClickListener{
             override fun onClick(position: Int, story: ListStoryItem) {
@@ -235,8 +239,6 @@ class MainActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
-
-
 
     companion object{
         const val DETAIL_STORY="detail_story"

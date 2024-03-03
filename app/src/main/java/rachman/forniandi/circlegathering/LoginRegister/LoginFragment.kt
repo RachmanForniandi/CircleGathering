@@ -21,6 +21,7 @@ import rachman.forniandi.circlegathering.databinding.FragmentLoginBinding
 import rachman.forniandi.circlegathering.networkUtil.NetworkListener
 import rachman.forniandi.circlegathering.utils.NetworkResult
 import rachman.forniandi.circlegathering.utils.animateLoadingProcessData
+
 import rachman.forniandi.circlegathering.viewModels.AuthViewModel
 
 

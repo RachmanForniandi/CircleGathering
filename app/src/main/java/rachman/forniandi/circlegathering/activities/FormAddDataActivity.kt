@@ -2,9 +2,7 @@ package rachman.forniandi.circlegathering.activities
 
 import android.Manifest
 import android.app.Activity
-import android.app.AlertDialog
 import android.app.Dialog
-import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -12,7 +10,6 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -22,17 +19,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
-import com.karumi.dexter.Dexter
-import com.karumi.dexter.MultiplePermissionsReport
-import com.karumi.dexter.PermissionToken
-import com.karumi.dexter.listener.PermissionDeniedResponse
-import com.karumi.dexter.listener.PermissionGrantedResponse
-import com.karumi.dexter.listener.PermissionRequest
-import com.karumi.dexter.listener.multi.MultiplePermissionsListener
-import com.karumi.dexter.listener.single.PermissionListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaType
@@ -46,6 +34,7 @@ import rachman.forniandi.circlegathering.databinding.CustomDialogImageSelectionB
 import rachman.forniandi.circlegathering.utils.NetworkResult
 import rachman.forniandi.circlegathering.utils.animateLoadingProcessData
 import rachman.forniandi.circlegathering.utils.createCustomTempFileImg
+import rachman.forniandi.circlegathering.utils.rotateBitmap
 import rachman.forniandi.circlegathering.utils.uriImgToFileImg
 import rachman.forniandi.circlegathering.viewModels.UploadViewModel
 import java.io.ByteArrayOutputStream
@@ -59,7 +48,6 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var binding:ActivityFormAddDataBinding
     private val viewModel: UploadViewModel by viewModels()
     private var inputFile: File? = null
-    private var imgUriCamX:Uri? =null
     private var mImgPath:String =""
     private lateinit var descriptionToRequestBody: RequestBody
     private lateinit var fileBodyMultipart : MultipartBody.Part
@@ -77,6 +65,7 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
         if (requestCode == REQUEST_CODE_PERMISSIONS) {
             if (!allPermissionsGranted()) {
                 Toast.makeText(
@@ -237,25 +226,6 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
         launcherIntentGallery.launch(pickImg)
     }
 
-    private fun showRationalDialogForPermissions() {
-        AlertDialog.Builder(this)
-            .setMessage(getString(R.string.message_setting_permissions))
-            .setPositiveButton(getString(R.string.go_to_settings)){ _, _ ->
-                try {
-                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                    val uri = Uri.fromParts("package",packageName,null)
-                    intent.data = uri
-                    startActivity(intent)
-                }catch (e: ActivityNotFoundException){
-                    e.printStackTrace()
-                }
-            }
-            .setNegativeButton(getString(R.string.cancel)){
-                    dialog, _ ->
-                dialog.dismiss()
-            }.show()
-    }
-
     private val launcherIntentCamera = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {result->
@@ -277,15 +247,16 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
         ActivityResultContracts.StartActivityForResult()
     ) { result->
         if (result.resultCode == CAMERA_X_RESULT){
-            mImgPath= result.data?.getStringExtra(CameraXActivity.EXTRA_CAMERAX_IMAGE)!!
-            checkUriImageCamX(mImgPath)
-        }
-    }
+            val getFileFromCamX = result.data?.getSerializableExtra("pictCameraX")as File
+            val getImgOrientation= result.data?.getBooleanExtra("isBackCameraX",true)as Boolean
+            //mImgPath= result.data?.getStringExtra(CameraXActivity.EXTRA_CAMERAX_IMAGE)!!
+            inputFile = getFileFromCamX
 
-    private fun checkUriImageCamX(mImgPath: String) {
-        val imgToUri = mImgPath.toUri()
-        imgToUri.let {
-            binding.imgDisplayInput.setImageURI(it)
+            val resultCameraX= rotateBitmap(
+                BitmapFactory.decodeFile(inputFile?.path),
+                getImgOrientation
+            )
+            binding.imgDisplayInput.setImageBitmap(resultCameraX)
         }
     }
 
@@ -315,10 +286,6 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
             binding.maskedViewPgUpload.animateLoadingProcessData(false)
         }
     }
-
-
-
-
 
 }
 

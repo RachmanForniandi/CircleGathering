@@ -33,21 +33,15 @@ class SplashScreenActivity : AppCompatActivity() {
             viewModel.checkUserStatus().observe(this@SplashScreenActivity) { userStatus->
                 if (userStatus){
                     Intent(this@SplashScreenActivity, MainActivity::class.java).also { backToMain->
-                        //backToMain.putExtra(OBTAINED_TOKEN,sessionToken)
-                        //backToMain.putExtra(OBTAINED_USERNAME,username)
                         startActivity(backToMain)
                         finish()
                     }
                 }else{
-
                     val intentFromBeginning = Intent(this@SplashScreenActivity,LoginRegisterActivity::class.java)
                     startActivity(intentFromBeginning)
                     finish()
                 }
-
             }
-
-
         }
     }
 

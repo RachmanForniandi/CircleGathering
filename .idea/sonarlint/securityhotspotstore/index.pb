@@ -71,3 +71,5 @@ Happ/src/main/java/rachman/forniandi/circlegathering/utils/ViewSupport.kt,1\8\1
 Rapp/src/main/java/rachman/forniandi/circlegathering/LoginRegister/LoginFragment.kt,a\2\a25b64338cc4bb45bff14e44907d5a33f557034b
 Å
 Qapp/src/main/java/rachman/forniandi/circlegathering/activities/CameraXActivity.kt,a\0\a0bdce59681bd93eaff39e3cdbcd02474d5e1eb5
+\
+,.idea/inspectionProfiles/Project_Default.xml,4\9\496a238a6afa168dbaf6efd37bb459331589579c

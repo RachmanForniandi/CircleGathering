@@ -16,7 +16,6 @@ import androidx.camera.core.*
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCapture.FLASH_MODE_OFF
 import androidx.camera.core.ImageCapture.FLASH_MODE_ON
-import androidx.camera.core.ImageCapture.FlashMode
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import rachman.forniandi.circlegathering.R
@@ -26,6 +25,7 @@ import rachman.forniandi.circlegathering.utils.createCustomTempFileImg
 class CameraXActivity : AppCompatActivity() {
 
     private lateinit var binding:ActivityCameraXBinding
+    private lateinit var objCameraX: Camera
     private var cameraSelector: CameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
     private var imageCapture: ImageCapture? = null
     private var flashMode = FLASH_MODE_OFF
@@ -35,7 +35,6 @@ class CameraXActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityCameraXBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setFlashModeListener()
 
         binding.imgSwitchPositionCamera.setOnClickListener {
             cameraSelector =
@@ -47,7 +46,32 @@ class CameraXActivity : AppCompatActivity() {
         binding.imgCaptureImage.setOnClickListener {
             actionTakePhoto()
         }
+
+        binding.imgButtonFlash.setOnClickListener {
+            setFlashTorchCamera(objCameraX)
+        }
+
     }
+
+    private fun setFlashTorchCamera(objCameraX: Camera) {
+        if (objCameraX.cameraInfo.hasFlashUnit()){
+            if (objCameraX.cameraInfo.torchState.value == 0){
+                objCameraX.cameraControl.enableTorch(true)
+                binding.imgButtonFlash.setImageResource(R.drawable.ic_flash_off_black_48dp)
+            }else{
+                objCameraX.cameraControl.enableTorch(false)
+                binding.imgButtonFlash.setImageResource(R.drawable.ic_flash_on_black_48dp)
+            }
+        }else{
+            Toast.makeText(
+                this,
+                "Flash is Not Available",
+                Toast.LENGTH_LONG
+            ).show()
+            binding.imgButtonFlash.isEnabled = false
+        }
+    }
+
 
     private fun actionTakePhoto() {
         val imageCapture = imageCapture ?: return
@@ -62,7 +86,11 @@ class CameraXActivity : AppCompatActivity() {
             object : ImageCapture.OnImageSavedCallback {
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     val intent = Intent()
-                    intent.putExtra(EXTRA_CAMERAX_IMAGE, output.savedUri.toString())
+                    intent.putExtra("pictCameraX", photoFile)
+                    intent.putExtra(
+                        "isBackCameraX",
+                        cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA
+                    )
                     setResult(CAMERAX_RESULT, intent)
                     finish()
                 }
@@ -109,15 +137,12 @@ class CameraXActivity : AppCompatActivity() {
 
             try {
                 cameraProvider.unbindAll()
-                val objCameraX=cameraProvider.bindToLifecycle(
+                objCameraX=cameraProvider.bindToLifecycle(
                     this,
                     cameraSelector,
                     preview,
                     imageCapture
                 )
-                objCameraX.cameraInfo.hasFlashUnit()
-                objCameraX.cameraControl.enableTorch(true)
-
             } catch (exc: Exception) {
                 Toast.makeText(
                     this@CameraXActivity,
@@ -181,7 +206,6 @@ class CameraXActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "CameraActivity"
-        const val EXTRA_CAMERAX_IMAGE = "CameraX Image"
         const val CAMERAX_RESULT = 200
     }
 }
