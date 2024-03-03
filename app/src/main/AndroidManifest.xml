@@ -77,6 +77,9 @@
                 android:value=".activities.MainActivity" />
         </activity>
 
+        <activity android:name=".activities.CameraXActivity"
+            android:exported="false"/>
+
         <!--<receiver android:name=".stackWidgets.MyStoryStackWidget"
             android:exported="false">
             <intent-filter>
@@ -106,6 +109,8 @@
             tools:node="merge"
             android:authorities="${applicationId}.androidx-startup"
             android:exported="false" />
+
+
     </application>
 
 </manifest>
