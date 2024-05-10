@@ -12,19 +12,13 @@ import android.widget.RemoteViewsService
 import android.widget.Toast
 import androidx.core.os.bundleOf
 import com.bumptech.glide.Glide
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import rachman.forniandi.circlegathering.DBRoom.StoriesDao
 import rachman.forniandi.circlegathering.DBRoom.StoriesDatabase
 import rachman.forniandi.circlegathering.DBRoom.entities.StoriesEntity
 import rachman.forniandi.circlegathering.R
-import rachman.forniandi.circlegathering.models.allStories.ListStoryItem
+import rachman.forniandi.circlegathering.models.allStories.StoryItem
 import rachman.forniandi.circlegathering.utils.SupportWidget
 import rachman.forniandi.circlegathering.utils.SupportWidget.toArrayList
 
@@ -33,7 +27,7 @@ internal class StoryStackRemoteViewFactory(private val mContext: Context) : Remo
     private lateinit var dbRoom:StoriesDatabase
     private lateinit var daoData:StoriesDao
     private val mWidgetItems = arrayListOf<Bitmap>()
-    private val mData = arrayListOf<ListStoryItem>()
+    private val mData = arrayListOf<StoryItem>()
     private lateinit var stories : Flow<List<StoriesEntity>>
 
     override fun onCreate() {

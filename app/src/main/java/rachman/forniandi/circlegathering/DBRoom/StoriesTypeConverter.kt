@@ -3,7 +3,7 @@ package rachman.forniandi.circlegathering.DBRoom
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import rachman.forniandi.circlegathering.models.allStories.ListStoryItem
+import rachman.forniandi.circlegathering.models.allStories.StoryItem
 import rachman.forniandi.circlegathering.models.allStories.ResponseAllStories
 
 class StoriesTypeConverter {
@@ -20,13 +20,13 @@ class StoriesTypeConverter {
     }
 
     @TypeConverter
-    fun listStoriesToString(result: ListStoryItem):String{
+    fun listStoriesToString(result: StoryItem):String{
         return gson.toJson(result)
     }
 
     @TypeConverter
-    fun stringToString(data: String):ListStoryItem{
-        val listType = object : TypeToken<ListStoryItem>() {}.type
+    fun stringToString(data: String):StoryItem{
+        val listType = object : TypeToken<StoryItem>() {}.type
         return gson.fromJson(data,listType)
     }
 }

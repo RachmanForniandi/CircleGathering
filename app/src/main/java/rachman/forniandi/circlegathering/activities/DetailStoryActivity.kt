@@ -8,13 +8,13 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import rachman.forniandi.circlegathering.R
 import rachman.forniandi.circlegathering.activities.MainActivity.Companion.DETAIL_STORY
 import rachman.forniandi.circlegathering.databinding.ActivityDetailStoryActivityBinding
-import rachman.forniandi.circlegathering.models.allStories.ListStoryItem
+import rachman.forniandi.circlegathering.models.allStories.StoryItem
 import rachman.forniandi.circlegathering.utils.getStringDate
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class DetailStoryActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDetailStoryActivityBinding
-    private var detailDataStory: ListStoryItem?= null
+    private var detailDataStory: StoryItem?= null
     
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,7 +23,7 @@ class DetailStoryActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val bundleReceive =intent.getBundleExtra(DETAIL_STORY)
-        detailDataStory = bundleReceive?.getSerializable(DETAIL_STORY)as ListStoryItem
+        detailDataStory = bundleReceive?.getSerializable(DETAIL_STORY)as StoryItem
         parsingAttributeDetailStory(detailDataStory)
 
 
@@ -33,7 +33,7 @@ class DetailStoryActivity : AppCompatActivity() {
 
     }
 
-    private fun parsingAttributeDetailStory(detailDataStory: ListStoryItem?) {
+    private fun parsingAttributeDetailStory(detailDataStory: StoryItem?) {
         Log.d("test_detail_2","test $detailDataStory")
         if (detailDataStory != null){
             binding.txtUsernameDetailStory.text = detailDataStory.name

@@ -17,12 +17,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import rachman.forniandi.circlegathering.DBRoom.entities.StoriesEntity
-import rachman.forniandi.circlegathering.models.allStories.ListStoryItem
 import rachman.forniandi.circlegathering.models.allStories.ResponseAllStories
 import rachman.forniandi.circlegathering.repositories.MainRepository
 import rachman.forniandi.circlegathering.utils.DataStoreRepository
 import rachman.forniandi.circlegathering.utils.NetworkResult
-import rachman.forniandi.circlegathering.utils.SessionPreferences
 import retrofit2.Response
 import java.lang.Exception
 import javax.inject.Inject

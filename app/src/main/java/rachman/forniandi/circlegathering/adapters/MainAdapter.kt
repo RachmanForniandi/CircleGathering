@@ -8,18 +8,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import rachman.forniandi.circlegathering.R
 import rachman.forniandi.circlegathering.databinding.ItemStoryBinding
-import rachman.forniandi.circlegathering.models.allStories.ListStoryItem
+import rachman.forniandi.circlegathering.models.allStories.StoryItem
 import rachman.forniandi.circlegathering.models.allStories.ResponseAllStories
 import rachman.forniandi.circlegathering.networkUtil.StoryDiffUtil
 
 class MainAdapter(private val mContext:Context):RecyclerView.Adapter<MainAdapter.MainHolder>() {
 
-    private var story= emptyList<ListStoryItem>()
+    private var story= emptyList<StoryItem>()
     private var onClickListener: OnStoryClickListener?= null
 
     class MainHolder(view: ItemStoryBinding): RecyclerView.ViewHolder(view.root){
         val imgStoryItem = view.imgStory
-        val usernameItem = view.txtUsernameStory
+        val titlePictureItem = view.txtTitleStory
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainHolder {
@@ -33,7 +33,7 @@ class MainAdapter(private val mContext:Context):RecyclerView.Adapter<MainAdapter
 
     override fun onBindViewHolder(holder: MainHolder, position: Int) {
         val storyItem = story[position]
-        holder.usernameItem.text= storyItem.name
+        holder.titlePictureItem.text= storyItem.description
         Glide.with(mContext)
             .load(storyItem.photoUrl)
             .placeholder(R.drawable.place_holder)
@@ -51,7 +51,7 @@ class MainAdapter(private val mContext:Context):RecyclerView.Adapter<MainAdapter
     }
 
     interface OnStoryClickListener {
-        fun onClick(position: Int, story: ListStoryItem)
+        fun onClick(position: Int, story: StoryItem)
     }
 
     fun setData(storyData: ResponseAllStories){

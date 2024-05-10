@@ -12,7 +12,6 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -23,8 +22,7 @@ import rachman.forniandi.circlegathering.LoginRegister.LoginRegisterActivity
 import rachman.forniandi.circlegathering.R
 import rachman.forniandi.circlegathering.adapters.MainAdapter
 import rachman.forniandi.circlegathering.databinding.ActivityMainBinding
-import rachman.forniandi.circlegathering.models.allStories.ListStoryItem
-import rachman.forniandi.circlegathering.models.allStories.ResponseAllStories
+import rachman.forniandi.circlegathering.models.allStories.StoryItem
 import rachman.forniandi.circlegathering.utils.NetworkListener
 import rachman.forniandi.circlegathering.utils.NetworkResult
 import rachman.forniandi.circlegathering.utils.SupportWidget
@@ -158,7 +156,7 @@ class MainActivity : AppCompatActivity() {
     private fun showDataStoriesOnMain() {
         binding.listDataStories.adapter = mainAdapter
         mainAdapter.setOnClickListener(object :MainAdapter.OnStoryClickListener{
-            override fun onClick(position: Int, story: ListStoryItem) {
+            override fun onClick(position: Int, story: StoryItem) {
 
                 val toDetailStory = Intent(this@MainActivity,DetailStoryActivity::class.java)
                 val bundleDetail = Bundle()

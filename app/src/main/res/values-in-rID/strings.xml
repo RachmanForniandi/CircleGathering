@@ -56,4 +56,5 @@
     <string name="msg_text_widget_removed">Widget terhapus</string>
     <string name="button_refresh_data_on_widget">Tombol penyegaran data di widget</string>
     <string name="camera_x">Camera X</string>
+    <string name="created_by">Dibuat oleh:</string>
 </resources>

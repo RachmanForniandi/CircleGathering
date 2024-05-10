@@ -4,6 +4,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import rachman.forniandi.circlegathering.models.addStory.ResponseAddStory
 import rachman.forniandi.circlegathering.models.allStories.ResponseAllStories
+import rachman.forniandi.circlegathering.models.detailStories.ResponseDetailStory
 import rachman.forniandi.circlegathering.models.login.ResponseLogin
 import rachman.forniandi.circlegathering.models.register.ResponseRegister
 import rachman.forniandi.circlegathering.networkUtil.NetworkService
@@ -25,6 +26,11 @@ class RemoteDataSource @Inject constructor(
     suspend fun showStories(authorization:String):Response<ResponseAllStories>{
         val addedBearerToken = makeBearerToken(authorization)
         return networkService.getAllStories(addedBearerToken)
+    }
+
+    suspend fun showDetailStories(authorization:String,id:String):Response<ResponseDetailStory>{
+        val addedBearerToken = makeBearerToken(authorization)
+        return networkService.getDetailStories(addedBearerToken,id)
     }
 
     suspend fun addDataStories(bearerToken:String,

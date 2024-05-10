@@ -6,7 +6,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 import rachman.forniandi.circlegathering.DBRoom.entities.StoriesEntity
-import rachman.forniandi.circlegathering.models.allStories.ListStoryItem
 
 @Dao
 interface StoriesDao {
