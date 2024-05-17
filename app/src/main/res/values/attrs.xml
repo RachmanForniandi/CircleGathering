@@ -9,9 +9,7 @@
         <attr name="min_password_length" format="integer" />
     </declare-styleable>
 
-    <declare-styleable name="CustomEmailEditText">
 
-    </declare-styleable>
     <declare-styleable name="AppWidgetAttrs">
         <attr name="appWidgetPadding" format="dimension" />
         <attr name="appWidgetInnerRadius" format="dimension" />

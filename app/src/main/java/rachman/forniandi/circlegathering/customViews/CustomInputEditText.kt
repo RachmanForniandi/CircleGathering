@@ -78,7 +78,7 @@ class CustomInputEditText : AppCompatEditText, View.OnTouchListener {
 
                 setOnTouchListener(this)
             }
-            TextViewUsage.NAME->{
+            TextViewUsage.USERNAME->{
 
                 inputType = INPUT_TYPE_TEXT_NORMAL
 
@@ -113,7 +113,7 @@ class CustomInputEditText : AppCompatEditText, View.OnTouchListener {
         textViewUsage = when (style.getIntOrThrow(R.styleable.TextViewUsage_custom_type)) {
             TextViewUsage.EMAIL.value -> TextViewUsage.EMAIL
             TextViewUsage.PASSWORD.value -> TextViewUsage.PASSWORD
-            TextViewUsage.NAME.value -> TextViewUsage.NAME
+            TextViewUsage.USERNAME.value -> TextViewUsage.USERNAME
             else -> throw IllegalArgumentException("Invalid custom_type value")
         }
         style.recycle()
@@ -175,7 +175,7 @@ class CustomInputEditText : AppCompatEditText, View.OnTouchListener {
     enum class TextViewUsage(val value: Int) {
         EMAIL(0),
         PASSWORD(1),
-        NAME(2)
+        USERNAME(2)
     }
 
     companion object{
