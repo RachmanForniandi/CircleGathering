@@ -60,9 +60,9 @@ class MainActivity : AppCompatActivity() {
         }
         binding.swipeRefreshMain.isRefreshing = true
 
-        /*binding.btnRetryStories.setOnClickListener {
+        binding.btnRetryStory.setOnClickListener {
             requestDataRemoteStories()
-        }*/
+        }
         viewModel.readBackOnline.observe(this){
             viewModel.backOnline=it
         }
@@ -103,7 +103,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun requestDataRemoteStories() {
-        //binding.swipeRefreshMain.isRefreshing = true
         viewModel.doShowAllStoriesData()
         viewModel.getAllStoriesResponse.observe(this) { response ->
             when (response) {
@@ -122,7 +121,6 @@ class MainActivity : AppCompatActivity() {
                 is NetworkResult.Error -> {
 
                     hideShimmerEffect()
-                    //loadStoriesFromCache()
                     Toast.makeText(
                         this,
                         response.message.toString(), Toast.LENGTH_SHORT
@@ -159,9 +157,7 @@ class MainActivity : AppCompatActivity() {
             override fun onClick(position: Int, story: StoryItem) {
 
                 val toDetailStory = Intent(this@MainActivity,DetailStoryActivity::class.java)
-                val bundleDetail = Bundle()
-                bundleDetail.putSerializable(DETAIL_STORY,story)
-                toDetailStory.putExtra(DETAIL_STORY,bundleDetail)
+                toDetailStory.putExtra(DETAIL_STORY,story.id)
                 startActivity(toDetailStory)
             }
         })

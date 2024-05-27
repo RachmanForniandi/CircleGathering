@@ -11,6 +11,7 @@ import rachman.forniandi.circlegathering.databinding.ItemStoryBinding
 import rachman.forniandi.circlegathering.models.allStories.StoryItem
 import rachman.forniandi.circlegathering.models.allStories.ResponseAllStories
 import rachman.forniandi.circlegathering.networkUtil.StoryDiffUtil
+import rachman.forniandi.circlegathering.utils.getTimeElapseFormat
 
 class MainAdapter(private val mContext:Context):RecyclerView.Adapter<MainAdapter.MainHolder>() {
 
@@ -20,6 +21,7 @@ class MainAdapter(private val mContext:Context):RecyclerView.Adapter<MainAdapter
     class MainHolder(view: ItemStoryBinding): RecyclerView.ViewHolder(view.root){
         val imgStoryItem = view.imgStory
         val titlePictureItem = view.txtTitleStory
+        val timeElapseStoryItem = view.txtTimeStoryElapsed
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainHolder {
@@ -34,6 +36,7 @@ class MainAdapter(private val mContext:Context):RecyclerView.Adapter<MainAdapter
     override fun onBindViewHolder(holder: MainHolder, position: Int) {
         val storyItem = story[position]
         holder.titlePictureItem.text= storyItem.description
+        holder.timeElapseStoryItem.text = storyItem.createdAt.getTimeElapseFormat()
         Glide.with(mContext)
             .load(storyItem.photoUrl)
             .placeholder(R.drawable.place_holder)

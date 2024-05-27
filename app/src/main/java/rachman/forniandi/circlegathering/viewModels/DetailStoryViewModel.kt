@@ -26,10 +26,13 @@ class DetailStoryViewModel @Inject constructor(
     application: Application
 ): AndroidViewModel(application) {
 
-    private var getDetailStoriesResponse: MutableLiveData<NetworkResult<ResponseDetailStory>> = MutableLiveData()
+    private var storyId = ""
+
+    var getDetailStoriesResponse: MutableLiveData<NetworkResult<ResponseDetailStory>> = MutableLiveData()
 
     fun doShowAllStoriesData(iDStory:String)= viewModelScope.launch {
-        actionSafeCallShowDetailStories(iDStory)
+        storyId = iDStory
+        actionSafeCallShowDetailStories(storyId)
     }
 
     private suspend fun actionSafeCallShowDetailStories(iDStory:String) {

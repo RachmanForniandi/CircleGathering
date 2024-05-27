@@ -2,7 +2,6 @@ package rachman.forniandi.circlegathering.utils
 
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
-import android.app.Application
 import android.content.ContentResolver
 import android.content.Context
 import android.graphics.Bitmap
@@ -12,7 +11,6 @@ import android.net.Uri
 import android.os.Environment
 import android.os.StrictMode
 import android.view.View
-import android.widget.TextView
 import rachman.forniandi.circlegathering.R
 import java.io.File
 import java.io.FileOutputStream
@@ -21,7 +19,6 @@ import java.io.InputStream
 import java.io.OutputStream
 import java.net.HttpURLConnection
 import java.net.URL
-import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -44,6 +41,33 @@ fun getStringDate(date: String?): String? {
         e.printStackTrace()
     }
     return outputDate.format(d)
+}
+
+fun String?.getTimeElapseFormat(): String {
+    if (this.isNullOrEmpty()) return "Unknown"
+
+    val format = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+    val sdf = SimpleDateFormat(format, Locale.getDefault()).apply {
+        timeZone = TimeZone.getTimeZone("GMT")
+    }
+
+    val pastTime = sdf.parse(this)?.time ?: return "Unknown"
+    val diff = System.currentTimeMillis() - pastTime
+
+    val oneMin = 60_000L
+    val oneHour = 60 * oneMin
+    val oneDay = 24 * oneHour
+    val oneMonth = 30 * oneDay
+    val oneYear = 365 * oneDay
+
+    return when {
+        diff >= oneYear -> "${diff / oneYear} years ago"
+        diff >= oneMonth -> "${diff / oneMonth} months ago"
+        diff >= oneDay -> "${diff / oneDay} days ago"
+        diff >= oneHour -> "${diff / oneHour} hours ago"
+        diff >= oneMin -> "${diff / oneMin} min ago"
+        else -> "Just now"
+    }
 }
 
 fun rotateBitmap(bitmap: Bitmap, isBackCamera: Boolean = false): Bitmap {
@@ -93,22 +117,13 @@ fun bitmapFromURL(context: Context, urlString: String): Bitmap {
 }
 
 
+
+
 fun createCustomTempFileImg(context: Context): File {
     val storageDir: File? = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
     return File.createTempFile(timeStampImg, ".jpg", storageDir)
 }
 
-fun createFileImg(application: Application): File {
-    val mediaDir = application.externalMediaDirs.firstOrNull()?.let {
-        File(it, application.resources.getString(R.string.app_name)).apply { mkdirs() }
-    }
-
-    val outputDirectory = if (
-        mediaDir != null && mediaDir.exists()
-    ) mediaDir else application.filesDir
-
-    return File(outputDirectory, "$timeStampImg.jpg")
-}
 
 fun uriImgToFileImg(selectedImg: Uri, context: Context): File {
     val contentResolver: ContentResolver = context.contentResolver
