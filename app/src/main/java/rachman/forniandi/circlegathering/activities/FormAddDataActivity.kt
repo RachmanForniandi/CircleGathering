@@ -22,6 +22,7 @@ import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -124,6 +125,7 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
             }
         }
     }
+    @OptIn(ExperimentalCoroutinesApi::class)
     private fun executeUploadData(reduceImageFirst: File, description: String) {
         lifecycleScope.launch {
                 val requestBodyInput = reduceImageFirst.asRequestBody("file_img/jpeg".toMediaType())

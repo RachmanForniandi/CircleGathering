@@ -20,7 +20,8 @@
         android:id="@+id/lbl_register"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Let's Register"
+        android:text="@string/let_s_register"
+        style="@style/StyleLoginRegisterLbl"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/img_logo_register"/>
@@ -31,7 +32,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:padding="16dp"
-        android:text="Before Explore all of student\'s experience and story when learning in Dicoding, and of course you can also share your story too"
+        android:text="@string/before_explore_all_of_student_s_experience_and_story_when_learning_in_dicoding_and_of_course_you_can_also_share_your_story_too"
+        style="@style/StyleLoginRegisterLbl"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/lbl_register"/>
@@ -103,7 +105,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:alpha="0"
-        android:background="@color/white_transparent"
+        android:background="@color/dark"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

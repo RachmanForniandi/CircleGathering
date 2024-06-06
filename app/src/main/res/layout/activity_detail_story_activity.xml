@@ -39,7 +39,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:src="@drawable/place_holder"
-        android:scaleType="fitXY" />
+        android:scaleType="centerCrop" />
 
 
     <TextView
@@ -51,7 +51,7 @@
         android:layout_marginTop="12dp"
         android:layout_marginStart="16dp"
         style="@style/StyleLabel"
-        android:text="ID: "/>
+        android:text="@string/id"/>
 
     <TextView
         android:id="@+id/txt_id_detail_story"
@@ -95,7 +95,7 @@
         android:layout_marginTop="12dp"
         android:layout_marginStart="16dp"
         style="@style/StyleLabel"
-        android:text="Date/Time: "/>
+        android:text="@string/date_time"/>
 
     <TextView
         android:id="@+id/txt_dateTime_detail_story"

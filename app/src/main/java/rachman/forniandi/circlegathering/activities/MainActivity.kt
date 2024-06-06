@@ -32,7 +32,7 @@ import rachman.forniandi.circlegathering.viewModels.MainViewModel
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private var dataRequested = false
+    //private var dataRequested = false
     private lateinit var binding: ActivityMainBinding
     private val viewModel: MainViewModel by viewModels()
     private val mainAdapter by lazy { MainAdapter(this@MainActivity) }
@@ -141,7 +141,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadStoriesFromCache(){
+    /*private fun loadStoriesFromCache(){
         lifecycleScope.launch {
             viewModel.readStoriesLocal.observe(this@MainActivity){ db->
                 if (db.isNotEmpty()){
@@ -149,7 +149,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-    }
+    }*/
 
     private fun showDataStoriesOnMain() {
         binding.listDataStories.adapter = mainAdapter
@@ -164,7 +164,7 @@ class MainActivity : AppCompatActivity() {
         showShimmerEffect()
     }
 
-    private fun readDbLocalStories(){
+    /*private fun readDbLocalStories(){
         lifecycleScope.launch {
             viewModel.readStoriesLocal.observe(this@MainActivity){ db ->
                 if (db.isNotEmpty() && dataRequested){
@@ -181,7 +181,7 @@ class MainActivity : AppCompatActivity() {
             }
 
         }
-    }
+    }*/
 
     private fun showShimmerEffect() {
         binding.shimmerFrameLayout.startShimmer()

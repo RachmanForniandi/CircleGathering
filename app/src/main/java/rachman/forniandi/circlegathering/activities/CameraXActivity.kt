@@ -65,7 +65,7 @@ class CameraXActivity : AppCompatActivity() {
         }else{
             Toast.makeText(
                 this,
-                "Flash is Not Available",
+                getString(R.string.flash_camera_is_not_available),
                 Toast.LENGTH_LONG
             ).show()
             binding.imgButtonFlash.isEnabled = false
@@ -98,7 +98,7 @@ class CameraXActivity : AppCompatActivity() {
                 override fun onError(exc: ImageCaptureException) {
                     Toast.makeText(
                         this@CameraXActivity,
-                        "Gagal mengambil gambar.",
+                        getString(R.string.failure_to_take_picture),
                         Toast.LENGTH_SHORT
                     ).show()
                     Log.e(TAG, "onError: ${exc.message}")
@@ -146,7 +146,7 @@ class CameraXActivity : AppCompatActivity() {
             } catch (exc: Exception) {
                 Toast.makeText(
                     this@CameraXActivity,
-                    "Gagal memunculkan kamera.",
+                    getString(R.string.failure_to_show_camera),
                     Toast.LENGTH_SHORT
                 ).show()
                 Log.e(TAG, "startCamera: ${exc.message}")

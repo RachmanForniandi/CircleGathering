@@ -55,6 +55,14 @@
     <string name="msg_text_failed_fetch_data">Gagal memperoleh data</string>
     <string name="msg_text_widget_removed">Widget terhapus</string>
     <string name="button_refresh_data_on_widget">Tombol penyegaran data di widget</string>
-    <string name="camera_x">Camera X</string>
+    <string name="camera_x">Kamera X</string>
     <string name="created_by">Dibuat oleh:</string>
+    <string name="let_s_register">Silahkan daftar</string>
+    <string name="before_explore_all_of_user_s_experience_and_story_of_all_user_please_login_with_account_that_you_already_registered">Sebelum Jelajahi semua pengalaman pengguna dan kisah semua pengguna, Silakan login dengan akun yang sudah Anda daftarkan.</string>
+    <string name="before_explore_all_of_student_s_experience_and_story_when_learning_in_dicoding_and_of_course_you_can_also_share_your_story_too">Sebelumnya Jelajahi semua pengalaman dan cerita siswa saat belajar di Dicoding, dan tentunya Anda juga bisa berbagi cerita Anda juga.</string>
+    <string name="date_time">Tanggal/Waktu:</string>
+    <string name="id">ID:</string>
+    <string name="flash_camera_is_not_available">Flash camera is Not Available</string>
+    <string name="failure_to_take_picture">Gagal mengambil gambar.</string>
+    <string name="failure_to_show_camera">Gagal memunculkan kamera.</string>
 </resources>
