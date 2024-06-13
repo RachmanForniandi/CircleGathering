@@ -25,19 +25,16 @@ import rachman.forniandi.circlegathering.databinding.ActivityMainBinding
 import rachman.forniandi.circlegathering.models.allStories.StoryItem
 import rachman.forniandi.circlegathering.utils.NetworkListener
 import rachman.forniandi.circlegathering.utils.NetworkResult
-import rachman.forniandi.circlegathering.utils.SupportWidget
 import rachman.forniandi.circlegathering.viewModels.MainViewModel
 
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    //private var dataRequested = false
     private lateinit var binding: ActivityMainBinding
     private val viewModel: MainViewModel by viewModels()
     private val mainAdapter by lazy { MainAdapter(this@MainActivity) }
     private lateinit var networkListener: NetworkListener
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,9 +60,11 @@ class MainActivity : AppCompatActivity() {
         binding.btnRetryStory.setOnClickListener {
             requestDataRemoteStories()
         }
+
         viewModel.readBackOnline.observe(this){
             viewModel.backOnline=it
         }
+
 
         lifecycleScope.launch {
             repeatOnLifecycle(state = Lifecycle.State.STARTED) {
@@ -75,12 +74,12 @@ class MainActivity : AppCompatActivity() {
                         Log.d("NetworkListener",status.toString())
                         viewModel.networkStatus = status
                         viewModel.showNetworkStatus()
-                        //readDbLocalStories()
                     }
             }
         }
 
     }
+
     override fun onResume() {
         super.onResume()
         if (viewModel.recyclerViewState != null){
@@ -90,7 +89,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setUserName() {
         viewModel.getUserName().observe(this) { user ->
-            binding.txtUsername.text = user
+            binding.lblGreetingUser.text = getString(R.string.welcome, user)
         }
     }
 
@@ -109,7 +108,6 @@ class MainActivity : AppCompatActivity() {
                 is NetworkResult.Success -> {
                     hideShimmerEffect()
                     response.data?.let { mainAdapter.setData(it) }
-                    SupportWidget.notifyDataSetChanged(this@MainActivity)
                     binding.swipeRefreshMain.isRefreshing = false
                     binding.imgError.visibility = View.GONE
                     binding.txtError.visibility = View.GONE
@@ -141,16 +139,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /*private fun loadStoriesFromCache(){
-        lifecycleScope.launch {
-            viewModel.readStoriesLocal.observe(this@MainActivity){ db->
-                if (db.isNotEmpty()){
-                    mainAdapter.setData(db.first().responseAllStories)
-                }
-            }
-        }
-    }*/
-
     private fun showDataStoriesOnMain() {
         binding.listDataStories.adapter = mainAdapter
         mainAdapter.setOnClickListener(object :MainAdapter.OnStoryClickListener{
@@ -163,25 +151,6 @@ class MainActivity : AppCompatActivity() {
         })
         showShimmerEffect()
     }
-
-    /*private fun readDbLocalStories(){
-        lifecycleScope.launch {
-            viewModel.readStoriesLocal.observe(this@MainActivity){ db ->
-                if (db.isNotEmpty() && dataRequested){
-                    Log.d("MainActivity", "storiesDatabase called!")
-                    mainAdapter.setData(db.first().responseAllStories)
-                    hideShimmerEffect()
-                }else{
-                    if (!dataRequested){
-                        requestDataRemoteStories()
-                        dataRequested = true
-                    }
-                }
-                Log.e("testBaca2","test ${viewModel.readStoriesLocal}")
-            }
-
-        }
-    }*/
 
     private fun showShimmerEffect() {
         binding.shimmerFrameLayout.startShimmer()

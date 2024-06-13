@@ -60,6 +60,7 @@ class CustomInputEditText : AppCompatEditText, View.OnTouchListener {
                 hintInput = resources.getString(R.string.prompt_email)
                 addTextChangedListener(onTextChanged = { email, _, _, _ ->
                     if (!isInputEmailValid(email)) setError(resources.getString(R.string.email_error_message), null)
+                    else clearErrorMessage()
                     backgroundCorrectDrawable = ContextCompat.getDrawable(context, R.drawable.bg_entry_form_correct)
                 })
             }
@@ -72,6 +73,7 @@ class CustomInputEditText : AppCompatEditText, View.OnTouchListener {
                 hintInput = resources.getString(R.string.prompt_password)
                 addTextChangedListener(onTextChanged = { password, _, _, _ ->
                     if (!isInputPasswordValid(password)) setError(resources.getString(R.string.input_password_error_message), null)
+                    clearErrorMessage()
                     backgroundCorrectDrawable = ContextCompat.getDrawable(context, R.drawable.bg_entry_form_correct)
 
                 })
@@ -87,6 +89,7 @@ class CustomInputEditText : AppCompatEditText, View.OnTouchListener {
 
                 addTextChangedListener(onTextChanged = { name, _, _, _ ->
                     if (!isInputUsernameValid(name)) setError(resources.getString(R.string.input_name_error_message), null)
+                    clearErrorMessage()
                     backgroundCorrectDrawable = ContextCompat.getDrawable(context, R.drawable.bg_entry_form_correct)
 
                 })
@@ -127,13 +130,16 @@ class CustomInputEditText : AppCompatEditText, View.OnTouchListener {
     }
 
     private fun isInputPasswordValid(password: CharSequence?) =
-        !password.isNullOrEmpty() && password.length >= minimumPasswordCharacter
+        !password.isNullOrEmpty() && password.length >= minimumPasswordCharacter&& password.isNotBlank()
 
     private fun isInputEmailValid(email: CharSequence?) =
-        !email.isNullOrEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches()
+        !email.isNullOrEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches() && email.isNotBlank()
 
     private fun isInputUsernameValid(name: CharSequence?) = !name.isNullOrEmpty()
-    
+
+    private fun clearErrorMessage() {
+        error = null
+    }
     override fun onTouch(view: View?, event: MotionEvent): Boolean {
         if (compoundDrawables[2] != null) {
             val showHideButtonStart: Float

@@ -33,15 +33,6 @@ class ConstantsMain {
 
 
         const val DATABASE_NAME = "stories_database"
-        const val STORY_TABLE = "story_table"
-        const val KEY_FOR_WIDGET_WORKER = "story_work"
-        const val NOTIFICATION_ID = "Gathering_notification_id"
-        const val NOTIFICATION_NAME = "Gathering"
-        const val NOTIFICATION_CHANNEL = "Gathering_channel_01"
-    }
-
-    suspend fun <T> Flow<List<T>>.flattenToList() =
-        flatMapConcat { it.asFlow() }.toList()
-
+   }
 
 }

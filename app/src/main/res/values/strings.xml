@@ -19,7 +19,7 @@
     <string name="prompt_password">Your Password</string>
     <string name="click_here">Click Here</string>
     <string name="don_t_have_account_user_yet">Don\'t have account user yet?</string>
-    <string name="welcome">Welcome</string>
+    <string name="welcome">Welcome, %1$s </string>
     <string name="button_add_data_story">Button Add Data Story</string>
     <string name="username">Username</string>
     <string name="register">Register</string>
@@ -56,13 +56,16 @@
     <string name="msg_text_widget_removed">Widget Removed</string>
     <string name="button_refresh_data_on_widget">button refresh data on widget</string>
     <string name="camera_x">Camera X</string>
-    <string name="created_by">Created by:</string>
+
     <string name="let_s_register">Let\'s Register</string>
     <string name="before_explore_all_of_user_s_experience_and_story_of_all_user_please_login_with_account_that_you_already_registered">Before Explore all of user\'s experience and story of all user, Please login with account that you already registered.</string>
     <string name="before_explore_all_of_student_s_experience_and_story_when_learning_in_dicoding_and_of_course_you_can_also_share_your_story_too">Before Explore all of student\'s experience and story when learning in Dicoding, and of course you can also share your story too.</string>
-    <string name="date_time">Date/Time:</string>
-    <string name="id">ID:</string>
+    <string name="id">ID: %2$s</string>
+    <string name="created_by">Created by: %3$s</string>
+    <string name="date_time">Date/Time: %4$s</string>
     <string name="flash_camera_is_not_available">Flash camera is Not Available.</string>
     <string name="failure_to_take_picture">Failure to take picture.</string>
     <string name="failure_to_show_camera">Failure to show camera.</string>
+    <string name="let_s_sign_in">Let\'s sign in</string>
+    <string name="detail_image_story">detail image story</string>
 </resources>

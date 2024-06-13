@@ -16,7 +16,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import rachman.forniandi.circlegathering.DBRoom.entities.StoriesEntity
 import rachman.forniandi.circlegathering.models.allStories.ResponseAllStories
 import rachman.forniandi.circlegathering.repositories.MainRepository
 import rachman.forniandi.circlegathering.utils.DataStoreRepository
@@ -44,14 +43,8 @@ class MainViewModel @Inject constructor(
     fun getUserName()= dataStoreRepository.getUsername().asLiveData()
 
     //room
-    val readStoriesLocal:LiveData<List<StoriesEntity>> = repository.localMain.readDbStories().asLiveData()
-    var readBackOnline = dataStoreRepository.readBackOnline.asLiveData()
+   var readBackOnline = dataStoreRepository.readBackOnline.asLiveData()
 
-
-    private fun insertDataStoriesLocalDb(storiesEntity: StoriesEntity)=
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.localMain.insertStories(storiesEntity)
-        }
 
     //logout & clear token dari data store
     fun signOutUser() = viewModelScope.launch {
@@ -81,9 +74,7 @@ class MainViewModel @Inject constructor(
 
                 val allStories = getAllStoriesResponse.value?.data
                 Log.e("check_story",""+allStories)
-                if (allStories != null){
-                    offlineCacheStories(allStories)
-                }
+
             }catch (e: Exception){
                 getAllStoriesResponse.value  = NetworkResult.Error("Data not Available.")
             }
@@ -113,10 +104,6 @@ class MainViewModel @Inject constructor(
                 NetworkResult.Error(response.message())
             }
         }
-    }
-    private fun offlineCacheStories(allStories: ResponseAllStories) {
-        val storiesEntity = StoriesEntity(allStories)
-        insertDataStoriesLocalDb(storiesEntity)
     }
 
     fun showNetworkStatus(){

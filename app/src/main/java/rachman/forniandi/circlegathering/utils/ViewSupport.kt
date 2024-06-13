@@ -140,10 +140,6 @@ fun uriImgToFileImg(selectedImg: Uri, context: Context): File {
     return myFile
 }
 
-
-
-
-
 fun View.animateLoadingProcessData(isVisible: Boolean, duration: Long = 300) {
     ObjectAnimator
         .ofFloat(this, View.ALPHA, if (isVisible) 1f else 0f)

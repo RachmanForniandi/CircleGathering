@@ -30,10 +30,5 @@ class AppModule {
     fun provideAuthUserFeaturePreferences(dataStore: DataStore<Preferences>): DataStoreRepository=
         DataStoreRepository(dataStore)
 
-    /*@Binds
-    @Singleton
-    abstract fun provideFeatureWidgetStory(widgetDataActuator: WidgetDataActuator): SourceForWidgetStoryUseCase
-*/
-
 
 }

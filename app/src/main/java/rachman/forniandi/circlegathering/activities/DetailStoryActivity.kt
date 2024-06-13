@@ -1,5 +1,6 @@
 package rachman.forniandi.circlegathering.activities
 
+import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
@@ -34,6 +35,7 @@ class DetailStoryActivity : AppCompatActivity() {
 
     }
 
+
     private fun showDetailStory() {
         val idStory =intent.getStringExtra(DETAIL_STORY)
 
@@ -43,14 +45,15 @@ class DetailStoryActivity : AppCompatActivity() {
                 is NetworkResult.Success -> {
                     applyLoadProgressStateDetail(false)
                     val feedbackDetail = response.data?.story
-                    binding.txtIdDetailStory.text = feedbackDetail?.id
-                    binding.txtUsernameDetailStory.text = feedbackDetail?.name
+                    binding.txtLblId.text = getString(R.string.id,"id",feedbackDetail?.id)
+                    println("checkId" +feedbackDetail?.id)
+                    binding.txtLblCreatedBy.text = getString(R.string.created_by, "name","",feedbackDetail?.name)
                     println("checkUsername" +feedbackDetail?.name)
                     binding.txtDescriptionDetailStory.text = feedbackDetail?.description
                     println("checkDescription" +feedbackDetail?.description)
                     val formatDateTime = getStringDate(feedbackDetail?.createdAt)
                     println("checkCreatedAt"+feedbackDetail?.createdAt)
-                    binding.txtDateTimeDetailStory.text = formatDateTime
+                    binding.txtLblDateTime.text = getString(R.string.date_time, "date/time","","",formatDateTime)
 
                     Glide
                         .with(this@DetailStoryActivity)
