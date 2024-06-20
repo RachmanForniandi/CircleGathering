@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 import dagger.hilt.components.SingletonComponent
 import rachman.forniandi.circlegathering.networkUtil.NetworkService
+import rachman.forniandi.circlegathering.utils.ConstantsMain
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -19,8 +20,8 @@ object NetworkModule {
     @Provides
     fun provideHttpClient(): OkHttpClient {
         return OkHttpClient.Builder()
-            .readTimeout(15, TimeUnit.SECONDS)
-            .connectTimeout(15, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .connectTimeout(30, TimeUnit.SECONDS)
             .build()
     }
 

@@ -23,6 +23,7 @@ class CustomInputEditText : AppCompatEditText, View.OnTouchListener {
     private var backgroundDrawable: Drawable ? = null
     private var backgroundErrorDrawable: Drawable ? = null
     private var backgroundCorrectDrawable: Drawable? = null
+
     private var minimumPasswordCharacter = 8
     private var hintInput=""
     private var textViewUsage = TextViewUsage.PASSWORD
@@ -57,16 +58,11 @@ class CustomInputEditText : AppCompatEditText, View.OnTouchListener {
                 initiateIconDrawable= ContextCompat.getDrawable(context, R.drawable.ic_email)as Drawable
                 
                 hintInput = resources.getString(R.string.prompt_email)
-                backgroundDrawable= ContextCompat.getDrawable(context, R.drawable.bg_entry_form)
                 addTextChangedListener(onTextChanged = { email, _, _, _ ->
-                    if (!isValidEmail(email)) setError(resources.getString(R.string.email_error_message), null)
+                    if (!isInputEmailValid(email)) setError(resources.getString(R.string.email_error_message), null)
+                    else clearErrorMessage()
                     backgroundCorrectDrawable = ContextCompat.getDrawable(context, R.drawable.bg_entry_form_correct)
-
                 })
-                /*
-                backgroundErrorDrawable= ContextCompat.getDrawable(context, R.drawable.bg_entry_form_error)
-
-                setOnTouchListener(this)*/
             }
             TextViewUsage.PASSWORD->{
                 inputType = INPUT_TYPE_INVISIBLE_PASSWORD
@@ -75,18 +71,16 @@ class CustomInputEditText : AppCompatEditText, View.OnTouchListener {
                 showPasswordIconDrawable = ContextCompat.getDrawable(context, R.drawable.ic_visibility_on)
                 hidePasswordIconDrawable = ContextCompat.getDrawable(context, R.drawable.ic_visibility_off)
                 hintInput = resources.getString(R.string.prompt_password)
-                backgroundDrawable= ContextCompat.getDrawable(context, R.drawable.bg_entry_form)
                 addTextChangedListener(onTextChanged = { password, _, _, _ ->
-                    if (!isValidPassword(password)) setError(resources.getString(R.string.input_password_error_message), null)
+                    if (!isInputPasswordValid(password)) setError(resources.getString(R.string.input_password_error_message), null)
+                    else clearErrorMessage()
                     backgroundCorrectDrawable = ContextCompat.getDrawable(context, R.drawable.bg_entry_form_correct)
 
                 })
-                /*
-                backgroundErrorDrawable= ContextCompat.getDrawable(context, R.drawable.bg_entry_form_error)
-*/
+
                 setOnTouchListener(this)
             }
-            TextViewUsage.NAME->{
+            TextViewUsage.USERNAME->{
 
                 inputType = INPUT_TYPE_TEXT_NORMAL
 
@@ -94,16 +88,15 @@ class CustomInputEditText : AppCompatEditText, View.OnTouchListener {
                 hintInput = resources.getString(R.string.prompt_name)
 
                 addTextChangedListener(onTextChanged = { name, _, _, _ ->
-                    if (!isValidName(name)) setError(resources.getString(R.string.input_name_error_message), null)
+                    if (!isInputUsernameValid(name)) setError(resources.getString(R.string.input_name_error_message), null)
+                    clearErrorMessage()
                     backgroundCorrectDrawable = ContextCompat.getDrawable(context, R.drawable.bg_entry_form_correct)
 
                 })
-                backgroundDrawable= ContextCompat.getDrawable(context, R.drawable.bg_entry_form)
-                backgroundErrorDrawable= ContextCompat.getDrawable(context, R.drawable.bg_entry_form_error)
-
-                //setOnTouchListener(this)
             }
         }
+        backgroundDrawable= ContextCompat.getDrawable(context, R.drawable.bg_entry_form)
+        backgroundErrorDrawable= ContextCompat.getDrawable(context, R.drawable.bg_entry_form_error)
 
     }
 
@@ -118,12 +111,12 @@ class CustomInputEditText : AppCompatEditText, View.OnTouchListener {
     }
 
     private fun getAttribute(attrs: AttributeSet?) {
-        val style = context.obtainStyledAttributes(attrs, R.styleable.TextViewUsage)
-        minimumPasswordCharacter = style.getInt(R.styleable.TextViewUsage_min_password_length, 8)
-        textViewUsage = when (style.getIntOrThrow(R.styleable.TextViewUsage_custom_type)) {
+        val style = context.obtainStyledAttributes(attrs, R.styleable.CustomInputEditText)
+        minimumPasswordCharacter = style.getInt(R.styleable.CustomInputEditText_min_password_length, 8)
+        textViewUsage = when (style.getIntOrThrow(R.styleable.CustomInputEditText_custom_type)) {
             TextViewUsage.EMAIL.value -> TextViewUsage.EMAIL
             TextViewUsage.PASSWORD.value -> TextViewUsage.PASSWORD
-            TextViewUsage.NAME.value -> TextViewUsage.NAME
+            TextViewUsage.USERNAME.value -> TextViewUsage.USERNAME
             else -> throw IllegalArgumentException("Invalid custom_type value")
         }
         style.recycle()
@@ -136,14 +129,17 @@ class CustomInputEditText : AppCompatEditText, View.OnTouchListener {
         compoundDrawablePadding = 16
     }
 
-    fun isValidPassword(password: CharSequence?) =
+    private fun isInputPasswordValid(password: CharSequence?) =
         !password.isNullOrEmpty() && password.length >= minimumPasswordCharacter
 
-    fun isValidEmail(email: CharSequence?) =
-        !email.isNullOrEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    private fun isInputEmailValid(email: CharSequence?) =
+        !email.isNullOrEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches() && email.isNotBlank()
 
-    fun isValidName(name: CharSequence?) = !name.isNullOrEmpty()
-    
+    private fun isInputUsernameValid(name: CharSequence?) = !name.isNullOrEmpty()
+
+    private fun clearErrorMessage() {
+        error = null
+    }
     override fun onTouch(view: View?, event: MotionEvent): Boolean {
         if (compoundDrawables[2] != null) {
             val showHideButtonStart: Float
@@ -185,7 +181,7 @@ class CustomInputEditText : AppCompatEditText, View.OnTouchListener {
     enum class TextViewUsage(val value: Int) {
         EMAIL(0),
         PASSWORD(1),
-        NAME(2)
+        USERNAME(2)
     }
 
     companion object{

@@ -4,6 +4,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import rachman.forniandi.circlegathering.models.addStory.ResponseAddStory
 import rachman.forniandi.circlegathering.models.allStories.ResponseAllStories
+import rachman.forniandi.circlegathering.models.detailStories.ResponseDetailStory
 import rachman.forniandi.circlegathering.models.login.ResponseLogin
 import rachman.forniandi.circlegathering.models.register.ResponseRegister
 import rachman.forniandi.circlegathering.networkUtil.NetworkService
@@ -27,6 +28,11 @@ class RemoteDataSource @Inject constructor(
         return networkService.getAllStories(addedBearerToken)
     }
 
+    suspend fun showDetailStories(authorization:String,id:String):Response<ResponseDetailStory>{
+        val addedBearerToken = makeBearerToken(authorization)
+        return networkService.getDetailStories(addedBearerToken,id)
+    }
+
     suspend fun addDataStories(bearerToken:String,
                                file:MultipartBody.Part,
                                description:RequestBody):Response<ResponseAddStory>{
@@ -37,8 +43,5 @@ class RemoteDataSource @Inject constructor(
     private fun makeBearerToken(token: String): String {
         return ConstantsMain.TOKEN_BEARER+token
     }
-    /*private fun makeBearerTokenToRequestBody(token: RequestBody): RequestBody {
-        val convertTokenRequestBody= (ConstantsMain.TOKEN_BEARER+token).toRequestBody("multipart/form-data".toMediaTypeOrNull())
-        return convertTokenRequestBody
-    }*/
+
 }

@@ -88,10 +88,13 @@ class RegisterFragment : Fragment() {
     }
 
     private fun applyLoadProgressStateRegister(onProcess:Boolean){
-        binding?.etUsername?.isEnabled = !onProcess
-        binding?.etEmail?.isEnabled = !onProcess
-        binding?.etPassword?.isEnabled = !onProcess
-        binding?.btnRegister?.isEnabled = !onProcess
+        binding?.apply {
+            etUsername.isEnabled = !onProcess
+            etEmail.isEnabled = !onProcess
+            etPassword.isEnabled = !onProcess
+            btnRegister.isEnabled = !onProcess
+        }
+
 
         if (onProcess){
             binding?.maskedViewPgRegister?.animateLoadingProcessData(true)
