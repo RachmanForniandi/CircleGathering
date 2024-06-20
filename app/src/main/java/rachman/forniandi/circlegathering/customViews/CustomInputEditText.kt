@@ -73,7 +73,7 @@ class CustomInputEditText : AppCompatEditText, View.OnTouchListener {
                 hintInput = resources.getString(R.string.prompt_password)
                 addTextChangedListener(onTextChanged = { password, _, _, _ ->
                     if (!isInputPasswordValid(password)) setError(resources.getString(R.string.input_password_error_message), null)
-                    clearErrorMessage()
+                    else clearErrorMessage()
                     backgroundCorrectDrawable = ContextCompat.getDrawable(context, R.drawable.bg_entry_form_correct)
 
                 })
@@ -111,9 +111,9 @@ class CustomInputEditText : AppCompatEditText, View.OnTouchListener {
     }
 
     private fun getAttribute(attrs: AttributeSet?) {
-        val style = context.obtainStyledAttributes(attrs, R.styleable.TextViewUsage)
-        minimumPasswordCharacter = style.getInt(R.styleable.TextViewUsage_min_password_length, 8)
-        textViewUsage = when (style.getIntOrThrow(R.styleable.TextViewUsage_custom_type)) {
+        val style = context.obtainStyledAttributes(attrs, R.styleable.CustomInputEditText)
+        minimumPasswordCharacter = style.getInt(R.styleable.CustomInputEditText_min_password_length, 8)
+        textViewUsage = when (style.getIntOrThrow(R.styleable.CustomInputEditText_custom_type)) {
             TextViewUsage.EMAIL.value -> TextViewUsage.EMAIL
             TextViewUsage.PASSWORD.value -> TextViewUsage.PASSWORD
             TextViewUsage.USERNAME.value -> TextViewUsage.USERNAME
@@ -130,7 +130,7 @@ class CustomInputEditText : AppCompatEditText, View.OnTouchListener {
     }
 
     private fun isInputPasswordValid(password: CharSequence?) =
-        !password.isNullOrEmpty() && password.length >= minimumPasswordCharacter&& password.isNotBlank()
+        !password.isNullOrEmpty() && password.length >= minimumPasswordCharacter
 
     private fun isInputEmailValid(email: CharSequence?) =
         !email.isNullOrEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches() && email.isNotBlank()

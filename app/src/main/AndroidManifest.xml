@@ -23,17 +23,7 @@
         android:theme="@style/Theme.CircleGathering"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-        <receiver
-            android:name=".stackWidgets.MyStoryStackWidget"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
 
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/my_story_stack_widget_info" />
-        </receiver>
 
         <activity
             android:name=".activities.SplashScreenActivity"
@@ -79,19 +69,6 @@
         <activity android:name=".activities.CameraXActivity"
             android:exported="false"/>
 
-        <!--<receiver android:name=".stackWidgets.MyStoryStackWidget"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/my_story_stack_widget_info" />
-        </receiver>
--->
-        <service android:name=".stackWidgets.StoryStackWidgetService"
-            android:permission="android.permission.BIND_REMOTEVIEWS"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"

@@ -5,7 +5,8 @@
     <item
         android:id="@+id/menu_logout"
         android:icon="@drawable/ic_baseline_logout_24"
-        android:title="@string/logout" />
+        android:title="@string/logout"
+        />
 
     <item
         android:id="@+id/menu_setting"

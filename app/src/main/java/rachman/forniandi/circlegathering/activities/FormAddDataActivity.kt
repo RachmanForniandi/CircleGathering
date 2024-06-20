@@ -22,7 +22,10 @@ import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import id.zelory.compressor.Compressor
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -49,6 +52,7 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var binding:ActivityFormAddDataBinding
     private val viewModel: UploadViewModel by viewModels()
     private var inputFile: File? = null
+    private var compressedFile: File? = null
     private var mImgPath:String =""
     private lateinit var descriptionToRequestBody: RequestBody
     private lateinit var fileBodyMultipart : MultipartBody.Part
@@ -117,8 +121,8 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
                             Snackbar.LENGTH_SHORT).show()
                     }else{
                         val description =binding.etDescription.text.toString().trim()
-                        val reduceImageFirst = actionReduceImg(inputFile as File)
-                        executeUploadData(reduceImageFirst,description)
+                        //val reduceImageFirst = actionReduceImg(inputFile as File)
+                        executeUploadData(compressedFile as File,description)
                     }
                     return
                 }
@@ -228,38 +232,50 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
         launcherIntentGallery.launch(pickImg)
     }
 
+
     private val launcherIntentCamera = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {result->
-        if (result.resultCode == RESULT_OK) {
-            val filePicCamera = File(mImgPath)
-            inputFile= filePicCamera
-            val resultCamera = BitmapFactory.decodeFile(inputFile?.path)
-            binding.imgDisplayInput.setImageBitmap(resultCamera)
+        lifecycleScope.launch {
+            if (result.resultCode == RESULT_OK) {
+                val filePicCamera = File(mImgPath)
+                inputFile= filePicCamera
 
-            Log.i("imgPath", mImgPath)
+                compressedFile = Compressor.compress(this@FormAddDataActivity, inputFile!!)
 
-            binding.imgAddInput.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.ic_vector_edit))
-        }else if (result.resultCode == Activity.RESULT_CANCELED){
-            Log.e("Canceled","Canceled")
+                val resultCamera = BitmapFactory.decodeFile(compressedFile?.path)
+
+                binding.imgDisplayInput.setImageBitmap(resultCamera)
+
+                Log.i("imgPath", mImgPath)
+
+                binding.imgAddInput.setImageDrawable(ContextCompat.getDrawable(this@FormAddDataActivity,R.drawable.ic_vector_edit))
+            }else if (result.resultCode == Activity.RESULT_CANCELED){
+                Log.e("Canceled","Canceled")
+            }
         }
+
     }
 
     private val launcherIntentCameraX = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result->
-        if (result.resultCode == CAMERA_X_RESULT){
-            val getFileFromCamX = result.data?.getSerializableExtra("pictCameraX")as File
-            val getImgOrientation= result.data?.getBooleanExtra("isBackCameraX",true)as Boolean
-            //mImgPath= result.data?.getStringExtra(CameraXActivity.EXTRA_CAMERAX_IMAGE)!!
-            inputFile = getFileFromCamX
+        lifecycleScope.launch {
+            if (result.resultCode == CAMERA_X_RESULT){
+                val getFileFromCamX = result.data?.getSerializableExtra("pictCameraX")as File
+                val getImgOrientation= result.data?.getBooleanExtra("isBackCameraX",true)as Boolean
+                inputFile = getFileFromCamX
 
-            val resultCameraX= rotateBitmap(
-                BitmapFactory.decodeFile(inputFile?.path),
-                getImgOrientation
-            )
-            binding.imgDisplayInput.setImageBitmap(resultCameraX)
+                compressedFile=Compressor.compress(this@FormAddDataActivity, inputFile!!)
+
+                val resultCameraX= rotateBitmap(
+                    BitmapFactory.decodeFile(compressedFile?.path),
+                    getImgOrientation
+                )
+                binding.imgDisplayInput.setImageBitmap(resultCameraX)
+            }
         }
+
     }
 
     private val launcherIntentGallery = registerForActivityResult(
@@ -278,9 +294,12 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun applyLoadProgressStateUpload(onProcess:Boolean){
-        binding.etDescription.isEnabled = !onProcess
-        binding.imgAddInput.isEnabled = !onProcess
-        binding.imgDisplayInput.isEnabled = !onProcess
+        binding.apply {
+            etDescription.isEnabled = !onProcess
+            imgAddInput.isEnabled = !onProcess
+            imgDisplayInput.isEnabled = !onProcess
+            btnUploadDataConfirm.isEnabled =!onProcess
+        }
 
         if (onProcess){
             binding.maskedViewPgUpload.animateLoadingProcessData(true)

@@ -1,6 +1,5 @@
 package rachman.forniandi.circlegathering.activities
 
-import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
@@ -90,7 +89,4 @@ class DetailStoryActivity : AppCompatActivity() {
         }
     }
 
-    companion object {
-        const val EXTRA_ID_DETAIL_STORY = "extra_id_detail_story"
-    }
 }

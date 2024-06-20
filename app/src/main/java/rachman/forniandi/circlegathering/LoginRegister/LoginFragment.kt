@@ -106,9 +106,12 @@ class LoginFragment : Fragment() {
     }
 
     private fun applyLoadProgressStateLogin(onProcess:Boolean){
-        binding.etEmail.isEnabled = !onProcess
-        binding.etPassword.isEnabled = !onProcess
-        binding.btnLogin.isEnabled = !onProcess
+        binding.apply {
+            etEmail.isEnabled = !onProcess
+            etPassword.isEnabled = !onProcess
+            btnLogin.isEnabled = !onProcess
+        }
+
 
         if (onProcess){
             binding.maskedViewPgLogin.animateLoadingProcessData(true)
