@@ -1,0 +1,7 @@
+
+fkotlin:S6310t"Avoid hardcoded dispatchers.(Óé‹øÿÿÿÿ8 èÑå2J$360cea2f-4670-4c97-be2f-b3ee95bedbc7
+dkotlin:S1128"Remove this unused import.(ÌÆê‡şÿÿÿÿ8×èÑå2J$db809b32-3519-4ddc-8302-407727e87f03
+¢kotlin:S1192:"XDefine a constant instead of duplicating this literal "No Internet Connection." 3 times.(Ñ¶Ìˆıÿÿÿÿ8€éÑå2J$24c4776c-960f-4eb5-878b-b9f01c6dffce
+ykotlin:S1066Š".Merge this "if" statement with the nested one.(˜‡¡İùÿÿÿÿ8“éÑå2J$7a668708-2454-4ec5-bd89-242630314969
+kotlin:S6510?"CMove "return" statements from all branches before "when" statement.(èş™¸ÿÿÿÿÿ8£éÑå2J$6c989f8d-fe86-4c50-a575-94f5aabfd450
+kotlin:S6510^"CMove "return" statements from all branches before "when" statement.(èş™¸ÿÿÿÿÿ8¥éÑå2J$a7c2cfd4-4e31-47f2-8f62-a963bdd3e220

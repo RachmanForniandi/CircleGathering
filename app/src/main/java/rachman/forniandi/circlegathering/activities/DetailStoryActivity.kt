@@ -2,17 +2,24 @@ package rachman.forniandi.circlegathering.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+import android.widget.Toast
+import androidx.activity.viewModels
 import com.bumptech.glide.Glide
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import rachman.forniandi.circlegathering.R
 import rachman.forniandi.circlegathering.activities.MainActivity.Companion.DETAIL_STORY
 import rachman.forniandi.circlegathering.databinding.ActivityDetailStoryActivityBinding
-import rachman.forniandi.circlegathering.models.allStories.ListStoryItem
+import rachman.forniandi.circlegathering.utils.NetworkResult
+import rachman.forniandi.circlegathering.utils.animateLoadingProcessData
 import rachman.forniandi.circlegathering.utils.getStringDate
+import rachman.forniandi.circlegathering.viewModels.DetailStoryViewModel
 
+@ExperimentalCoroutinesApi
+@AndroidEntryPoint
 class DetailStoryActivity : AppCompatActivity() {
+    private val viewModel: DetailStoryViewModel by viewModels()
     private lateinit var binding: ActivityDetailStoryActivityBinding
-    private var detailDataStory: ListStoryItem?= null
     
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,11 +27,7 @@ class DetailStoryActivity : AppCompatActivity() {
         binding = ActivityDetailStoryActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        if (intent.hasExtra(DETAIL_STORY)){
-            detailDataStory = intent.getParcelableExtra<ListStoryItem>(DETAIL_STORY)
-            parsingAttributeDetailStory(detailDataStory)
-        }
-
+        showDetailStory()
         setSupportActionBar(binding.toolbarDetailStory)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
@@ -32,29 +35,58 @@ class DetailStoryActivity : AppCompatActivity() {
     }
 
 
+    private fun showDetailStory() {
+        val idStory =intent.getStringExtra(DETAIL_STORY)
 
-    private fun parsingAttributeDetailStory(detailDataStory: ListStoryItem?) {
-        Log.d("test_detail_2","test $detailDataStory")
-        if (detailDataStory != null){
-            binding.txtUsernameDetailStory.text = detailDataStory.name
-            println("checkUsername" +detailDataStory.name)
-            binding.txtDescriptionDetailStory.text = detailDataStory.description
-            println("checkDescription" +detailDataStory.description)
-            val formatDateTime = getStringDate(detailDataStory.createdAt)
-            println("checkCreatedAt"+detailDataStory.createdAt)
-            binding.txtDateTimeDetailStory.text = formatDateTime
+        viewModel.doShowAllStoriesData(idStory!!)
+        viewModel.getDetailStoriesResponse.observe(this) { response ->
+            when (response) {
+                is NetworkResult.Success -> {
+                    applyLoadProgressStateDetail(false)
+                    val feedbackDetail = response.data?.story
+                    binding.txtLblId.text = getString(R.string.id,"id",feedbackDetail?.id)
+                    println("checkId" +feedbackDetail?.id)
+                    binding.txtLblCreatedBy.text = getString(R.string.created_by, "name","",feedbackDetail?.name)
+                    println("checkUsername" +feedbackDetail?.name)
+                    binding.txtDescriptionDetailStory.text = feedbackDetail?.description
+                    println("checkDescription" +feedbackDetail?.description)
+                    val formatDateTime = getStringDate(feedbackDetail?.createdAt)
+                    println("checkCreatedAt"+feedbackDetail?.createdAt)
+                    binding.txtLblDateTime.text = getString(R.string.date_time, "date/time","","",formatDateTime)
 
-            Glide
-                .with(this@DetailStoryActivity)
-                .load(detailDataStory.photoUrl)
-                .centerCrop()
-                .placeholder(R.drawable.place_holder)
-                .error(R.drawable.error_placeholder)
-                .into(binding.imgDetailStory)
+                    Glide
+                        .with(this@DetailStoryActivity)
+                        .load(feedbackDetail?.photoUrl)
+                        .fitCenter()
+                        .placeholder(R.drawable.place_holder)
+                        .error(R.drawable.error_placeholder)
+                        .into(binding.imgDetailStory)
 
-            println("checkPhotoUrl" +detailDataStory.photoUrl)
+                    println("checkPhotoUrl" +feedbackDetail?.photoUrl)
+                    
+                }
+                is NetworkResult.Error -> {
+                    applyLoadProgressStateDetail(false)
+                    Toast.makeText(
+                        this,
+                        response.message.toString(), Toast.LENGTH_SHORT
+                    ).show()
+                }
+                is NetworkResult.Loading -> {
+                    applyLoadProgressStateDetail(true)
+                }
+            }
         }
     }
+    
 
+    private fun applyLoadProgressStateDetail(onProcess:Boolean){
+
+        if (onProcess){
+            binding.maskedViewPgDetail.animateLoadingProcessData(true)
+        }else{
+            binding.maskedViewPgDetail.animateLoadingProcessData(false)
+        }
+    }
 
 }

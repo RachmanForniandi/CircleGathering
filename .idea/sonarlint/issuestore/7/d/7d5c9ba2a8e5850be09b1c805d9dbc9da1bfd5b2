@@ -1,0 +1,5 @@
+
+fkotlin:S6310:"Avoid hardcoded dispatchers.(Óé‹øÿÿÿÿ8ÃİĞå2J$94be7a23-22fa-494c-ad90-dcb52cfdfb9d
+ukotlin:S6311:"QRemove this dispatcher. It is pointless when used with only suspending functions.(Óé‹øÿÿÿÿ8·ù‰“2
+]kotlin:S1128"Remove this unused import.(œ‘Ü„úÿÿÿÿJ$aaa0e978-c2e3-4973-b561-bf44e929b431
+xkotlin:S1066q".Merge this "if" statement with the nested one.(˜‡¡İùÿÿÿÿ8ìŞĞå2J$8f3fe2d4-c10d-4062-abb6-c8fd04a0dee8

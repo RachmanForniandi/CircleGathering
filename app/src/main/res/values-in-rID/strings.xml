@@ -19,7 +19,7 @@
     <string name="prompt_password">Kata Sandi Anda</string>
     <string name="click_here">Klik Disini</string>
     <string name="don_t_have_account_user_yet">Belum punya akun pengguna?</string>
-    <string name="welcome">Selamat Datang</string>
+    <string name="welcome">Selamat Datang, %1$s </string>
     <string name="button_add_data_story">tombol tambah data cerita</string>
     <string name="username">Nama Pengguna</string>
     <string name="register">Daftar</string>
@@ -44,4 +44,28 @@
     <string name="detail_stories">Detail Cerita</string>
     <string name="add_stories">Tambah Cerita</string>
     <string name="confirm">Konfirmasi</string>
+    <string name="story_image_widget_version">Gambar cerita versi Widget</string>
+    <string name="appwidget_text">Contoh</string>
+    <string name="add_widget">Tambah widget</string>
+    <string name="app_widget_description">Ini adalah deskripsi dari widget</string>
+    <string name="empty">kosong</string>
+    <string name="notification_title">Lihat cerita baru hari ini</string>
+    <string name="notification_subtitle">Tekan untuk lebih lengkapnya</string>
+    <string name="try_again">Coba lagi</string>
+    <string name="msg_text_failed_fetch_data">Gagal memperoleh data</string>
+    <string name="msg_text_widget_removed">Widget terhapus</string>
+    <string name="button_refresh_data_on_widget">Tombol penyegaran data di widget</string>
+    <string name="camera_x">Kamera X</string>
+
+    <string name="let_s_register">Silahkan daftar</string>
+    <string name="before_explore_all_of_user_s_experience_and_story_of_all_user_please_login_with_account_that_you_already_registered">Sebelum Jelajahi semua pengalaman pengguna dan kisah semua pengguna, Silakan login dengan akun yang sudah Anda daftarkan.</string>
+    <string name="before_explore_all_of_student_s_experience_and_story_when_learning_in_dicoding_and_of_course_you_can_also_share_your_story_too">Sebelumnya Jelajahi semua pengalaman dan cerita siswa saat belajar di Dicoding, dan tentunya Anda juga bisa berbagi cerita Anda juga.</string>
+    <string name="id">ID: %2$s</string>
+    <string name="created_by">Dibuat oleh: %3$s</string>
+    <string name="date_time">Tanggal/Waktu: %4$s</string>
+    <string name="flash_camera_is_not_available">Flash camera is Not Available</string>
+    <string name="failure_to_take_picture">Gagal mengambil gambar.</string>
+    <string name="failure_to_show_camera">Gagal memunculkan kamera.</string>
+    <string name="let_s_sign_in">Silahkan masuk</string>
+    <string name="detail_image_story">gambar cerita detail</string>
 </resources>
