@@ -8,12 +8,14 @@ import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import dagger.Provides
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import rachman.forniandi.circlegathering.models.login.ResponseLogin
 import rachman.forniandi.circlegathering.models.register.ResponseRegister
 import rachman.forniandi.circlegathering.repositories.AuthUserRepository
+import rachman.forniandi.circlegathering.utils.DataStoreRepository
 import rachman.forniandi.circlegathering.utils.NetworkResult
 import rachman.forniandi.circlegathering.utils.SessionPreferences
 import retrofit2.Response
@@ -23,7 +25,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val repository: AuthUserRepository,
-    private val sessionPreferences: SessionPreferences,
+    private val sessionPreferences: DataStoreRepository,
     application: Application
 ): AndroidViewModel(application) {
 
@@ -109,22 +111,6 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    /*fun actionSaveUserCredential(token: String) {
-        viewModelScope.launch {
-            repository.store.keepAuthToken(token)
-        }
-    }*/
-    /*fun actionSaveAuthToken(token: String) {
-        viewModelScope.launch {
-            repository.store.keepAuthToken(token)
-        }
-    }*/
-
-    /*fun actionSaveAuthUsername(name: String) {
-        viewModelScope.launch {
-            repository.store.keepDataUsername(name)
-        }
-    }*/
 
     private fun saveBackOnline(backOnline:Boolean)=
         viewModelScope.launch(Dispatchers.IO) {
@@ -156,17 +142,5 @@ class AuthViewModel @Inject constructor(
             }
         }
     }
-    /*fun getLoginUserStatus() = sessionPreferences.getLoginUserStatus()
-
-    suspend fun deleteCredentialUser(){
-        sessionPreferences.run {
-            deleteTokenAuth()
-            setLoginUserStatus(false)
-        }
-    }*/
-
-
-
-
 
 }

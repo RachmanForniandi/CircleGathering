@@ -1,0 +1,8 @@
+
+=kotlin:S125|"Remove this commented out code.(±×†Ä8å‰¤¦ƒ2
+Tkotlin:S1144©"4Remove this unused private "actionReduceImg" method.(Ú×±¿8í‰¤¦ƒ2
+Xkotlin:S2757­"3Add a space between "=" and "!" to avoid confusion.(—Ôíöûÿÿÿÿ8ô‰¤¦ƒ2
+>kotlin:S1128"Remove this unused import.(èãÊõûÿÿÿÿ8€Š¤¦ƒ2
+>kotlin:S1128"Remove this unused import.(‡Œöøÿÿÿÿ8€Š¤¦ƒ2
+Ckotlin:S1874‰"#Deprecated code should not be used.(õˆ½8ƒŠ¤¦ƒ2
+Mkotlin:S1066J".Merge this "if" statement with the nested one.(ô¿ÁË8‡Š¤¦ƒ2

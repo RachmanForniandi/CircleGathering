@@ -1,28 +1,27 @@
 package rachman.forniandi.circlegathering.adapters
 
+import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import rachman.forniandi.circlegathering.R
 import rachman.forniandi.circlegathering.databinding.ItemStoryBinding
-import rachman.forniandi.circlegathering.models.allStories.ListStoryItem
+import rachman.forniandi.circlegathering.models.allStories.StoryItem
 import rachman.forniandi.circlegathering.models.allStories.ResponseAllStories
 import rachman.forniandi.circlegathering.networkUtil.StoryDiffUtil
-import rachman.forniandi.circlegathering.utils.ConstantsMain
+import rachman.forniandi.circlegathering.utils.getTimeElapseFormat
 
-class MainAdapter(private val listStory: ArrayList<ListStoryItem>):RecyclerView.Adapter<MainAdapter.MainHolder>() {
+class MainAdapter(private val mContext:Context):RecyclerView.Adapter<MainAdapter.MainHolder>() {
 
-    private var story= emptyList<ListStoryItem>()
+    private var story= emptyList<StoryItem>()
     private var onClickListener: OnStoryClickListener?= null
 
-    class MainHolder(private val view: ItemStoryBinding): RecyclerView.ViewHolder(view.root){
-
-        fun bind(resultStory:ListStoryItem){
-            view.dataStory = resultStory
-            //view.convertFormatDateTime = ConstantsMain()
-            view.executePendingBindings()
-        }
+    class MainHolder(view: ItemStoryBinding): RecyclerView.ViewHolder(view.root){
+        val imgStoryItem = view.imgStory
+        val titlePictureItem = view.txtTitleStory
+        val timeElapseStoryItem = view.txtTimeStoryElapsed
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainHolder {
@@ -36,7 +35,14 @@ class MainAdapter(private val listStory: ArrayList<ListStoryItem>):RecyclerView.
 
     override fun onBindViewHolder(holder: MainHolder, position: Int) {
         val storyItem = story[position]
-        holder.bind(storyItem)
+        holder.titlePictureItem.text= storyItem.description
+        holder.timeElapseStoryItem.text = storyItem.createdAt.getTimeElapseFormat()
+        Glide.with(mContext)
+            .load(storyItem.photoUrl)
+            .placeholder(R.drawable.place_holder)
+            .error(R.drawable.error_placeholder)
+            .into(holder.imgStoryItem)
+
         holder.itemView.setOnClickListener {
             onClickListener?.onClick(position,storyItem)
 
@@ -48,10 +54,10 @@ class MainAdapter(private val listStory: ArrayList<ListStoryItem>):RecyclerView.
     }
 
     interface OnStoryClickListener {
-        fun onClick(position: Int, story: ListStoryItem)
+        fun onClick(position: Int, story: StoryItem)
     }
 
-    fun setData(storyData:ResponseAllStories){
+    fun setData(storyData: ResponseAllStories){
         val dataDiffUtil = StoryDiffUtil(story,storyData.listStory)
         val diffUtilResult = DiffUtil.calculateDiff(dataDiffUtil)
         story = storyData.listStory

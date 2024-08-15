@@ -21,6 +21,7 @@ import rachman.forniandi.circlegathering.databinding.FragmentLoginBinding
 import rachman.forniandi.circlegathering.networkUtil.NetworkListener
 import rachman.forniandi.circlegathering.utils.NetworkResult
 import rachman.forniandi.circlegathering.utils.animateLoadingProcessData
+
 import rachman.forniandi.circlegathering.viewModels.AuthViewModel
 
 
@@ -105,9 +106,12 @@ class LoginFragment : Fragment() {
     }
 
     private fun applyLoadProgressStateLogin(onProcess:Boolean){
-        binding.etEmail.isEnabled = !onProcess
-        binding.etPassword.isEnabled = !onProcess
-        binding.btnLogin.isEnabled = !onProcess
+        binding.apply {
+            etEmail.isEnabled = !onProcess
+            etPassword.isEnabled = !onProcess
+            btnLogin.isEnabled = !onProcess
+        }
+
 
         if (onProcess){
             binding.maskedViewPgLogin.animateLoadingProcessData(true)

@@ -1,15 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
-
-    <data>
-        <variable
-            name="mainViewModel"
-            type="rachman.forniandi.circlegathering.viewModels.MainViewModel" />
-    </data>
-
     <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".activities.MainActivity">
@@ -41,25 +34,15 @@
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:text="@string/welcome"
-            android:textSize="16sp"
+            style="@style/StyleGreetingAndUsername"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbar_main" />
-
-        <TextView
-            android:id="@+id/txt_username"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            tools:text="user"
-            android:textSize="16sp"
-            app:layout_constraintStart_toEndOf="@id/lbl_greeting_user"
             app:layout_constraintTop_toBottomOf="@id/toolbar_main" />
 
         <com.facebook.shimmer.ShimmerFrameLayout
             android:id="@+id/shimmerFrameLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="@+id/txt_username"
+            android:layout_marginTop="8dp"
             app:layout_constraintStart_toStartOf="@+id/lbl_greeting_user"
             app:layout_constraintTop_toBottomOf="@+id/lbl_greeting_user">
 
@@ -106,7 +89,7 @@
             android:contentDescription="@string/button_add_data_story"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/ic_add_data" />
+            app:srcCompat="@drawable/ic_add_white" />
 
         <ImageView
             android:id="@+id/img_error"
@@ -115,8 +98,7 @@
             android:alpha="0.5"
             android:contentDescription="@string/image_data_error"
             android:src="@drawable/ic_sad"
-            android:visibility="invisible"
-            readApiResponse="@{mainViewModel.getAllStoriesResponse}"
+            android:visibility="gone"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -133,16 +115,22 @@
             android:text="@string/no_internet_connection"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:visibility="invisible"
-            readApiResponse="@{mainViewModel.getAllStoriesResponse}"
-            readApiResponseForText ="@{mainViewModel.getAllStoriesResponse}"
             app:layout_constraintEnd_toEndOf="@id/img_error"
             app:layout_constraintStart_toStartOf="@id/img_error"
-            app:layout_constraintTop_toBottomOf="@id/img_error" />
+            app:layout_constraintTop_toBottomOf="@id/img_error"
+            android:visibility="gone"/>
 
+        <Button
+            android:id="@+id/btn_retry_story"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/try_again"
+            app:layout_constraintEnd_toEndOf="@id/txt_error"
+            app:layout_constraintStart_toStartOf="@id/txt_error"
+            app:layout_constraintTop_toBottomOf="@id/txt_error"
+            android:clickable="false"
+            android:visibility="gone"/>
 
+</androidx.constraintlayout.widget.ConstraintLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</layout>
 

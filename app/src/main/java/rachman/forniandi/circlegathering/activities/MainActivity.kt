@@ -5,41 +5,47 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
 import rachman.forniandi.circlegathering.LoginRegister.LoginRegisterActivity
 import rachman.forniandi.circlegathering.R
 import rachman.forniandi.circlegathering.adapters.MainAdapter
 import rachman.forniandi.circlegathering.databinding.ActivityMainBinding
-import rachman.forniandi.circlegathering.models.allStories.ListStoryItem
+import rachman.forniandi.circlegathering.models.allStories.StoryItem
+import rachman.forniandi.circlegathering.utils.NetworkListener
 import rachman.forniandi.circlegathering.utils.NetworkResult
 import rachman.forniandi.circlegathering.viewModels.MainViewModel
 
-
+@ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private val viewModel: MainViewModel by viewModels()
-    private lateinit var mainAdapter :MainAdapter
+    private val mainAdapter by lazy { MainAdapter(this@MainActivity) }
+    private lateinit var networkListener: NetworkListener
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //binding = ActivityMainBinding.inflate(layoutInflater)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+
+        setContentView(binding.root)
 
         setSupportActionBar(binding.toolbarMain)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        binding.lifecycleOwner = this
-        binding.mainViewModel= viewModel
 
         setUserName()
         showDataStoriesOnMain()
@@ -49,11 +55,41 @@ class MainActivity : AppCompatActivity() {
             val intentToAddData = Intent(this,FormAddDataActivity::class.java)
             startActivity(intentToAddData)
         }
+        binding.swipeRefreshMain.isRefreshing = true
+
+        binding.btnRetryStory.setOnClickListener {
+            requestDataRemoteStories()
+        }
+
+        viewModel.readBackOnline.observe(this){
+            viewModel.backOnline=it
+        }
+
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(state = Lifecycle.State.STARTED) {
+                networkListener = NetworkListener()
+                networkListener.checkNetworkAvailability(this@MainActivity)
+                    .collect { status->
+                        Log.d("NetworkListener",status.toString())
+                        viewModel.networkStatus = status
+                        viewModel.showNetworkStatus()
+                    }
+            }
+        }
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (viewModel.recyclerViewState != null){
+            binding.listDataStories.layoutManager?.onRestoreInstanceState(viewModel.recyclerViewState)
+        }
     }
 
     private fun setUserName() {
         viewModel.getUserName().observe(this) { user ->
-            binding.txtUsername.text = user
+            binding.lblGreetingUser.text = getString(R.string.welcome, user)
         }
     }
 
@@ -66,7 +102,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun requestDataRemoteStories() {
-        binding.swipeRefreshMain.isRefreshing = true
         viewModel.doShowAllStoriesData()
         viewModel.getAllStoriesResponse.observe(this) { response ->
             when (response) {
@@ -74,34 +109,46 @@ class MainActivity : AppCompatActivity() {
                     hideShimmerEffect()
                     response.data?.let { mainAdapter.setData(it) }
                     binding.swipeRefreshMain.isRefreshing = false
+                    binding.imgError.visibility = View.GONE
+                    binding.txtError.visibility = View.GONE
+                    binding.btnRetryStory.visibility = View.GONE
+                    binding.btnRetryStory.isClickable = false
+                    Log.e("MainActivity","Network Success called")
                 }
 
                 is NetworkResult.Error -> {
+
                     hideShimmerEffect()
                     Toast.makeText(
                         this,
                         response.message.toString(), Toast.LENGTH_SHORT
                     ).show()
                     binding.swipeRefreshMain.isRefreshing = false
+                    binding.imgError.visibility = View.VISIBLE
+                    binding.txtError.visibility = View.VISIBLE
+                    binding.btnRetryStory.visibility = View.VISIBLE
+                    binding.btnRetryStory.isClickable = true
+                    Log.e("MainActivity","Network Error called")
                 }
 
                 is NetworkResult.Loading -> {
                     showShimmerEffect()
+                    Log.e("MainActivity","Network Loading called")
                 }
             }
         }
     }
 
     private fun showDataStoriesOnMain() {
-        mainAdapter = MainAdapter(arrayListOf())
+        binding.listDataStories.adapter = mainAdapter
         mainAdapter.setOnClickListener(object :MainAdapter.OnStoryClickListener{
-            override fun onClick(position: Int, story: ListStoryItem) {
+            override fun onClick(position: Int, story: StoryItem) {
+
                 val toDetailStory = Intent(this@MainActivity,DetailStoryActivity::class.java)
-                toDetailStory.putExtra(DETAIL_STORY,story)
+                toDetailStory.putExtra(DETAIL_STORY,story.id)
                 startActivity(toDetailStory)
             }
         })
-        binding.listDataStories.adapter = mainAdapter
         showShimmerEffect()
     }
 
@@ -117,6 +164,7 @@ class MainActivity : AppCompatActivity() {
         binding.listDataStories.visibility = View.VISIBLE
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         Builder(this)
             .setTitle(getString(R.string.exit))

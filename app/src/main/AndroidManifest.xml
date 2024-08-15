@@ -23,6 +23,8 @@
         android:theme="@style/Theme.CircleGathering"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+
+
         <activity
             android:name=".activities.SplashScreenActivity"
             android:exported="true">
@@ -52,7 +54,7 @@
             android:parentActivityName=".activities.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.MainActivity"/>
+                android:value=".activities.MainActivity" />
         </activity>
         <activity
             android:name=".activities.FormAddDataActivity"
@@ -61,8 +63,13 @@
             android:parentActivityName=".activities.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.MainActivity"/>
+                android:value=".activities.MainActivity" />
         </activity>
+
+        <activity android:name=".activities.CameraXActivity"
+            android:exported="false"/>
+
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="rachman.forniandi.circlegathering"
@@ -70,8 +77,16 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"/>
+                android:resource="@xml/file_paths" />
         </provider>
+
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            tools:node="merge"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false" />
+
+
     </application>
 
 </manifest>

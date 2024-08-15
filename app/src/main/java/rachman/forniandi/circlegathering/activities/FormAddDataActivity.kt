@@ -2,35 +2,30 @@ package rachman.forniandi.circlegathering.activities
 
 import android.Manifest
 import android.app.Activity
-import android.app.AlertDialog
 import android.app.Dialog
-import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
-import com.karumi.dexter.Dexter
-import com.karumi.dexter.MultiplePermissionsReport
-import com.karumi.dexter.PermissionToken
-import com.karumi.dexter.listener.PermissionDeniedResponse
-import com.karumi.dexter.listener.PermissionGrantedResponse
-import com.karumi.dexter.listener.PermissionRequest
-import com.karumi.dexter.listener.multi.MultiplePermissionsListener
-import com.karumi.dexter.listener.single.PermissionListener
 import dagger.hilt.android.AndroidEntryPoint
+import id.zelory.compressor.Compressor
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -43,6 +38,7 @@ import rachman.forniandi.circlegathering.databinding.CustomDialogImageSelectionB
 import rachman.forniandi.circlegathering.utils.NetworkResult
 import rachman.forniandi.circlegathering.utils.animateLoadingProcessData
 import rachman.forniandi.circlegathering.utils.createCustomTempFileImg
+import rachman.forniandi.circlegathering.utils.rotateBitmap
 import rachman.forniandi.circlegathering.utils.uriImgToFileImg
 import rachman.forniandi.circlegathering.viewModels.UploadViewModel
 import java.io.ByteArrayOutputStream
@@ -56,16 +52,53 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var binding:ActivityFormAddDataBinding
     private val viewModel: UploadViewModel by viewModels()
     private var inputFile: File? = null
+    private var compressedFile: File? = null
     private var mImgPath:String =""
     private lateinit var descriptionToRequestBody: RequestBody
     private lateinit var fileBodyMultipart : MultipartBody.Part
 
+    companion object {
+        const val CAMERA_X_RESULT = 200
+
+        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
+        private const val REQUEST_CODE_PERMISSIONS = 10
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (requestCode == REQUEST_CODE_PERMISSIONS) {
+            if (!allPermissionsGranted()) {
+                Toast.makeText(
+                    this,
+                    "Tidak mendapatkan permission.",
+                    Toast.LENGTH_SHORT
+                ).show()
+                finish()
+            }
+        }
+    }
+
+    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
+        ContextCompat.checkSelfPermission(baseContext, it) == PackageManager.PERMISSION_GRANTED
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityFormAddDataBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        if (!allPermissionsGranted()) {
+            ActivityCompat.requestPermissions(
+                this,
+                REQUIRED_PERMISSIONS,
+                REQUEST_CODE_PERMISSIONS
+            )
+        }
         binding.imgAddInput.setOnClickListener(this)
         binding.btnUploadDataConfirm.setOnClickListener(this)
 
@@ -83,20 +116,20 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
                 }
 
                 R.id.btn_upload_data_confirm->{
-                    //val insertImg = File(mImgPath)
                     if (inputFile == null){
                         Snackbar.make(binding.root, getString(R.string.insert_input_upload_validation_message),
                             Snackbar.LENGTH_SHORT).show()
                     }else{
                         val description =binding.etDescription.text.toString().trim()
-                        val reduceImageFirst = actionReduceImg(inputFile as File)
-                        executeUploadData(reduceImageFirst,description)
+                        //val reduceImageFirst = actionReduceImg(inputFile as File)
+                        executeUploadData(compressedFile as File,description)
                     }
                     return
                 }
             }
         }
     }
+    @OptIn(ExperimentalCoroutinesApi::class)
     private fun executeUploadData(reduceImageFirst: File, description: String) {
         lifecycleScope.launch {
                 val requestBodyInput = reduceImageFirst.asRequestBody("file_img/jpeg".toMediaType())
@@ -156,102 +189,93 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
         optionTakeImageDialog.setContentView(binding.root)
 
         binding.txtOptionCamera.setOnClickListener {
-            Dexter.withContext(this)
-                .withPermissions(
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.CAMERA
-                ).withListener(object : MultiplePermissionsListener {
-                    override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
-                        report?.let {
-                            if (report.areAllPermissionsGranted()){
-                                val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                                intent.resolveActivity(packageManager)
-                                createCustomTempFileImg(application).also {
-                                    val photoURICamera: Uri = FileProvider.getUriForFile(
-                                        this@FormAddDataActivity,
-                                        packageName,
-                                        it
-                                    )
-                                    mImgPath = it.absolutePath
-                                    intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURICamera)
-                                    launcherIntentCamera.launch(intent)
-                                }
-                            }
-                        }
-                    }
-
-                    override fun onPermissionRationaleShouldBeShown(
-                        permissions: MutableList<PermissionRequest>?,
-                        token: PermissionToken?) {
-                        showRationalDialogForPermissions()
-                    }
-                }).onSameThread()
-                .check()
+            takeActionCamera()
+            optionTakeImageDialog.dismiss()
+        }
+        binding.txtOptionCameraX.setOnClickListener {
+            takeActionCameraX()
             optionTakeImageDialog.dismiss()
         }
 
         binding.txtOptionGallery.setOnClickListener {
-            Dexter.withContext(this@FormAddDataActivity)
-                .withPermission(
-                    Manifest.permission.READ_EXTERNAL_STORAGE
-                ).withListener(object : PermissionListener {
-                    override fun onPermissionGranted(response: PermissionGrantedResponse?) {
-                        val galleryIntent = Intent()
-                        galleryIntent.action= Intent.ACTION_GET_CONTENT
-                        galleryIntent.type = "image/*"
-                        val pickImg = Intent.createChooser(galleryIntent, "Choose a Picture")
-                        launcherIntentGallery.launch(pickImg)
-                    }
-
-                    override fun onPermissionDenied(response: PermissionDeniedResponse?) {
-                        Toast.makeText(this@FormAddDataActivity,"You have denied the storage permission to select image.",
-                            Toast.LENGTH_SHORT).show()
-                    }
-
-                    override fun onPermissionRationaleShouldBeShown(permission: PermissionRequest?, token: PermissionToken?) {
-                        showRationalDialogForPermissions()
-                    }
-                }).onSameThread()
-                .check()
+            takeActionGallery()
             optionTakeImageDialog.dismiss()
         }
         optionTakeImageDialog.show()
     }
 
-    private fun showRationalDialogForPermissions() {
-        AlertDialog.Builder(this)
-            .setMessage(getString(R.string.message_setting_permissions))
-            .setPositiveButton(getString(R.string.go_to_settings)){ _, _ ->
-                try {
-                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                    val uri = Uri.fromParts("package",packageName,null)
-                    intent.data = uri
-                    startActivity(intent)
-                }catch (e: ActivityNotFoundException){
-                    e.printStackTrace()
-                }
-            }
-            .setNegativeButton(getString(R.string.cancel)){
-                    dialog, _ ->
-                dialog.dismiss()
-            }.show()
+    private fun takeActionCameraX() {
+        val intent = Intent(this, CameraXActivity::class.java)
+        launcherIntentCameraX.launch(intent)
     }
+
+    private fun takeActionCamera() {
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        intent.resolveActivity(packageManager)
+        createCustomTempFileImg(application).also {
+            val photoURICamera: Uri = FileProvider.getUriForFile(
+                this@FormAddDataActivity,
+                packageName,
+                it
+            )
+            mImgPath = it.absolutePath
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURICamera)
+            launcherIntentCamera.launch(intent)
+        }
+    }
+
+    private fun takeActionGallery() {
+        val galleryIntent = Intent()
+        galleryIntent.action= Intent.ACTION_GET_CONTENT
+        galleryIntent.type = "image/*"
+        val pickImg = Intent.createChooser(galleryIntent, "Choose a Picture")
+        launcherIntentGallery.launch(pickImg)
+    }
+
 
     private val launcherIntentCamera = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
-    ) {
-        if (it.resultCode == RESULT_OK) {
-            val filePicCamera = File(mImgPath)
-            inputFile= filePicCamera
-            val resultCamera = BitmapFactory.decodeFile(inputFile?.path)
-            binding.imgDisplayInput.setImageBitmap(resultCamera)
+    ) {result->
+        lifecycleScope.launch {
+            if (result.resultCode == RESULT_OK) {
+                val filePicCamera = File(mImgPath)
+                inputFile= filePicCamera
 
-            Log.i("imgPath", mImgPath)
+                compressedFile = Compressor.compress(this@FormAddDataActivity, inputFile!!)
 
-            binding.imgAddInput.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.ic_vector_edit))
-        }else if (it.resultCode == Activity.RESULT_CANCELED){
-            Snackbar.make(binding.root, getString(R.string.all_permission_device_are_denied), Snackbar.LENGTH_SHORT).show()
+                val resultCamera = BitmapFactory.decodeFile(compressedFile?.path)
+
+                binding.imgDisplayInput.setImageBitmap(resultCamera)
+
+                Log.i("imgPath", mImgPath)
+
+                binding.imgAddInput.setImageDrawable(ContextCompat.getDrawable(this@FormAddDataActivity,R.drawable.ic_vector_edit))
+            }else if (result.resultCode == Activity.RESULT_CANCELED){
+                Log.e("Canceled","Canceled")
+            }
         }
+
+    }
+
+    private val launcherIntentCameraX = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result->
+        lifecycleScope.launch {
+            if (result.resultCode == CAMERA_X_RESULT){
+                val getFileFromCamX = result.data?.getSerializableExtra("pictCameraX")as File
+                val getImgOrientation= result.data?.getBooleanExtra("isBackCameraX",true)as Boolean
+                inputFile = getFileFromCamX
+
+                compressedFile=Compressor.compress(this@FormAddDataActivity, inputFile!!)
+
+                val resultCameraX= rotateBitmap(
+                    BitmapFactory.decodeFile(compressedFile?.path),
+                    getImgOrientation
+                )
+                binding.imgDisplayInput.setImageBitmap(resultCameraX)
+            }
+        }
+
     }
 
     private val launcherIntentGallery = registerForActivityResult(
@@ -266,16 +290,16 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
 
             binding.imgAddInput.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.ic_vector_edit))
         } else if (result.resultCode == Activity.RESULT_CANCELED){
-            Snackbar.make(
-                binding.root,
-                getString(R.string.all_permission_device_are_denied), Snackbar.LENGTH_SHORT).show()
-        }
+            Log.e("Canceled","Canceled")}
     }
 
     private fun applyLoadProgressStateUpload(onProcess:Boolean){
-        binding.etDescription.isEnabled = !onProcess
-        binding.imgAddInput.isEnabled = !onProcess
-        binding.imgDisplayInput.isEnabled = !onProcess
+        binding.apply {
+            etDescription.isEnabled = !onProcess
+            imgAddInput.isEnabled = !onProcess
+            imgDisplayInput.isEnabled = !onProcess
+            btnUploadDataConfirm.isEnabled =!onProcess
+        }
 
         if (onProcess){
             binding.maskedViewPgUpload.animateLoadingProcessData(true)
@@ -283,10 +307,6 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
             binding.maskedViewPgUpload.animateLoadingProcessData(false)
         }
     }
-
-
-
-
 
 }
 

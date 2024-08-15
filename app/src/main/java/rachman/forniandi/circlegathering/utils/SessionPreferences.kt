@@ -19,4 +19,6 @@ interface SessionPreferences {
     suspend fun setLoginUserStatus(isLogin: Boolean)
 
     fun getLoginUserStatus(): Flow<Boolean>
+
+    suspend fun saveBackOnline(backOnline:Boolean)
 }

@@ -15,6 +15,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import rachman.forniandi.circlegathering.models.addStory.ResponseAddStory
 import rachman.forniandi.circlegathering.repositories.MainRepository
+import rachman.forniandi.circlegathering.utils.DataStoreRepository
 import rachman.forniandi.circlegathering.utils.NetworkResult
 import rachman.forniandi.circlegathering.utils.SessionPreferences
 import retrofit2.Response
@@ -24,7 +25,7 @@ import javax.inject.Inject
 @HiltViewModel
 class UploadViewModel @Inject constructor(
     private val repository: MainRepository,
-    private val sessionPreferences: SessionPreferences,
+    private val sessionPreferences: DataStoreRepository,
     application: Application
 ): AndroidViewModel(application) {
 
