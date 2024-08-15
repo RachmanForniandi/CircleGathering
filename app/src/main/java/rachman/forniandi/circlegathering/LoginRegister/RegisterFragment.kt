@@ -22,15 +22,14 @@ import rachman.forniandi.circlegathering.viewModels.AuthViewModel
 @AndroidEntryPoint
 class RegisterFragment : Fragment() {
 
-    private var binding: FragmentRegisterBinding?= null
+    private var _binding: FragmentRegisterBinding? = null
+    private val binding get() = _binding
     private val registerViewModel:AuthViewModel by viewModels()
-    //private val actionNavRegister= findNavController().navigate(R.id.action_RegisterFragment_to_LoginFragment)
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-       binding = FragmentRegisterBinding.inflate(inflater,container,false)
+       _binding = FragmentRegisterBinding.inflate(inflater,container,false)
         return binding!!.root
     }
 
@@ -40,11 +39,10 @@ class RegisterFragment : Fragment() {
     }
 
     private fun setActionInRegisterPage() {
-        binding?.apply {
-            btnRegister.setOnClickListener {
+        binding?.btnRegister?.setOnClickListener {
                 actionRegister()
-            }
         }
+
     }
 
     private fun actionRegister() {
@@ -54,47 +52,54 @@ class RegisterFragment : Fragment() {
 
         lifecycleScope.launch {
             registerViewModel.actionRegister(username,email, password)
-            registerViewModel.registerResponse.observe(viewLifecycleOwner,{
-                    response->
-                when(response){
-                    is NetworkResult.Success->{
+            registerViewModel.registerResponse.observe(viewLifecycleOwner) { response ->
+                when (response) {
+                    is NetworkResult.Success -> {
                         applyLoadProgressStateRegister(false)
-                        val responseRegister =response.data
+                        val responseRegister = response.data
                         Toast.makeText(
                             requireActivity(),
                             responseRegister?.message,
                             Toast.LENGTH_SHORT
                         ).show()
-                        //actionNavRegister
+                        findNavController().navigate(R.id.action_RegisterFragment_to_LoginFragment)
+
                     }
-                    is NetworkResult.Error->{
+
+                    is NetworkResult.Error -> {
+                        Toast.makeText(
+                            requireContext(),
+                            response.message.toString(), Toast.LENGTH_SHORT
+                        ).show()
                         applyLoadProgressStateRegister(false)
-                        Toast.makeText(requireContext(),
-                            response.message.toString()
-                            , Toast.LENGTH_SHORT).show()
                     }
-                    is NetworkResult.Loading->{
+
+                    is NetworkResult.Loading -> {
                         applyLoadProgressStateRegister(true)
                     }
                 }
-            })
+            }
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        binding = null
+        _binding = null
     }
 
     private fun applyLoadProgressStateRegister(onProcess:Boolean){
-        binding?.etEmail?.isEnabled = !onProcess
-        binding?.etPassword?.isEnabled = !onProcess
-        binding?.btnRegister?.isEnabled = !onProcess
+        binding?.apply {
+            etUsername.isEnabled = !onProcess
+            etEmail.isEnabled = !onProcess
+            etPassword.isEnabled = !onProcess
+            btnRegister.isEnabled = !onProcess
+        }
+
 
         if (onProcess){
-            binding?.pgRegister?.animateLoadingProcessData(true)
+            binding?.maskedViewPgRegister?.animateLoadingProcessData(true)
         }else{
-            binding?.pgRegister?.animateLoadingProcessData(false)
+            binding?.maskedViewPgRegister?.animateLoadingProcessData(false)
         }
     }
 }

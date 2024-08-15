@@ -8,13 +8,16 @@ import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import dagger.Provides
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import rachman.forniandi.circlegathering.models.login.ResponseLogin
 import rachman.forniandi.circlegathering.models.register.ResponseRegister
 import rachman.forniandi.circlegathering.repositories.AuthUserRepository
+import rachman.forniandi.circlegathering.utils.DataStoreRepository
 import rachman.forniandi.circlegathering.utils.NetworkResult
+import rachman.forniandi.circlegathering.utils.SessionPreferences
 import retrofit2.Response
 import java.lang.Exception
 import javax.inject.Inject
@@ -22,6 +25,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val repository: AuthUserRepository,
+    private val sessionPreferences: DataStoreRepository,
     application: Application
 ): AndroidViewModel(application) {
 
@@ -39,6 +43,7 @@ class AuthViewModel @Inject constructor(
     fun actionLogin(email:String,password:String) = viewModelScope.launch {
         actionLoginSafeCall(email, password)
     }
+
 
     private suspend fun actionRegisterSafeCall(name:String,email:String,password:String){
         registerResponse.value = NetworkResult.Loading()
@@ -76,6 +81,7 @@ class AuthViewModel @Inject constructor(
             try {
                 val loginFeedback = repository.remote.doLogin(email,password)
                 loginResponse.value = handledLoginResponse(loginFeedback)
+
             }catch (e: Exception){
                 loginResponse.value = NetworkResult.Error("Login Failed.")
             }
@@ -84,7 +90,7 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    private fun handledLoginResponse(response: Response<ResponseLogin>): NetworkResult<ResponseLogin>? {
+    private suspend fun handledLoginResponse(response: Response<ResponseLogin>): NetworkResult<ResponseLogin>? {
         when{
             response.message().toString().contains("timeout")->{
                 return NetworkResult.Error("Timeout")
@@ -92,6 +98,11 @@ class AuthViewModel @Inject constructor(
 
             response.isSuccessful -> {
                 val login = response.body()
+                sessionPreferences.run {
+                    login?.loginResult?.token?.let { saveTokenAuth(it) }
+                    login?.loginResult?.name?.let{ saveUsername(it)}
+                    setLoginUserStatus(true)
+                }
                 return NetworkResult.Success(login)
             }
             else->{
@@ -100,26 +111,8 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    fun actionSaveAuthToken(token: String) {
-        viewModelScope.launch {
-            repository.remote.keepAuthToken(token)
-        }
-    }
 
-    fun actionSaveAuthUsername(name: String) {
-        viewModelScope.launch {
-            repository.remote.keepDataUsername(name)
-        }
-    }
-
-/*
-    private fun saveTokenLogin(token: String){
-        viewModelScope.launch {
-            repository.store.saveTheAuthToken(token)
-        }
-    }*/
-
-    fun saveBackOnline(backOnline:Boolean)=
+    private fun saveBackOnline(backOnline:Boolean)=
         viewModelScope.launch(Dispatchers.IO) {
             repository.online.saveBackOnline(backOnline)
         }
@@ -149,7 +142,5 @@ class AuthViewModel @Inject constructor(
             }
         }
     }
-
-
 
 }

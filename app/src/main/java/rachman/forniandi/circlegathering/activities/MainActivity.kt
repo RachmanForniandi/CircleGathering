@@ -1,62 +1,98 @@
 package rachman.forniandi.circlegathering.activities
 
+import android.app.AlertDialog.Builder
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
 import rachman.forniandi.circlegathering.LoginRegister.LoginRegisterActivity
 import rachman.forniandi.circlegathering.R
 import rachman.forniandi.circlegathering.adapters.MainAdapter
 import rachman.forniandi.circlegathering.databinding.ActivityMainBinding
+import rachman.forniandi.circlegathering.models.allStories.StoryItem
+import rachman.forniandi.circlegathering.utils.NetworkListener
 import rachman.forniandi.circlegathering.utils.NetworkResult
 import rachman.forniandi.circlegathering.viewModels.MainViewModel
 
+@ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    //private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
     private val viewModel: MainViewModel by viewModels()
-    private val adapter by lazy { MainAdapter() }
-    private var token: String = ""
-    private var username: String = ""
-    //var intent = getIntent()
-
+    private val mainAdapter by lazy { MainAdapter(this@MainActivity) }
+    private lateinit var networkListener: NetworkListener
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //binding = ActivityMainBinding.inflate(layoutInflater)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+
+        setContentView(binding.root)
 
         setSupportActionBar(binding.toolbarMain)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        val extras = intent.extras
 
-        token = extras?.getString(OBTAINED_TOKEN)!!
-        username = extras.getString(OBTAINED_USERNAME)!!
-
-        binding.txtUsername.text = username
-
-        /*val navController = findNavController(R.id.nav_host_fragment_content_main)
-        appBarConfiguration = AppBarConfiguration(navController.graph)
-        setupActionBarWithNavController(navController, appBarConfiguration)*/
-
-        setSwipeRefreshAtMainPage()
+        setUserName()
         showDataStoriesOnMain()
+        setSwipeRefreshAtMainPage()
         requestDataRemoteStories()
-        binding.fabAddStory.setOnClickListener { view ->
+        binding.fabAddStory.setOnClickListener {
+            val intentToAddData = Intent(this,FormAddDataActivity::class.java)
+            startActivity(intentToAddData)
+        }
+        binding.swipeRefreshMain.isRefreshing = true
 
+        binding.btnRetryStory.setOnClickListener {
+            requestDataRemoteStories()
+        }
+
+        viewModel.readBackOnline.observe(this){
+            viewModel.backOnline=it
+        }
+
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(state = Lifecycle.State.STARTED) {
+                networkListener = NetworkListener()
+                networkListener.checkNetworkAvailability(this@MainActivity)
+                    .collect { status->
+                        Log.d("NetworkListener",status.toString())
+                        viewModel.networkStatus = status
+                        viewModel.showNetworkStatus()
+                    }
+            }
+        }
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (viewModel.recyclerViewState != null){
+            binding.listDataStories.layoutManager?.onRestoreInstanceState(viewModel.recyclerViewState)
         }
     }
+
+    private fun setUserName() {
+        viewModel.getUserName().observe(this) { user ->
+            binding.lblGreetingUser.text = getString(R.string.welcome, user)
+        }
+    }
+
 
     private fun setSwipeRefreshAtMainPage() {
         binding.swipeRefreshMain.setOnRefreshListener {
@@ -66,32 +102,53 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun requestDataRemoteStories() {
-        binding.swipeRefreshMain.isRefreshing = true
-        viewModel.doShowAllStoriesData(token)
-        viewModel.getAllStoriesResponse.observe(this, {
-                response->
-            when(response){
-                is NetworkResult.Success->{
+        viewModel.doShowAllStoriesData()
+        viewModel.getAllStoriesResponse.observe(this) { response ->
+            when (response) {
+                is NetworkResult.Success -> {
                     hideShimmerEffect()
-                    response.data?.let { adapter.setData(it) }
+                    response.data?.let { mainAdapter.setData(it) }
                     binding.swipeRefreshMain.isRefreshing = false
+                    binding.imgError.visibility = View.GONE
+                    binding.txtError.visibility = View.GONE
+                    binding.btnRetryStory.visibility = View.GONE
+                    binding.btnRetryStory.isClickable = false
+                    Log.e("MainActivity","Network Success called")
                 }
-                is NetworkResult.Error->{
+
+                is NetworkResult.Error -> {
+
                     hideShimmerEffect()
-                    Toast.makeText(this,
-                        response.message.toString()
-                        , Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this,
+                        response.message.toString(), Toast.LENGTH_SHORT
+                    ).show()
                     binding.swipeRefreshMain.isRefreshing = false
+                    binding.imgError.visibility = View.VISIBLE
+                    binding.txtError.visibility = View.VISIBLE
+                    binding.btnRetryStory.visibility = View.VISIBLE
+                    binding.btnRetryStory.isClickable = true
+                    Log.e("MainActivity","Network Error called")
                 }
-                is NetworkResult.Loading->{
+
+                is NetworkResult.Loading -> {
                     showShimmerEffect()
+                    Log.e("MainActivity","Network Loading called")
                 }
             }
-        })
+        }
     }
 
     private fun showDataStoriesOnMain() {
-        binding.listDataStories.adapter = adapter
+        binding.listDataStories.adapter = mainAdapter
+        mainAdapter.setOnClickListener(object :MainAdapter.OnStoryClickListener{
+            override fun onClick(position: Int, story: StoryItem) {
+
+                val toDetailStory = Intent(this@MainActivity,DetailStoryActivity::class.java)
+                toDetailStory.putExtra(DETAIL_STORY,story.id)
+                startActivity(toDetailStory)
+            }
+        })
         showShimmerEffect()
     }
 
@@ -107,6 +164,20 @@ class MainActivity : AppCompatActivity() {
         binding.listDataStories.visibility = View.VISIBLE
     }
 
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        Builder(this)
+            .setTitle(getString(R.string.exit))
+            .setMessage(getString(R.string.are_you_sure_do_you_want_to_exit))
+            .setNegativeButton(getString(R.string.no), null)
+            .setPositiveButton(getString(R.string.yes), object : DialogInterface.OnClickListener {
+                override fun onClick(arg0: DialogInterface?, arg1: Int) {
+                    super@MainActivity.onBackPressed()
+                }
+            }).create().show()
+    }
+
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
@@ -116,8 +187,9 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_logout ->{
-                viewModel.clearTheTokenAndSession("")
+                viewModel.signOutUser()
                 val intentToAuth = Intent(this,LoginRegisterActivity::class.java)
+                intentToAuth.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 startActivity(intentToAuth)
                 finish()
                 true
@@ -131,9 +203,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
-    companion object {
-        const val OBTAINED_TOKEN = "obtained_token"
-        const val OBTAINED_USERNAME="obtained_username"
+    companion object{
+        const val DETAIL_STORY="detail_story"
     }
+
 }
