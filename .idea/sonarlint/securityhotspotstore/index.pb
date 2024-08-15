@@ -101,3 +101,15 @@ Q.idea/sonarlint/securityhotspotstore/2/6/269b2b75b290c5acac67f9320e8b97c6158d54
 Q.idea/sonarlint/securityhotspotstore/8/9/892d67a4a2f1fa53782ad8aff7b5fc487cdd6450,6\e\6e75996eb8fb2d516738602056fd3745fc48f109
 Å
 Q.idea/sonarlint/securityhotspotstore/4/3/43b21ee1da7c87e647b24c257700baad355e55e9,e\2\e2e246fce8347b4b6b8eebbd9dcc90f2cd4a03df
+Ü
+Vapp/src/main/java/rachman/forniandi/circlegathering/viewModels/DetailStoryViewModel.kt,5\1\51d483f81a3b016e383638b3d0936986d1540186
+Ç
+Rapp/src/main/java/rachman/forniandi/circlegathering/networkUtil/NetworkListener.kt,e\8\e8953b02065822fb7361d182921cc8e198224b2d
+Ü
+Vapp/src/main/java/rachman/forniandi/circlegathering/repositories/AuthUserRepository.kt,a\0\a08a8c8a747f4fc39c8ee8f118cc66c3de6cebdb
+F
+app/proguard-rules.pro,9\e\9e08934d811afe28fbc77aaa3c0d747b94348db9
+Å
+Qapp/src/main/java/rachman/forniandi/circlegathering/models/login/ResponseLogin.kt,3\8\38bb4c4ac7ba8015af983846478598bbc9af90b9
+
+Oapp/src/main/java/rachman/forniandi/circlegathering/models/login/LoginResult.kt,c\7\c7c9f59b25b37378078f62841307c24db449ba3e
