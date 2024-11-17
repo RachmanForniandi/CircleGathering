@@ -79,7 +79,6 @@
         android:text="@string/date_time"/>
 
 
-
     <RelativeLayout
         android:id="@+id/masked_view_pg_detail"
         android:layout_width="0dp"

@@ -95,7 +95,6 @@ class RegisterFragment : Fragment() {
             btnRegister.isEnabled = !onProcess
         }
 
-
         if (onProcess){
             binding?.maskedViewPgRegister?.animateLoadingProcessData(true)
         }else{

@@ -46,7 +46,7 @@
             app:layout_constraintTop_toTopOf="@id/img_story"
             app:layout_constraintEnd_toEndOf="parent"
             tools:text="8 hours ago"/>
-                <TextView
+        <TextView
                     android:id="@+id/txt_title_story"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
