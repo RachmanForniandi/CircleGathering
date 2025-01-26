@@ -200,7 +200,7 @@ class MainActivity : AppCompatActivity() {
                 startActivity(intentSetting)
                 true
             }
-            R.id.menu_setting ->{
+            R.id.menu_maps ->{
                 val toExploreMapPage =Intent(this,ExploreMapsActivity::class.java)
                 startActivity(toExploreMapPage)
                 true
