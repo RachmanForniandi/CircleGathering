@@ -39,6 +39,12 @@ interface NetworkService {
         @Header("Authorization")authorization:String
     ):Response<ResponseAllStories>
 
+    @GET("stories")
+    suspend fun getAllStoriesWithLocation(
+        @Header("Authorization")authorization:String,
+        @Query("location") location : Int = 1,
+    ):Response<ResponseAllStories>
+
     @GET("stories/{id}")
     suspend fun getDetailStories(
         @Header("Authorization")authorization:String,

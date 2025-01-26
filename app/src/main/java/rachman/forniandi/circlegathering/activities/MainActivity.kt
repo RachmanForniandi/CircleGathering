@@ -166,6 +166,7 @@ class MainActivity : AppCompatActivity() {
 
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
+        super.onBackPressed()
         Builder(this)
             .setTitle(getString(R.string.exit))
             .setMessage(getString(R.string.are_you_sure_do_you_want_to_exit))
@@ -199,6 +200,12 @@ class MainActivity : AppCompatActivity() {
                 startActivity(intentSetting)
                 true
             }
+            R.id.menu_setting ->{
+                val toExploreMapPage =Intent(this,ExploreMapsActivity::class.java)
+                startActivity(toExploreMapPage)
+                true
+            }
+
             else -> super.onOptionsItemSelected(item)
         }
     }

@@ -68,4 +68,5 @@
     <string name="failure_to_show_camera">Failure to show camera.</string>
     <string name="let_s_sign_in">Let\'s sign in</string>
     <string name="detail_image_story">detail image story</string>
+    <string name="maps">Maps</string>
 </resources>

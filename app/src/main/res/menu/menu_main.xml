@@ -13,4 +13,10 @@
         android:icon="@drawable/ic_baseline_language_24"
         android:title="@string/language_settings"
         app:showAsAction="always" />
+
+    <item
+        android:id="@+id/menu_maps"
+        android:icon="@drawable/ic_map"
+        android:title="@string/maps"
+        app:showAsAction="always" />
 </menu>

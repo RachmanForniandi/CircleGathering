@@ -28,6 +28,11 @@ class RemoteDataSource @Inject constructor(
         return networkService.getAllStories(addedBearerToken)
     }
 
+    suspend fun showStoriesWithLocation(authorization:String):Response<ResponseAllStories>{
+        val addedBearerToken2 = makeBearerToken(authorization)
+        return networkService.getAllStoriesWithLocation(addedBearerToken2)
+    }
+
     suspend fun showDetailStories(authorization:String,id:String):Response<ResponseDetailStory>{
         val addedBearerToken = makeBearerToken(authorization)
         return networkService.getDetailStories(addedBearerToken,id)
