@@ -1,7 +1,12 @@
 package rachman.forniandi.circlegathering.source
 
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import rachman.forniandi.circlegathering.models.addStory.InputStoryRequest
 import rachman.forniandi.circlegathering.models.addStory.ResponseAddStory
 import rachman.forniandi.circlegathering.models.allStories.ResponseAllStories
 import rachman.forniandi.circlegathering.models.detailStories.ResponseDetailStory
@@ -34,15 +39,30 @@ class RemoteDataSource @Inject constructor(
     }
 
     suspend fun showDetailStories(authorization:String,id:String):Response<ResponseDetailStory>{
-        val addedBearerToken = makeBearerToken(authorization)
-        return networkService.getDetailStories(addedBearerToken,id)
+        val addedBearerToken3 = makeBearerToken(authorization)
+        return networkService.getDetailStories(addedBearerToken3,id)
     }
 
-    suspend fun addDataStories(bearerToken:String,
-                               file:MultipartBody.Part,
-                               description:RequestBody):Response<ResponseAddStory>{
-        val addedBearerToken = makeBearerToken(bearerToken)
-        return networkService.insertStories(addedBearerToken,file,description)
+    suspend fun addDataStories(bearerToken4:String,
+                               storyRequest:InputStoryRequest
+                               /*file:MultipartBody.Part,
+                               description:RequestBody*/):Response<ResponseAddStory>{
+        val addedBearerToken = makeBearerToken(bearerToken4)
+        val descriptionStory = storyRequest.descriptionStory.toRequestBody("text/plain".toMediaType())
+        val imageStoryRequest = storyRequest.imgStory.asRequestBody("image/jpeg".toMediaTypeOrNull())
+        val imageStoryMultipart = MultipartBody.Part.createFormData(
+            "photo",
+            storyRequest.imgStory.name,
+            imageStoryRequest
+        )
+
+        var latitudeInput: RequestBody? = null
+        var longitudeInput: RequestBody? = null
+        storyRequest.location?.let {
+            latitudeInput = it.latitude.toString().toRequestBody("text/plain".toMediaType())
+            longitudeInput= it.longitude.toString().toRequestBody("text/plain".toMediaType())
+        }
+        return networkService.insertStories(addedBearerToken,imageStoryMultipart,descriptionStory,latitudeInput,longitudeInput)
     }
 
     private fun makeBearerToken(token: String): String {

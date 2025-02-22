@@ -31,7 +31,9 @@ interface NetworkService {
     suspend fun insertStories(
                       @Header("Authorization") token:String,
                       @Part file:MultipartBody.Part,
-                      @Part("description") description:RequestBody
+                      @Part("description") description:RequestBody,
+                      @Part("lat") latitude: RequestBody? = null,
+                      @Part("lon") longitude: RequestBody? = null,
                       ):Response<ResponseAddStory>
 
     @GET("stories")

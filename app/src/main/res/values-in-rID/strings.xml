@@ -69,4 +69,7 @@
     <string name="let_s_sign_in">Silahkan masuk</string>
     <string name="detail_image_story">gambar cerita detail</string>
     <string name="maps">Peta</string>
+    <string name="location">lokasi</string>
+    <string name="latitude">garis Lintang</string>
+    <string name="longitude">garis Bujur</string>
 </resources>

@@ -69,4 +69,7 @@
     <string name="let_s_sign_in">Let\'s sign in</string>
     <string name="detail_image_story">detail image story</string>
     <string name="maps">Maps</string>
+    <string name="location">Location</string>
+    <string name="latitude">Latitude</string>
+    <string name="longitude">Longitude</string>
 </resources>
