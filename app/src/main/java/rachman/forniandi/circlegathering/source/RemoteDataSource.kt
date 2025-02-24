@@ -45,8 +45,7 @@ class RemoteDataSource @Inject constructor(
 
     suspend fun addDataStories(bearerToken4:String,
                                storyRequest:InputStoryRequest
-                               /*file:MultipartBody.Part,
-                               description:RequestBody*/):Response<ResponseAddStory>{
+                               ):Response<ResponseAddStory>{
         val addedBearerToken = makeBearerToken(bearerToken4)
         val descriptionStory = storyRequest.descriptionStory.toRequestBody("text/plain".toMediaType())
         val imageStoryRequest = storyRequest.imgStory.asRequestBody("image/jpeg".toMediaTypeOrNull())
