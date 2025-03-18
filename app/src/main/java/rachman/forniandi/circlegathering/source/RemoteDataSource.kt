@@ -43,7 +43,7 @@ class RemoteDataSource @Inject constructor(
         return networkService.getDetailStories(addedBearerToken3,id)
     }
 
-    suspend fun addDataStories(bearerToken4:String,
+    /*suspend fun addDataStories(bearerToken4:String,
                                storyRequest:InputStoryRequest
                                ):Response<ResponseAddStory>{
         val addedBearerToken = makeBearerToken(bearerToken4)
@@ -62,6 +62,16 @@ class RemoteDataSource @Inject constructor(
             longitudeInput= it.longitude.toString().toRequestBody("text/plain".toMediaType())
         }
         return networkService.insertStories(addedBearerToken,imageStoryMultipart,descriptionStory,latitudeInput,longitudeInput)
+    }*/
+    suspend fun addDataStories(bearerToken4:String,
+                               file:MultipartBody.Part,
+                               description:RequestBody,
+                               lat: RequestBody? = null,
+                               lon: RequestBody? = null
+    ):Response<ResponseAddStory>{
+        val addedBearerToken = makeBearerToken(bearerToken4)
+
+        return networkService.insertStories(addedBearerToken,file, description,lat,lon)
     }
 
     private fun makeBearerToken(token: String): String {

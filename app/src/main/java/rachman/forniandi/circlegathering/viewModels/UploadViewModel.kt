@@ -12,6 +12,8 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import rachman.forniandi.circlegathering.models.addStory.InputStoryRequest
 import rachman.forniandi.circlegathering.models.addStory.ResponseAddStory
 import rachman.forniandi.circlegathering.repositories.MainRepository
@@ -31,13 +33,19 @@ class UploadViewModel @Inject constructor(
 
     var inputDataResponse: MutableLiveData<NetworkResult<ResponseAddStory>> = MutableLiveData()
 
-    fun doUploadStoriesData(imgStory: File,
+    /*fun doUploadStoriesData(imgStory: File,
                             descriptionStory: String,
                             location: Location? = null )= viewModelScope.launch {
         actionSafeCallUploadStories(imgStory, descriptionStory, location)
+    }*/
+    fun doUploadStoriesData(imgStory: MultipartBody. Part,
+                            description: RequestBody,
+                            lat: RequestBody?,
+                            lon: RequestBody?)= viewModelScope.launch {
+        actionSafeCallUploadStories(imgStory, description,lat, lon)
     }
 
-    private suspend fun actionSafeCallUploadStories(imgStory: File,
+    /*private suspend fun actionSafeCallUploadStories(imgStory: File,
                                                     descriptionStory: String,
                                                     location: Location? = null) {
         inputDataResponse.value = NetworkResult.Loading()
@@ -50,6 +58,30 @@ class UploadViewModel @Inject constructor(
                 val uploadDataFeedback = repository.remoteMain.addDataStories(tokenForUpload,inputDataRequest)
                 Log.e("check_token_upload_bearer",""+tokenForUpload)
                 Log.e("check_request_data_input","parameter_content:"+ uploadDataFeedback)
+                inputDataResponse.value  = handledUploadDataStoriesResponse(uploadDataFeedback)
+            }catch (e: Exception){
+                inputDataResponse.value  = NetworkResult.Error("Upload Error")
+            }
+
+            Log.e("response_value:",""+inputDataResponse.value)
+        }
+    }*/
+
+    private suspend fun actionSafeCallUploadStories(filePicture: MultipartBody.Part,
+                                                    description: RequestBody,
+                                                    lat: RequestBody?,
+                                                    lon: RequestBody?
+    ) {
+        inputDataResponse.value = NetworkResult.Loading()
+        if(hasInternetConnectionForMain()){
+            try {
+                val tokenForUpload= sessionPreferences.getTheTokenAuth().first()
+                val uploadDataFeedback = repository.remoteMain.addDataStories(tokenForUpload,filePicture,description,lat, lon)
+                Log.e("check_token_upload_bearer",""+tokenForUpload)
+                Log.e("check_file_picture","parameter_file:"+ filePicture)
+                Log.e("check_description","parameter_description:"+ description)
+                Log.e("check_lat","parameter_lat:"+ lat)
+                Log.e("check_lon","parameter_lon:"+ lon)
                 inputDataResponse.value  = handledUploadDataStoriesResponse(uploadDataFeedback)
             }catch (e: Exception){
                 inputDataResponse.value  = NetworkResult.Error("Upload Error")
