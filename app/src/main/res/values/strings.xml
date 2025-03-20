@@ -72,4 +72,7 @@
     <string name="location">Location</string>
     <string name="latitude">Latitude</string>
     <string name="longitude">Longitude</string>
+    <string name="not_get_permission">Not get permission</string>
+    <string name="location_permission_denied">permission for location denied</string>
+    <string name="change_setting">change setting</string>
 </resources>

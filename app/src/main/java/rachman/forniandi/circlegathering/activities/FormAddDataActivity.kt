@@ -1,6 +1,7 @@
 package rachman.forniandi.circlegathering.activities
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.content.Intent
@@ -11,6 +12,7 @@ import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -25,9 +27,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import id.zelory.compressor.Compressor
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -56,22 +56,21 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
     private var inputFile: File? = null
     private var compressedFile: File? = null
     private var mImgPath:String =""
+    private var location: Location? = null
     private val fusedLocationClient by lazy {
         LocationServices.getFusedLocationProviderClient(this)
     }
     private lateinit var descriptionToRequestBody: RequestBody
     private lateinit var fileBodyMultipart : MultipartBody.Part
 
-    private var mLatitude: Double = 0.0
+    private var mLatitude: Double ? = null
     private var mLongitude: Double = 0.0
 
     companion object {
         const val CAMERA_X_RESULT = 200
 
 
-        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA,
-            Manifest.permission.ACCESS_COARSE_LOCATION,
-            Manifest.permission.ACCESS_FINE_LOCATION)
+        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
         private const val REQUEST_CODE_PERMISSIONS = 10
     }
 
@@ -86,7 +85,7 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
             if (!allPermissionsGranted()) {
                 Toast.makeText(
                     this,
-                    "Tidak mendapatkan permission.",
+                    getString(R.string.not_get_permission),
                     Toast.LENGTH_SHORT
                 ).show()
                 finish()
@@ -112,12 +111,82 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
         }
         binding.imgAddInput.setOnClickListener(this)
         binding.btnUploadDataConfirm.setOnClickListener(this)
+        binding.btnSwitchGps.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked){
+                getLatestLocation()
+            }else{
+                this.location = null
+            }
+        }
 
         setSupportActionBar(binding.toolbarAddData)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
     }
+
+    @SuppressLint("SetTextI18n")
+    private fun getLatestLocation() {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ){
+            fusedLocationClient.lastLocation.addOnSuccessListener { mLocation ->
+                if (mLocation != null){
+                    this.location = mLocation
+                    mLatitude = mLocation.latitude
+                    mLongitude = mLocation.longitude
+                    binding.txtValueLatitude.text= mLatitude.toString()
+                    binding.txtValueLongitude.text= mLongitude.toString()
+                }else{
+                    Toast.makeText(this, "Please activate your location services",
+                        Toast.LENGTH_SHORT).show()
+                    binding.btnSwitchGps.isChecked= false
+                }
+            }
+        }else{
+            requestPermissionLocationLauncher.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+            )
+        }
+    }
+
+    private val requestPermissionLocationLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        when {
+            permissions[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false -> {
+                getLatestLocation()
+            }
+
+            else -> {
+                Snackbar
+                    .make(
+                        binding.root,
+                        getString(R.string.location_permission_denied),
+                        Snackbar.LENGTH_SHORT
+                    )
+                    .setActionTextColor(getColor(R.color.white))
+                    .setAction(getString(R.string.change_setting)) {
+
+                        Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).also { intent ->
+                            val uri = Uri.fromParts("package", packageName, null)
+                            intent.data = uri
+
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            startActivity(intent)
+                        }
+                    }
+                    .show()
+
+                binding.btnSwitchGps.isChecked = false
+            }
+        }
+    }
+
     override fun onClick(view: View?) {
         if (view != null){
             when(view.id){
@@ -141,14 +210,24 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
     @OptIn(ExperimentalCoroutinesApi::class)
-    private fun executeUploadData(reduceImageFirst: File, description: String, location: Location?) {
+    private fun executeUploadData(reduceImageFirst: File, description: String) {
         lifecycleScope.launch {
                 val requestBodyInput = reduceImageFirst.asRequestBody("file_img/jpeg".toMediaType())
                 fileBodyMultipart = MultipartBody.Part.createFormData("photo", reduceImageFirst.name, requestBodyInput)
 
                 descriptionToRequestBody = description.toRequestBody("text/plain".toMediaType())
 
-                viewModel.doUploadStoriesData(fileBodyMultipart,descriptionToRequestBody,location)
+            var lat: RequestBody? = null
+            var lon: RequestBody? = null
+
+            if (location != null) {
+                lat =
+                    location?.latitude.toString().toRequestBody("text/plain".toMediaType())
+                lon =
+                    location?.longitude.toString().toRequestBody("text/plain".toMediaType())
+            }
+
+            viewModel.doUploadStoriesData(fileBodyMultipart,descriptionToRequestBody,lat, lon)
 
                 Log.e("test_input_upload_file",""+ fileBodyMultipart)
                 viewModel.inputDataResponse.observe(this@FormAddDataActivity) { response ->

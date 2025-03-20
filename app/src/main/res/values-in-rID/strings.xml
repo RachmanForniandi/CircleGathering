@@ -72,4 +72,7 @@
     <string name="location">lokasi</string>
     <string name="latitude">garis Lintang</string>
     <string name="longitude">garis Bujur</string>
+    <string name="not_get_permission">Tidak mendapatkan perijinan</string>
+    <string name="location_permission_denied">perijinan lokasi ditolak</string>
+    <string name="change_setting">ubah pengaturan</string>
 </resources>
