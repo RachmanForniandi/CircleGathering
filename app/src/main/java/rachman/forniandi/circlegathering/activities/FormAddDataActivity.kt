@@ -82,7 +82,7 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         if (requestCode == REQUEST_CODE_PERMISSIONS) {
-            if (!allPermissionsGranted()) {
+            if (!cameraPermissionGranted()) {
                 Toast.makeText(
                     this,
                     getString(R.string.not_get_permission),
@@ -93,7 +93,7 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
+    private fun cameraPermissionGranted() = REQUIRED_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(baseContext, it) == PackageManager.PERMISSION_GRANTED
     }
 
@@ -102,7 +102,7 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
         binding = ActivityFormAddDataBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        if (!allPermissionsGranted()) {
+        if (!cameraPermissionGranted()) {
             ActivityCompat.requestPermissions(
                 this,
                 REQUIRED_PERMISSIONS,
@@ -202,7 +202,7 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
                     }else{
                         val description =binding.etDescription.text.toString().trim()
                         //val reduceImageFirst = actionReduceImg(inputFile as File)
-                        executeUploadData(compressedFile as File,description)
+                        executeUploadData(compressedFile as File,description,mLatitude,mLongitude)
                     }
                     return
                 }
@@ -210,7 +210,7 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
     @OptIn(ExperimentalCoroutinesApi::class)
-    private fun executeUploadData(reduceImageFirst: File, description: String) {
+    private fun executeUploadData(reduceImageFirst: File, description: String,latitude:Double?,longitude:Double?) {
         lifecycleScope.launch {
                 val requestBodyInput = reduceImageFirst.asRequestBody("file_img/jpeg".toMediaType())
                 fileBodyMultipart = MultipartBody.Part.createFormData("photo", reduceImageFirst.name, requestBodyInput)
@@ -222,9 +222,9 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
 
             if (location != null) {
                 lat =
-                    location?.latitude.toString().toRequestBody("text/plain".toMediaType())
+                    latitude.toString().toRequestBody("text/plain".toMediaType())
                 lon =
-                    location?.longitude.toString().toRequestBody("text/plain".toMediaType())
+                    longitude.toString().toRequestBody("text/plain".toMediaType())
             }
 
             viewModel.doUploadStoriesData(fileBodyMultipart,descriptionToRequestBody,lat, lon)
