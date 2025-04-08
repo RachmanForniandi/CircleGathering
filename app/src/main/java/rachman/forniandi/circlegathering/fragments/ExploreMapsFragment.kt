@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.viewModels
+import androidx.fragment.app.viewModels
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -15,10 +17,14 @@ import com.google.android.gms.maps.model.MarkerOptions
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import rachman.forniandi.circlegathering.R
+import rachman.forniandi.circlegathering.utils.NetworkListener
+import rachman.forniandi.circlegathering.viewModels.MapsLocationViewModel
 
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class ExploreMapsFragment : Fragment() {
+    private val viewModel: MapsLocationViewModel by viewModels()
+    private lateinit var networkListener: NetworkListener
 
     private val callback = OnMapReadyCallback { googleMap ->
         /**
@@ -30,9 +36,9 @@ class ExploreMapsFragment : Fragment() {
          * install it inside the SupportMapFragment. This method will only be triggered once the
          * user has installed Google Play services and returned to the app.
          */
-        val sydney = LatLng(-34.0, 151.0)
+        /*val sydney = LatLng(-34.0, 151.0)
         googleMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))*/
     }
 
     override fun onCreateView(
