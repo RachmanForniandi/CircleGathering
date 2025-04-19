@@ -22,7 +22,7 @@ import rachman.forniandi.circlegathering.viewModels.MapsLocationViewModel
 @AndroidEntryPoint
 class ExploreMapsActivity : AppCompatActivity(), OnMapReadyCallback  {
 
-    private lateinit var mapPage:GoogleMap
+    private lateinit var mapPage: GoogleMap
     private lateinit var binding: ActivityExploreMapsBinding
     private val viewModel: MapsLocationViewModel by viewModels()
 
