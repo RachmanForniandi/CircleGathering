@@ -201,8 +201,9 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
                             Snackbar.LENGTH_SHORT).show()
                     }else{
                         val description =binding.etDescription.text.toString().trim()
-                        //val reduceImageFirst = actionReduceImg(inputFile as File)
-                        executeUploadData(compressedFile as File,description,mLatitude,mLongitude)
+                        val reduceImageFirst = actionReduceImg(inputFile as File)
+                        executeUploadData(inputFile as File,description,mLatitude,mLongitude)
+                        //executeUploadData(reduceImageFirst,description,mLatitude,mLongitude)
                     }
                     return
                 }
@@ -375,7 +376,9 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
             val selectedPhotoUri= result?.data?.data as Uri
 
             val filePicGallery = uriImgToFileImg(selectedPhotoUri,this@FormAddDataActivity)
-            inputFile = filePicGallery
+            inputFile = actionReduceImg(filePicGallery)
+
+
             binding.imgDisplayInput.setImageURI(selectedPhotoUri)
 
             binding.imgAddInput.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.ic_vector_edit))
