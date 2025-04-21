@@ -43,7 +43,7 @@ class MapsLocationViewModel @Inject constructor(
                 getAllStoriesLocationResponse.value  = handledAllStoriesAndLocationResponse(storiesFeedback)
 
                 val allStories = getAllStoriesLocationResponse.value?.data
-                Log.e("check_story",""+allStories)
+                Log.e("check_story_location",""+allStories)
 
             }catch (e: Exception){
                 getAllStoriesLocationResponse.value  = NetworkResult.Error("Data not Available.")

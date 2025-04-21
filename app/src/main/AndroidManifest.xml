@@ -44,7 +44,7 @@
             android:value="AIzaSyCRigSZ3KliLwN4y90VkjXVxnXv5PYr_10" />
         <activity
             android:name=".activities.ExploreMapsActivity"
-            android:exported="false" />
+            android:exported="true" />
 
         <activity
             android:name=".activities.SplashScreenActivity"
