@@ -37,8 +37,6 @@ class ExploreMapsActivity : AppCompatActivity(), OnMapReadyCallback  {
 
         mapFragment?.getMapAsync(this@ExploreMapsActivity)
 
-        //showPinLocation()
-        viewModel.doShowAllStoriesLocationData()
     }
     
 
@@ -49,7 +47,7 @@ class ExploreMapsActivity : AppCompatActivity(), OnMapReadyCallback  {
     }
 
     private fun showPinLocation() {
-
+        viewModel.doShowAllStoriesLocationData()
         viewModel.getAllStoriesLocationResponse.observe(this) { response ->
             when (response) {
                 is NetworkResult.Success -> {
