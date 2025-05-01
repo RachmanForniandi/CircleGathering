@@ -1,12 +1,7 @@
 package rachman.forniandi.circlegathering.source
 
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
-import rachman.forniandi.circlegathering.models.addStory.InputStoryRequest
 import rachman.forniandi.circlegathering.models.addStory.ResponseAddStory
 import rachman.forniandi.circlegathering.models.allStories.ResponseAllStories
 import rachman.forniandi.circlegathering.models.detailStories.ResponseDetailStory
@@ -34,44 +29,29 @@ class RemoteDataSource @Inject constructor(
     }
 
     suspend fun showStoriesWithLocation(authorization:String):Response<ResponseAllStories>{
-        val addedBearerToken2 = makeBearerToken(authorization)
-        return networkService.getAllStoriesWithLocation(addedBearerToken2)
+        val addedBearerTokenStoryLocation= makeBearerToken(authorization)
+        return networkService.getAllStoriesWithLocation(addedBearerTokenStoryLocation)
+    }
+
+    suspend fun showStoriesPerPages(authorization:String,page:Int? = null,size:Int? = null):Response<ResponseAllStories>{
+        val addedBearerTokenStoryPages = makeBearerToken(authorization)
+        return networkService.getNewAllStories(addedBearerTokenStoryPages,page,size)
     }
 
     suspend fun showDetailStories(authorization:String,id:String):Response<ResponseDetailStory>{
-        val addedBearerToken3 = makeBearerToken(authorization)
-        return networkService.getDetailStories(addedBearerToken3,id)
+        val addedBearerTokenDetail = makeBearerToken(authorization)
+        return networkService.getDetailStories(addedBearerTokenDetail,id)
     }
 
-    /*suspend fun addDataStories(bearerToken4:String,
-                               storyRequest:InputStoryRequest
-                               ):Response<ResponseAddStory>{
-        val addedBearerToken = makeBearerToken(bearerToken4)
-        val descriptionStory = storyRequest.descriptionStory.toRequestBody("text/plain".toMediaType())
-        val imageStoryRequest = storyRequest.imgStory.asRequestBody("image/jpeg".toMediaTypeOrNull())
-        val imageStoryMultipart = MultipartBody.Part.createFormData(
-            "photo",
-            storyRequest.imgStory.name,
-            imageStoryRequest
-        )
-
-        var latitudeInput: RequestBody? = null
-        var longitudeInput: RequestBody? = null
-        storyRequest.location?.let {
-            latitudeInput = it.latitude.toString().toRequestBody("text/plain".toMediaType())
-            longitudeInput= it.longitude.toString().toRequestBody("text/plain".toMediaType())
-        }
-        return networkService.insertStories(addedBearerToken,imageStoryMultipart,descriptionStory,latitudeInput,longitudeInput)
-    }*/
-    suspend fun addDataStories(bearerToken4:String,
+    suspend fun addDataStories(bearerTokenInputStory:String,
                                file:MultipartBody.Part,
                                description:RequestBody,
                                lat: RequestBody? = null,
                                lon: RequestBody? = null
     ):Response<ResponseAddStory>{
-        val addedBearerToken = makeBearerToken(bearerToken4)
+        val addedBearerTokenInputStory = makeBearerToken(bearerTokenInputStory)
 
-        return networkService.insertStories(addedBearerToken,file, description,lat,lon)
+        return networkService.insertStories(addedBearerTokenInputStory,file, description,lat,lon)
     }
 
     private fun makeBearerToken(token: String): String {

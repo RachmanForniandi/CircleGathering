@@ -1,22 +1,22 @@
 package rachman.forniandi.circlegathering.dBRoom
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import kotlinx.coroutines.flow.Flow
 import rachman.forniandi.circlegathering.models.allStories.StoryItem
 
-/*
 @Dao
 interface StoriesDao {
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertStories(story: List<StoryItem>)
+    suspend fun insertStories(vararg story: List<StoryItem>)
 
     @Query("SELECT * FROM story_table ORDER BY id ASC")
-    fun readStories(): Flow<List<StoryItem>>
+    fun readAllStories(): PagingSource<Int, StoryItem>
 
     @Query("DELETE FROM story_table ")
-    fun deleteAllStories()
+    suspend fun deleteAllStories()
 
-}*/
+}

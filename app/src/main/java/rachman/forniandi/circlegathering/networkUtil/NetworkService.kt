@@ -42,6 +42,13 @@ interface NetworkService {
     ):Response<ResponseAllStories>
 
     @GET("stories")
+    suspend fun getNewAllStories(
+        @Header("Authorization")authorization:String,
+        @Query("page") page: Int? = null,
+        @Query("size") size: Int? = null,
+    ):Response<ResponseAllStories>
+
+    @GET("stories")
     suspend fun getAllStoriesWithLocation(
         @Header("Authorization")authorization:String,
         @Query("location") location : Int = 1,

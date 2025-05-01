@@ -33,6 +33,7 @@ class ConstantsMain {
 
 
         const val DATABASE_NAME = "stories_database"
+        const val STORY_TABLE ="story_table"
    }
 
 }

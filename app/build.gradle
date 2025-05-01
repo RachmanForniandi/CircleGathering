@@ -107,6 +107,10 @@ dependencies {
     // Karumi Dexter
     implementation 'com.karumi:dexter:6.2.2'
 
+    //paging
+    implementation 'androidx.paging:paging-runtime-ktx:3.3.6'
+    implementation 'androidx.room:room-paging:2.7.1'
+
     // Gson
     implementation 'com.google.code.gson:gson:2.10.1'
 

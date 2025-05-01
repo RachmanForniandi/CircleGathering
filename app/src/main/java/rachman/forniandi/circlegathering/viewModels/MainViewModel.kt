@@ -106,6 +106,8 @@ class MainViewModel @Inject constructor(
         }
     }
 
+
+
     fun showNetworkStatus(){
         if (!networkStatus){
             Toast.makeText(getApplication(),"No Internet Connection.", Toast.LENGTH_SHORT).show()

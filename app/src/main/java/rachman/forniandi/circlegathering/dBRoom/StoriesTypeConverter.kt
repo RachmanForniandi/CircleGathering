@@ -3,30 +3,29 @@ package rachman.forniandi.circlegathering.dBRoom
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import rachman.forniandi.circlegathering.models.allStories.ResponseAllStories
+import rachman.forniandi.circlegathering.models.allStories.StoryItem
 
-/*
 class StoriesTypeConverter {
     var gson= Gson()
     @TypeConverter
-    fun storiesToString(allStories: ResponseAllStories):String{
+    fun storiesToString(allStories: StoryItem):String{
         return gson.toJson(allStories)
     }
 
     @TypeConverter
-    fun stringToStories(data:String):ResponseAllStories{
-        val listType= object : TypeToken<ResponseAllStories>(){}.type
+    fun stringToStories(data:String):StoryItem{
+        val listType= object : TypeToken<StoryItem>(){}.type
         return gson.fromJson(data,listType)
     }
 
     @TypeConverter
-    fun listStoriesToString(result: ListStoryItem):String{
+    fun listStoriesToString(result: StoryItem):String{
         return gson.toJson(result)
     }
 
     @TypeConverter
-    fun stringToString(data: String):ListStoryItem{
-        val listType = object : TypeToken<ListStoryItem>() {}.type
+    fun stringToString(data: String):StoryItem{
+        val listType = object : TypeToken<StoryItem>() {}.type
         return gson.fromJson(data,listType)
     }
-}*/
+}

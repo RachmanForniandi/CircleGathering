@@ -7,15 +7,14 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import rachman.forniandi.circlegathering.dBRoom.StoriesDatabase
 import rachman.forniandi.circlegathering.utils.ConstantsMain.Companion.DATABASE_NAME
 import javax.inject.Singleton
 
-/*
 @Module
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
 
-    */
 /*@Singleton
     @Provides
     fun provideStoryDao(@ApplicationContext context: Context):StoriesDao {
@@ -24,11 +23,10 @@ object DatabaseModule {
     }
 
 
-    *//*
-*/
-/*@Singleton
+
+@Singleton
     @Provides
-    fun provideDao(db:StoriesDatabase)= db.storiesDao()*//*
+    fun provideDao(db:StoriesDatabase)= db.storiesDao()*/
 
     @Singleton
     @Provides
@@ -39,4 +37,4 @@ object DatabaseModule {
     @Singleton
     @Provides
     fun provideDao(db:StoriesDatabase)= db.storiesDao()
-}*/
+}
