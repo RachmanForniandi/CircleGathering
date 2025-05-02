@@ -8,13 +8,13 @@ import androidx.room.withTransaction
 import rachman.forniandi.circlegathering.dBRoom.StoriesDatabase
 import rachman.forniandi.circlegathering.dBRoom.entities.RemoteKeys
 import rachman.forniandi.circlegathering.models.allStories.StoryItem
-import rachman.forniandi.circlegathering.networkUtil.NetworkService
+import rachman.forniandi.circlegathering.source.RemoteDataSource
 import rachman.forniandi.circlegathering.utils.ConstantsMain
 
 @OptIn(ExperimentalPagingApi::class)
 class StoryRemoteMediator(
     private val database: StoriesDatabase,
-    private val networkService: NetworkService,
+    private val remoteDataSource: RemoteDataSource,
     private val token: String
 ): RemoteMediator<Int, StoryItem>() {
     private companion object {
@@ -52,7 +52,7 @@ class StoryRemoteMediator(
         }
 
         return try {
-            val responseStoryData = networkService.getNewAllStories(makeBearerToken(token),page,state.config.pageSize)
+            val responseStoryData = remoteDataSource.showStoriesPerPages(makeBearerToken(token),page,state.config.pageSize)
             val endOfPagination = responseStoryData.body()?.listStory?.isEmpty()
             database.withTransaction {
                 if (loadType == LoadType.REFRESH) {
