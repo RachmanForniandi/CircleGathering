@@ -7,14 +7,17 @@ import android.net.NetworkCapabilities
 import android.os.Parcelable
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import rachman.forniandi.circlegathering.models.allStories.StoryItem
 import rachman.forniandi.circlegathering.repositories.MainNewRepository
-import rachman.forniandi.circlegathering.repositories.MainRepository
 import rachman.forniandi.circlegathering.utils.DataStoreRepository
 import javax.inject.Inject
 
@@ -36,6 +39,12 @@ class MainNewViewModel @Inject constructor(
 
     //room
     var readBackOnline = dataStoreRepository.readBackOnline.asLiveData()
+
+    //fetch stories per page by pagination
+
+    fun getAllStoriesPerPages(token: String): LiveData<PagingData<StoryItem>>{
+        return repository.getAllStoriesPerPage(token).cachedIn(viewModelScope).asLiveData()
+    }
 
 
     //logout & clear token dari data store

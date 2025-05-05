@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.paging.ExperimentalPagingApi
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
@@ -24,15 +25,15 @@ import rachman.forniandi.circlegathering.adapters.MainAdapter
 import rachman.forniandi.circlegathering.databinding.ActivityMainBinding
 import rachman.forniandi.circlegathering.models.allStories.StoryItem
 import rachman.forniandi.circlegathering.utils.NetworkListener
-import rachman.forniandi.circlegathering.utils.NetworkResult
-import rachman.forniandi.circlegathering.viewModels.MainViewModel
+import rachman.forniandi.circlegathering.viewModels.MainNewViewModel
 
-@ExperimentalCoroutinesApi
+@OptIn(ExperimentalPagingApi::class)
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private val viewModel: MainViewModel by viewModels()
+    //private val viewModel: MainViewModel by viewModels()
+    private val viewModel: MainNewViewModel by viewModels()
     private val mainAdapter by lazy { MainAdapter(this@MainActivity) }
     private lateinit var networkListener: NetworkListener
 
@@ -102,7 +103,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun requestDataRemoteStories() {
-        viewModel.doShowAllStoriesData()
+        /*viewModel.doShowAllStoriesData()
         viewModel.getAllStoriesResponse.observe(this) { response ->
             when (response) {
                 is NetworkResult.Success -> {
@@ -136,7 +137,8 @@ class MainActivity : AppCompatActivity() {
                     Log.e("MainActivity","Network Loading called")
                 }
             }
-        }
+        }*/
+
     }
 
     private fun showDataStoriesOnMain() {

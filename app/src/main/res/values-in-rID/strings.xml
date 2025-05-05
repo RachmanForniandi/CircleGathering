@@ -75,4 +75,5 @@
     <string name="not_get_permission">Tidak mendapatkan perijinan</string>
     <string name="location_permission_denied">perijinan lokasi ditolak</string>
     <string name="change_setting">ubah pengaturan</string>
+    <string name="unable_to_fetch_data_of_stories">Tidak dapat mengambil data cerita</string>
 </resources>
