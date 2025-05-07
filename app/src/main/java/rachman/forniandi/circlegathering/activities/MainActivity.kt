@@ -16,12 +16,14 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.paging.ExperimentalPagingApi
+import androidx.paging.LoadState
+import androidx.paging.PagingData
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import rachman.forniandi.circlegathering.LoginRegister.LoginRegisterActivity
 import rachman.forniandi.circlegathering.R
-import rachman.forniandi.circlegathering.adapters.MainAdapter
+import rachman.forniandi.circlegathering.adapters.LoadingStatePageAdapter
+import rachman.forniandi.circlegathering.adapters.MainNewAdapter
 import rachman.forniandi.circlegathering.databinding.ActivityMainBinding
 import rachman.forniandi.circlegathering.models.allStories.StoryItem
 import rachman.forniandi.circlegathering.utils.NetworkListener
@@ -34,7 +36,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     //private val viewModel: MainViewModel by viewModels()
     private val viewModel: MainNewViewModel by viewModels()
-    private val mainAdapter by lazy { MainAdapter(this@MainActivity) }
+    //private val mainAdapter by lazy { MainAdapter(this@MainActivity) }
+    private lateinit var mainAdapter: MainNewAdapter
     private lateinit var networkListener: NetworkListener
 
 
@@ -49,7 +52,7 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
         setUserName()
-        showDataStoriesOnMain()
+        showListStories()
         setSwipeRefreshAtMainPage()
         requestDataRemoteStories()
         binding.fabAddStory.setOnClickListener {
@@ -138,20 +141,57 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }*/
+        viewModel.getAllStoriesPerPages().observe(this){ result ->
+            updateDataPerPages(result)
+        }
 
     }
 
-    private fun showDataStoriesOnMain() {
+    private fun updateDataPerPages(data: PagingData<StoryItem>) {
+        val listStoriesState = binding.listDataStories.layoutManager?.onSaveInstanceState()
+        mainAdapter.submitData(lifecycle,data)
+
+        binding.listDataStories.layoutManager?.onRestoreInstanceState(listStoriesState)
+    }
+
+    private fun showListStories() {
         binding.listDataStories.adapter = mainAdapter
-        mainAdapter.setOnClickListener(object :MainAdapter.OnStoryClickListener{
+        mainAdapter = MainNewAdapter()
+        mainAdapter.addLoadStateListener { loadState ->
+            if ((loadState.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && mainAdapter.itemCount < 1) || loadState.source.refresh is LoadState.Error) {
+                showShimmerEffect()
+            }else{
+                hideShimmerEffect()
+                val errorState = loadState.refresh as? LoadState.Error
+                errorState?.let {
+                    Toast.makeText(this@MainActivity, it.error.localizedMessage, Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            binding.swipeRefreshMain.isRefreshing = loadState.source.refresh is LoadState.Loading
+
+        }
+
+        try {
+           binding.listDataStories.apply {
+               adapter = mainAdapter.withLoadStateFooter(
+                   footer = LoadingStatePageAdapter{
+                       mainAdapter.retry()
+                   }
+               )
+           }
+        }catch (e: NullPointerException) {
+            e.printStackTrace()
+        }
+        /*mainAdapter.setOnClickListener(object :MainAdapter.OnStoryClickListener{
             override fun onClick(position: Int, story: StoryItem) {
 
                 val toDetailStory = Intent(this@MainActivity,DetailStoryActivity::class.java)
                 toDetailStory.putExtra(DETAIL_STORY,story.id)
                 startActivity(toDetailStory)
             }
-        })
-        showShimmerEffect()
+        })*/
+        //showShimmerEffect()
     }
 
     private fun showShimmerEffect() {

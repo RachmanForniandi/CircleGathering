@@ -8,7 +8,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import rachman.forniandi.circlegathering.dBRoom.StoriesDatabase
-import rachman.forniandi.circlegathering.utils.ConstantsMain.Companion.DATABASE_NAME
 import javax.inject.Singleton
 
 @Module
@@ -32,7 +31,7 @@ object DatabaseModule {
     @Provides
     fun provideDatabase(@ApplicationContext context: Context)=
         Room.databaseBuilder(context,
-            StoriesDatabase::class.java,DATABASE_NAME).build()
+            StoriesDatabase::class.java,"stories_database").build()
 
     @Singleton
     @Provides

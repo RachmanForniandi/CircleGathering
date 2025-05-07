@@ -6,18 +6,21 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import kotlinx.coroutines.flow.Flow
 import rachman.forniandi.circlegathering.dBRoom.StoriesDatabase
+import rachman.forniandi.circlegathering.dBRoom.entities.StoriesEntity
 import rachman.forniandi.circlegathering.models.allStories.StoryItem
 import rachman.forniandi.circlegathering.paging.StoryRemoteMediator
 import rachman.forniandi.circlegathering.source.RemoteDataSource
 import rachman.forniandi.circlegathering.utils.ConstantsMain
+import rachman.forniandi.circlegathering.utils.DataStoreRepository
 import javax.inject.Inject
 
 @ExperimentalPagingApi
 class MainNewRepository @Inject constructor(
     private val dbStories: StoriesDatabase,
-    private val remoteSource: RemoteDataSource) {
+    private val remoteSource: RemoteDataSource,
+    private val dataStoreRepository: DataStoreRepository,) {
 
-    fun getAllStoriesPerPage(token: String): Flow<PagingData<StoryItem>> {
+    fun getAllStoriesPerPage(token: String): Flow<PagingData<StoriesEntity>> {
 
         return Pager(
             config = PagingConfig(
@@ -26,7 +29,7 @@ class MainNewRepository @Inject constructor(
             remoteMediator = StoryRemoteMediator(
                 dbStories,
                 remoteSource,
-                makeBearerToken(token)
+                dataStoreRepository
             ),
             pagingSourceFactory = {
                 dbStories.storiesDao().readAllStories()
@@ -34,9 +37,6 @@ class MainNewRepository @Inject constructor(
         ).flow
     }
 
-    private fun makeBearerToken(token: String): String {
-        return ConstantsMain.TOKEN_BEARER+token
-    }
 }
 
 

@@ -4,7 +4,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import rachman.forniandi.circlegathering.models.allStories.StoryItem
 import rachman.forniandi.circlegathering.source.RemoteDataSource
-import rachman.forniandi.circlegathering.utils.ConstantsMain
+import rachman.forniandi.circlegathering.utils.addedBearerToToken
 
 class StoryPagingResource(private val remoteDataSource: RemoteDataSource,private val token: String) : PagingSource<Int, StoryItem>() {
 
@@ -23,7 +23,7 @@ class StoryPagingResource(private val remoteDataSource: RemoteDataSource,private
 
     return try {
         val position = params.key ?: INITIAL_PAGE_INDEX
-        val responseData = remoteDataSource.showStoriesPerPages(makeBearerToken(token),position,params.loadSize)
+        val responseData = remoteDataSource.showStoriesPerPages(addedBearerToToken(token),position,params.loadSize)
     LoadResult.Page(
         data = responseData.body()!!.listStory,
         prevKey = if (position == INITIAL_PAGE_INDEX) null else position - 1,
@@ -34,7 +34,4 @@ class StoryPagingResource(private val remoteDataSource: RemoteDataSource,private
         }
     }
 
-    private fun makeBearerToken(token: String): String {
-        return ConstantsMain.TOKEN_BEARER+token
-    }
 }

@@ -43,7 +43,7 @@ fun getStringDate(date: String?): String? {
     return outputDate.format(d)
 }
 
-fun addedBearerToToken(token:String):String?{
+fun addedBearerToToken(token:String):String{
     return ConstantsMain.TOKEN_BEARER+token
 }
 

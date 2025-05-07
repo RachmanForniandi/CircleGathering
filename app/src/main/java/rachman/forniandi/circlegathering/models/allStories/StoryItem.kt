@@ -1,15 +1,12 @@
 package rachman.forniandi.circlegathering.models.allStories
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+
 import com.google.gson.annotations.SerializedName
-import rachman.forniandi.circlegathering.utils.ConstantsMain.Companion.STORY_TABLE
 import java.io.Serializable
 
 
-@Entity(tableName = STORY_TABLE)
 data class StoryItem(
-	@PrimaryKey
+
 	@field:SerializedName("id")
 	val id: String?,
 

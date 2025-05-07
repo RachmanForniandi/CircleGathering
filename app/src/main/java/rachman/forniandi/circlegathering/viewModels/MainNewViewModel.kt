@@ -8,15 +8,23 @@ import android.os.Parcelable
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import rachman.forniandi.circlegathering.dBRoom.entities.StoriesEntity
 import rachman.forniandi.circlegathering.models.allStories.StoryItem
+import rachman.forniandi.circlegathering.paging.StoryPagingResource
 import rachman.forniandi.circlegathering.repositories.MainNewRepository
 import rachman.forniandi.circlegathering.utils.DataStoreRepository
 import javax.inject.Inject
@@ -34,15 +42,17 @@ class MainNewViewModel @Inject constructor(
 
     var recyclerViewState: Parcelable? = null
 
+    private val refreshTrigger = MutableLiveData<Unit>()
+
     //datastore get variable name
     fun getUserName()= dataStoreRepository.getUsername().asLiveData()
 
     //room
     var readBackOnline = dataStoreRepository.readBackOnline.asLiveData()
 
-    //fetch stories per page by pagination
 
-    fun getAllStoriesPerPages(token: String): LiveData<PagingData<StoryItem>>{
+    fun getAllStoriesPerPages(): LiveData<PagingData<StoriesEntity>>{
+        val token = dataStoreRepository.getTheTokenAuth().toString()
         return repository.getAllStoriesPerPage(token).cachedIn(viewModelScope).asLiveData()
     }
 

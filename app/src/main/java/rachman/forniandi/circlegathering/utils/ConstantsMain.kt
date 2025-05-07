@@ -31,9 +31,6 @@ class ConstantsMain {
         const val PREFERENCES_BACK_ONLINE = "backOnline"
         const val TOKEN_BEARER = "Bearer "
 
-
-        const val DATABASE_NAME = "stories_database"
-        const val STORY_TABLE ="story_table"
    }
 
 }
