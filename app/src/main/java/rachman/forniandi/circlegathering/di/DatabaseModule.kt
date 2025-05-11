@@ -14,26 +14,15 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
 
-/*@Singleton
+
     @Provides
-    fun provideStoryDao(@ApplicationContext context: Context):StoriesDao {
-        val storyDb = StoriesDatabase.getInstanceDb(context)
-        return storyDb.storiesDao()
-    }
-
-
-
-@Singleton
-    @Provides
-    fun provideDao(db:StoriesDatabase)= db.storiesDao()*/
-
     @Singleton
-    @Provides
-    fun provideDatabase(@ApplicationContext context: Context)=
+    fun provideDatabase(@ApplicationContext context: Context): StoriesDatabase=
         Room.databaseBuilder(context,
-            StoriesDatabase::class.java,"stories_database").build()
+            StoriesDatabase::class.java,"stories_database").fallbackToDestructiveMigration().build()
 
-    @Singleton
+
     @Provides
+    @Singleton
     fun provideDao(db:StoriesDatabase)= db.storiesDao()
 }

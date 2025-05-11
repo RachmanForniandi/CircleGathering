@@ -69,8 +69,8 @@ class StoryRemoteMediator(
                 val keys = responseStoryData.body()?.listStory?.map {
                     it.id?.let { id -> RemoteKeys(id = id, prevKey = prevKey, nextKey = nextKey) }
                 }
-                database.remoteKeysFromDao().insertAllKeys(keys)
-                responseStoryData.body()?.let { database.storiesDao().insertStories(storiesForEntity) }
+                database.remoteKeysFromDao().insertAllKeys(keys as List<RemoteKeys>)
+                responseStoryData.body()?.let { database.storiesDao().insertStories(storiesForEntity as List<StoriesEntity>) }
             }
             MediatorResult.Success(endOfPaginationReached = endOfPagination == true)
         }catch (exception: Exception) {

@@ -11,7 +11,7 @@ import rachman.forniandi.circlegathering.dBRoom.entities.StoriesEntity
 interface StoriesDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertStories(story: List<StoriesEntity?>?)
+    suspend fun insertStories(story: List<StoriesEntity>)
 
     @Query("SELECT * FROM story_table ORDER BY id DESC")
     fun readAllStories(): PagingSource<Int, StoriesEntity>

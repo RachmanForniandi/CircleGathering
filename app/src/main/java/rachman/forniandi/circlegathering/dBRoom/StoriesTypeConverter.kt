@@ -8,24 +8,13 @@ import rachman.forniandi.circlegathering.models.allStories.StoryItem
 class StoriesTypeConverter {
     var gson= Gson()
     @TypeConverter
-    fun storiesToString(allStories: StoryItem):String{
-        return gson.toJson(allStories)
+    fun fromStoryItem(storyItem: StoryItem): String {
+        return gson.toJson(storyItem)
     }
 
     @TypeConverter
-    fun stringToStories(data:String):StoryItem{
-        val listType= object : TypeToken<StoryItem>(){}.type
-        return gson.fromJson(data,listType)
-    }
-
-    @TypeConverter
-    fun listStoriesToString(result: StoryItem):String{
-        return gson.toJson(result)
-    }
-
-    @TypeConverter
-    fun stringToString(data: String):StoryItem{
-        val listType = object : TypeToken<StoryItem>() {}.type
-        return gson.fromJson(data,listType)
+    fun toStoryItem(data: String): StoryItem {
+        val type = object : TypeToken<StoryItem>() {}.type
+        return gson.fromJson(data, type)
     }
 }
