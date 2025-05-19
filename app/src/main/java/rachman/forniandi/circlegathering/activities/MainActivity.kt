@@ -24,8 +24,8 @@ import rachman.forniandi.circlegathering.LoginRegister.LoginRegisterActivity
 import rachman.forniandi.circlegathering.R
 import rachman.forniandi.circlegathering.adapters.LoadingStatePageAdapter
 import rachman.forniandi.circlegathering.adapters.MainNewAdapter
+import rachman.forniandi.circlegathering.dBRoom.entities.StoriesEntity
 import rachman.forniandi.circlegathering.databinding.ActivityMainBinding
-import rachman.forniandi.circlegathering.models.allStories.StoryItem
 import rachman.forniandi.circlegathering.utils.NetworkListener
 import rachman.forniandi.circlegathering.viewModels.MainNewViewModel
 
@@ -51,8 +51,11 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbarMain)
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        setUserName()
+        mainAdapter = MainNewAdapter()
+
         showListStories()
+        setUserName()
+
         setSwipeRefreshAtMainPage()
         requestDataRemoteStories()
         binding.fabAddStory.setOnClickListener {
@@ -147,7 +150,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun updateDataPerPages(data: PagingData<StoryItem>) {
+    private fun updateDataPerPages(data: PagingData<StoriesEntity>) {
         val listStoriesState = binding.listDataStories.layoutManager?.onSaveInstanceState()
         mainAdapter.submitData(lifecycle,data)
 
@@ -156,7 +159,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun showListStories() {
         binding.listDataStories.adapter = mainAdapter
-        mainAdapter = MainNewAdapter()
         mainAdapter.addLoadStateListener { loadState ->
             if ((loadState.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && mainAdapter.itemCount < 1) || loadState.source.refresh is LoadState.Error) {
                 showShimmerEffect()
@@ -164,8 +166,12 @@ class MainActivity : AppCompatActivity() {
                 hideShimmerEffect()
                 val errorState = loadState.refresh as? LoadState.Error
                 errorState?.let {
+
                     Toast.makeText(this@MainActivity, it.error.localizedMessage, Toast.LENGTH_SHORT).show()
+
                 }
+                errorState?.error?.let { Log.d("debug_error", it.localizedMessage) }
+
             }
 
             binding.swipeRefreshMain.isRefreshing = loadState.source.refresh is LoadState.Loading
@@ -173,13 +179,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         try {
-           binding.listDataStories.apply {
-               adapter = mainAdapter.withLoadStateFooter(
-                   footer = LoadingStatePageAdapter{
-                       mainAdapter.retry()
-                   }
-               )
-           }
+            binding.listDataStories.apply {
+                adapter = mainAdapter.withLoadStateFooter(
+                    footer = LoadingStatePageAdapter{
+                        mainAdapter.retry()
+                    }
+                )
+            }
         }catch (e: NullPointerException) {
             e.printStackTrace()
         }

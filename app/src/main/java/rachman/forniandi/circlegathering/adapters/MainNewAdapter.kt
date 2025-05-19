@@ -1,5 +1,6 @@
 package rachman.forniandi.circlegathering.adapters
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
@@ -7,16 +8,16 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import rachman.forniandi.circlegathering.R
+import rachman.forniandi.circlegathering.dBRoom.entities.StoriesEntity
 import rachman.forniandi.circlegathering.databinding.ItemStoryBinding
-import rachman.forniandi.circlegathering.models.allStories.StoryItem
 import rachman.forniandi.circlegathering.utils.getTimeElapseFormat
 
-class MainNewAdapter : PagingDataAdapter<StoryItem, MainNewAdapter.MainNewHolder>(DIFF_CALLBACK) {
+class MainNewAdapter : PagingDataAdapter<StoriesEntity, MainNewAdapter.MainNewHolder>(DIFF_CALLBACK) {
 
     private var onClickListener: OnStoryClickListener? = null
 
     class MainNewHolder(private val binding: ItemStoryBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: StoryItem, listener: OnStoryClickListener?) {
+        fun bind(item: StoriesEntity, listener: OnStoryClickListener?) {
             binding.txtTitleStory.text = item.description
             binding.txtTimeStoryElapsed.text = item.createdAt.getTimeElapseFormat()
             Glide.with(binding.root.context)
@@ -37,24 +38,25 @@ class MainNewAdapter : PagingDataAdapter<StoryItem, MainNewAdapter.MainNewHolder
     }
 
     override fun onBindViewHolder(holder: MainNewHolder, position: Int) {
-        val storyItem = getItem(position)
-        storyItem?.let {
+        val StoriesEntity = getItem(position)
+        StoriesEntity?.let {
             holder.bind(it, onClickListener)
         }
     }
 
 
     interface OnStoryClickListener {
-        fun onClick(position: Int, story: StoryItem)
+        fun onClick(position: Int, story: StoriesEntity)
     }
 
     companion object {
-        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<StoryItem>() {
-            override fun areItemsTheSame(oldItem: StoryItem, newItem: StoryItem): Boolean {
+        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<StoriesEntity>() {
+            override fun areItemsTheSame(oldItem: StoriesEntity, newItem: StoriesEntity): Boolean {
                 return oldItem.id == newItem.id
             }
 
-            override fun areContentsTheSame(oldItem: StoryItem, newItem: StoryItem): Boolean {
+            @SuppressLint("DiffUtilEquals")
+            override fun areContentsTheSame(oldItem: StoriesEntity, newItem: StoriesEntity): Boolean {
                 return oldItem == newItem
             }
         }
