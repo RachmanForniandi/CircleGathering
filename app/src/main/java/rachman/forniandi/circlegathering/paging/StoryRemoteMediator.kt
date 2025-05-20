@@ -12,13 +12,14 @@ import rachman.forniandi.circlegathering.dBRoom.entities.StoriesEntity
 import rachman.forniandi.circlegathering.source.RemoteDataSource
 import rachman.forniandi.circlegathering.utils.ConstantsMain
 import rachman.forniandi.circlegathering.utils.DataStoreRepository
+import rachman.forniandi.circlegathering.utils.addedBearerToToken
 import rachman.forniandi.circlegathering.utils.toStoryEntity
 
 @OptIn(ExperimentalPagingApi::class)
 class StoryRemoteMediator(
     private val database: StoriesDatabase,
     private val remoteDataSource: RemoteDataSource,
-    private val dataStoreRepository: DataStoreRepository,
+    private val token: String
 ): RemoteMediator<Int, StoriesEntity>() {
     private companion object {
         const val INITIAL_PAGE_INDEX = 1
@@ -55,8 +56,8 @@ class StoryRemoteMediator(
         }
 
         return try {
-            val token = dataStoreRepository.getTheTokenAuth().first()
-            val responseStoryData = remoteDataSource.showStoriesPerPages(makeBearerToken(token),page,state.config.pageSize)
+            //val token = dataStoreRepository.getTheTokenAuth().first()
+            val responseStoryData = remoteDataSource.showStoriesPerPages(token,page,state.config.pageSize)
             val endOfPagination = responseStoryData.body()?.listStory?.isEmpty()
             val storiesForEntity = responseStoryData.body()?.listStory?.toStoryEntity()
             database.withTransaction {
@@ -99,8 +100,8 @@ class StoryRemoteMediator(
         }
     }
 
-    private fun makeBearerToken(token: String): String {
+    /*private fun makeBearerToken(token: String): String {
         return ConstantsMain.TOKEN_BEARER+token
-    }
+    }*/
 
 }

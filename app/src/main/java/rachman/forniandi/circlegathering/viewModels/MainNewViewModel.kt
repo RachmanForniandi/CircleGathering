@@ -10,23 +10,17 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
-import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import rachman.forniandi.circlegathering.dBRoom.entities.StoriesEntity
-import rachman.forniandi.circlegathering.models.allStories.StoryItem
-import rachman.forniandi.circlegathering.paging.StoryPagingResource
 import rachman.forniandi.circlegathering.repositories.MainNewRepository
 import rachman.forniandi.circlegathering.utils.DataStoreRepository
+import rachman.forniandi.circlegathering.utils.addedBearerToToken
 import javax.inject.Inject
 
 @ExperimentalPagingApi
@@ -53,7 +47,7 @@ class MainNewViewModel @Inject constructor(
 
     fun getAllStoriesPerPages(): LiveData<PagingData<StoriesEntity>>{
         val token = dataStoreRepository.getTheTokenAuth().toString()
-        return repository.getAllStoriesPerPage(token).cachedIn(viewModelScope).asLiveData()
+        return repository.getAllStoriesPerPage(addedBearerToToken(token)).cachedIn(viewModelScope).asLiveData()
     }
 
 
