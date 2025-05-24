@@ -5,6 +5,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Parcelable
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -16,11 +17,15 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import rachman.forniandi.circlegathering.dBRoom.entities.StoriesEntity
+import rachman.forniandi.circlegathering.models.allStories.ResponseAllStories
 import rachman.forniandi.circlegathering.repositories.MainNewRepository
 import rachman.forniandi.circlegathering.utils.DataStoreRepository
+import rachman.forniandi.circlegathering.utils.NetworkResult
 import rachman.forniandi.circlegathering.utils.addedBearerToToken
+import retrofit2.Response
 import javax.inject.Inject
 
 @ExperimentalPagingApi
@@ -38,6 +43,9 @@ class MainNewViewModel @Inject constructor(
 
     private val refreshTrigger = MutableLiveData<Unit>()
 
+    var getAllStoriesResponse: MutableLiveData<NetworkResult<ResponseAllStories>> = MutableLiveData()
+
+
     //datastore get variable name
     fun getUserName()= dataStoreRepository.getUsername().asLiveData()
 
@@ -47,8 +55,51 @@ class MainNewViewModel @Inject constructor(
 
     fun getAllStoriesPerPages(): LiveData<PagingData<StoriesEntity>>{
         val token = dataStoreRepository.getTheTokenAuth().toString()
-        return repository.getAllStoriesPerPage(addedBearerToToken(token)).cachedIn(viewModelScope).asLiveData()
+        Log.d("debug_token", "debug_token: $token")
+        return repository.getAllStoriesPerPage(token).cachedIn(viewModelScope).asLiveData()
+        Log.d("debug_token", "debug_bearer_token: "+addedBearerToToken(token))
     }
+
+    /*fun getAllStoriesPerPages(): LiveData<PagingData<StoriesEntity>>{
+        viewModelScope.launch {
+            getAllStoriesResponse.value = NetworkResult.Loading()
+            if(hasInternetConnectionForMain()){
+                try {
+                    val tokenAuth= dataStoreRepository.getTheTokenAuth().first()
+                    val storiesFeedback = repository.getAllStoriesPerPage(tokenAuth)
+                    Log.e("check_token_auth",""+tokenAuth)
+                    getAllStoriesResponse.value  = handledAllStoriesResponse(storiesFeedback)
+
+                    val allStories = getAllStoriesResponse.value?.data
+                    Log.e("check_story",""+allStories)
+
+                }catch (e: Exception){
+                    getAllStoriesResponse.value  = NetworkResult.Error("Data not Available.")
+                }
+            }
+        }
+    }
+
+    private fun handledAllStoriesResponse(response: Response<ResponseAllStories>): NetworkResult<ResponseAllStories>? {
+        return when{
+            response.message().toString().contains("timeout")->{
+                NetworkResult.Error("Timeout")
+            }
+
+            response.body()!!.listStory.isEmpty()->{
+                val storiesData = response.body()
+                return NetworkResult.Success(storiesData)
+            }
+            response.isSuccessful -> {
+                val dataStories = response.body()
+                return NetworkResult.Success(dataStories)
+            }
+
+            else->{
+                NetworkResult.Error(response.message())
+            }
+        }
+    }*/
 
 
     //logout & clear token dari data store

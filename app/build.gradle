@@ -104,6 +104,9 @@ dependencies {
     // Gson
     implementation 'com.google.code.gson:gson:2.10.1'
 
+    // chucker
+    implementation 'com.github.chuckerteam.chucker:library:4.0.0'
+
     // Shimmer
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
 

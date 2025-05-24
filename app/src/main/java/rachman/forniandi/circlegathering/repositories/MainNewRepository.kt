@@ -29,7 +29,7 @@ class MainNewRepository @Inject constructor(
             remoteMediator = StoryRemoteMediator(
                 dbStories,
                 remoteSource,
-                addedBearerToToken(token)
+                token
             ),
             pagingSourceFactory = {
                 dbStories.storiesDao().readAllStories()
