@@ -144,8 +144,10 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }*/
-        viewModel.getAllStoriesPerPages().observe(this){ result ->
-            updateDataPerPages(result)
+        lifecycleScope.launch {
+            viewModel.getAllStoriesPerPages().collect{ result ->
+                updateDataPerPages(result)
+            }
         }
 
     }

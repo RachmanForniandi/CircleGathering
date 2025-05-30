@@ -17,6 +17,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import rachman.forniandi.circlegathering.dBRoom.entities.StoriesEntity
@@ -53,11 +54,9 @@ class MainNewViewModel @Inject constructor(
     var readBackOnline = dataStoreRepository.readBackOnline.asLiveData()
 
 
-    fun getAllStoriesPerPages(): LiveData<PagingData<StoriesEntity>>{
-        val token = dataStoreRepository.getTheTokenAuth().toString()
-        Log.d("debug_token", "debug_token: $token")
-        return repository.getAllStoriesPerPage(token).cachedIn(viewModelScope).asLiveData()
-        Log.d("debug_token", "debug_bearer_token: "+addedBearerToToken(token))
+    suspend fun getAllStoriesPerPages(): Flow<PagingData<StoriesEntity>>{
+        val token = dataStoreRepository.getTheTokenAuth().first()
+        return repository.getAllStoriesPerPage(token).cachedIn(viewModelScope)
     }
 
     /*fun getAllStoriesPerPages(): LiveData<PagingData<StoriesEntity>>{
