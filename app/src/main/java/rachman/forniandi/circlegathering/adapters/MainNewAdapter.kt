@@ -12,23 +12,23 @@ import rachman.forniandi.circlegathering.dBRoom.entities.StoriesEntity
 import rachman.forniandi.circlegathering.databinding.ItemStoryBinding
 import rachman.forniandi.circlegathering.utils.getTimeElapseFormat
 
-class MainNewAdapter : PagingDataAdapter<StoriesEntity, MainNewAdapter.MainNewHolder>(DIFF_CALLBACK) {
+class MainNewAdapter (
+    private val onItemClicked: (id: String?) -> Unit
+): PagingDataAdapter<StoriesEntity, MainNewAdapter.MainNewHolder>(DIFF_CALLBACK) {
 
-    private var onClickListener: OnStoryClickListener? = null
-
-    class MainNewHolder(private val binding: ItemStoryBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: StoriesEntity, listener: OnStoryClickListener?) {
-            binding.txtTitleStory.text = item.description
-            binding.txtTimeStoryElapsed.text = item.createdAt.getTimeElapseFormat()
+    inner class MainNewHolder(private val binding: ItemStoryBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: StoriesEntity?) {
+            binding.txtTitleStory.text = item?.description
+            binding.txtTimeStoryElapsed.text = item?.createdAt.getTimeElapseFormat()
             Glide.with(binding.root.context)
-                .load(item.photoUrl)
+                .load(item?.photoUrl)
                 .placeholder(R.drawable.place_holder)
                 .error(R.drawable.error_placeholder)
                 .into(binding.imgStory)
-
-            binding.root.setOnClickListener {
-                listener?.onClick(bindingAdapterPosition, item)
+            itemView.setOnClickListener {
+                onItemClicked(item?.id)
             }
+
         }
     }
 
@@ -38,16 +38,10 @@ class MainNewAdapter : PagingDataAdapter<StoriesEntity, MainNewAdapter.MainNewHo
     }
 
     override fun onBindViewHolder(holder: MainNewHolder, position: Int) {
-        val StoriesEntity = getItem(position)
-        StoriesEntity?.let {
-            holder.bind(it, onClickListener)
-        }
+        val storiesEntity = getItem(position)
+        holder.bind(storiesEntity)
     }
 
-
-    interface OnStoryClickListener {
-        fun onClick(position: Int, story: StoriesEntity)
-    }
 
     companion object {
         val DIFF_CALLBACK = object : DiffUtil.ItemCallback<StoriesEntity>() {

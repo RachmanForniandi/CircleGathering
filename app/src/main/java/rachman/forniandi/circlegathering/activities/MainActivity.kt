@@ -9,7 +9,6 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
@@ -19,6 +18,7 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import rachman.forniandi.circlegathering.LoginRegister.LoginRegisterActivity
 import rachman.forniandi.circlegathering.R
@@ -34,9 +34,7 @@ import rachman.forniandi.circlegathering.viewModels.MainNewViewModel
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    //private val viewModel: MainViewModel by viewModels()
     private val viewModel: MainNewViewModel by viewModels()
-    //private val mainAdapter by lazy { MainAdapter(this@MainActivity) }
     private lateinit var mainAdapter: MainNewAdapter
     private lateinit var networkListener: NetworkListener
 
@@ -51,7 +49,6 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbarMain)
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        mainAdapter = MainNewAdapter()
 
         showListStories()
         setUserName()
@@ -109,41 +106,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun requestDataRemoteStories() {
-        /*viewModel.doShowAllStoriesData()
-        viewModel.getAllStoriesResponse.observe(this) { response ->
-            when (response) {
-                is NetworkResult.Success -> {
-                    hideShimmerEffect()
-                    response.data?.let { mainAdapter.setData(it) }
-                    binding.swipeRefreshMain.isRefreshing = false
-                    binding.imgError.visibility = View.GONE
-                    binding.txtError.visibility = View.GONE
-                    binding.btnRetryStory.visibility = View.GONE
-                    binding.btnRetryStory.isClickable = false
-                    Log.e("MainActivity","Network Success called")
-                }
-
-                is NetworkResult.Error -> {
-
-                    hideShimmerEffect()
-                    Toast.makeText(
-                        this,
-                        response.message.toString(), Toast.LENGTH_SHORT
-                    ).show()
-                    binding.swipeRefreshMain.isRefreshing = false
-                    binding.imgError.visibility = View.VISIBLE
-                    binding.txtError.visibility = View.VISIBLE
-                    binding.btnRetryStory.visibility = View.VISIBLE
-                    binding.btnRetryStory.isClickable = true
-                    Log.e("MainActivity","Network Error called")
-                }
-
-                is NetworkResult.Loading -> {
-                    showShimmerEffect()
-                    Log.e("MainActivity","Network Loading called")
-                }
-            }
-        }*/
         lifecycleScope.launch {
             viewModel.getAllStoriesPerPages().collect{ result ->
                 updateDataPerPages(result)
@@ -160,25 +122,36 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showListStories() {
+        mainAdapter = MainNewAdapter {id ->
+            handleToDetail(id)
+        }
         binding.listDataStories.adapter = mainAdapter
+        showShimmerEffect()
+
         mainAdapter.addLoadStateListener { loadState ->
             if ((loadState.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && mainAdapter.itemCount < 1) || loadState.source.refresh is LoadState.Error) {
-                showShimmerEffect()
+                //showShimmerEffect()
+                hideShimmerEffect()
+                binding.swipeRefreshMain.isRefreshing = false
+                binding.imgError.visibility = View.VISIBLE
+                binding.txtError.visibility = View.VISIBLE
+                binding.btnRetryStory.visibility = View.VISIBLE
+                binding.btnRetryStory.isClickable = true
+
             }else{
                 hideShimmerEffect()
-                val errorState = loadState.refresh as? LoadState.Error
-                errorState?.let {
-
-                    Toast.makeText(this@MainActivity, it.error.localizedMessage, Toast.LENGTH_SHORT).show()
-
-                }
-                errorState?.error?.let { Log.d("debug_error", it.localizedMessage) }
+                binding.swipeRefreshMain.isRefreshing = false
+                binding.imgError.visibility = View.GONE
+                binding.txtError.visibility = View.GONE
+                binding.btnRetryStory.visibility = View.GONE
+                binding.btnRetryStory.isClickable = false
 
             }
 
             binding.swipeRefreshMain.isRefreshing = loadState.source.refresh is LoadState.Loading
 
         }
+
 
         try {
             binding.listDataStories.apply {
@@ -191,15 +164,14 @@ class MainActivity : AppCompatActivity() {
         }catch (e: NullPointerException) {
             e.printStackTrace()
         }
-        /*mainAdapter.setOnClickListener(object :MainAdapter.OnStoryClickListener{
-            override fun onClick(position: Int, story: StoryItem) {
 
-                val toDetailStory = Intent(this@MainActivity,DetailStoryActivity::class.java)
-                toDetailStory.putExtra(DETAIL_STORY,story.id)
-                startActivity(toDetailStory)
-            }
-        })*/
-        //showShimmerEffect()
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private fun handleToDetail(id: String?) {
+        val toDetailStory = Intent(this@MainActivity,DetailStoryActivity::class.java)
+        toDetailStory.putExtra(DETAIL_STORY,id)
+        startActivity(toDetailStory)
     }
 
     private fun showShimmerEffect() {
