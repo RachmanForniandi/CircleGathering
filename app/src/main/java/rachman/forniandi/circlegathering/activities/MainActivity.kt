@@ -49,11 +49,11 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbarMain)
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-
+        setSwipeRefreshAtMainPage()
         showListStories()
         setUserName()
 
-        setSwipeRefreshAtMainPage()
+
         requestDataRemoteStories()
         binding.fabAddStory.setOnClickListener {
             val intentToAddData = Intent(this,FormAddDataActivity::class.java)
@@ -117,6 +117,7 @@ class MainActivity : AppCompatActivity() {
     private fun updateDataPerPages(data: PagingData<StoriesEntity>) {
         val listStoriesState = binding.listDataStories.layoutManager?.onSaveInstanceState()
         mainAdapter.submitData(lifecycle,data)
+        binding.swipeRefreshMain.isRefreshing = false
 
         binding.listDataStories.layoutManager?.onRestoreInstanceState(listStoriesState)
     }
@@ -130,7 +131,6 @@ class MainActivity : AppCompatActivity() {
 
         mainAdapter.addLoadStateListener { loadState ->
             if ((loadState.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && mainAdapter.itemCount < 1) || loadState.source.refresh is LoadState.Error) {
-                //showShimmerEffect()
                 hideShimmerEffect()
                 binding.swipeRefreshMain.isRefreshing = false
                 binding.imgError.visibility = View.VISIBLE
@@ -149,6 +149,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             binding.swipeRefreshMain.isRefreshing = loadState.source.refresh is LoadState.Loading
+
 
         }
 
@@ -231,6 +232,8 @@ class MainActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
+
+
 
     companion object{
         const val DETAIL_STORY="detail_story"
