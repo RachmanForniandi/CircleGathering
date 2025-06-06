@@ -1,4 +1,4 @@
-package rachman.forniandi.circlegathering.source
+/*package rachman.forniandi.circlegathering.source
 
 import androidx.paging.PagingSource
 import kotlinx.coroutines.flow.Flow
@@ -29,7 +29,7 @@ class LocalDataSource @Inject constructor(
         return remoteKeysDao.insertAllKeys(key)
     }
 
-    suspend fun readKey(id: String): RemoteKeys {
+    suspend fun readKey(id: String): RemoteKeys? {
         return remoteKeysDao.getRemoteKeysById(id)
     }
 
@@ -37,7 +37,4 @@ class LocalDataSource @Inject constructor(
         return remoteKeysDao.deleteAllKeys()
     }
 
-
-
-
-}
+}*/

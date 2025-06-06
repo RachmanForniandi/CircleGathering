@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity() {
             val intentToAddData = Intent(this,FormAddDataActivity::class.java)
             startActivity(intentToAddData)
         }
-        binding.swipeRefreshMain.isRefreshing = true
+        startSwipeRefresh()
 
         binding.btnRetryStory.setOnClickListener {
             requestDataRemoteStories()
@@ -100,8 +100,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun setSwipeRefreshAtMainPage() {
         binding.swipeRefreshMain.setOnRefreshListener {
-            requestDataRemoteStories()
-            hideShimmerEffect()
+            startSwipeRefresh()
+            mainAdapter.refresh()
         }
     }
 
@@ -117,55 +117,52 @@ class MainActivity : AppCompatActivity() {
     private fun updateDataPerPages(data: PagingData<StoriesEntity>) {
         val listStoriesState = binding.listDataStories.layoutManager?.onSaveInstanceState()
         mainAdapter.submitData(lifecycle,data)
-        binding.swipeRefreshMain.isRefreshing = false
+        stopSwipeRefresh()
 
         binding.listDataStories.layoutManager?.onRestoreInstanceState(listStoriesState)
     }
 
     private fun showListStories() {
-        mainAdapter = MainNewAdapter {id ->
-            handleToDetail(id)
-        }
-        binding.listDataStories.adapter = mainAdapter
-        showShimmerEffect()
+        mainAdapter = MainNewAdapter {id -> handleToDetail(id) }
+        binding.listDataStories.adapter = mainAdapter.withLoadStateFooter(
+            footer = LoadingStatePageAdapter { mainAdapter.retry() }
+        )
 
+        // Tambahkan LoadStateListener
         mainAdapter.addLoadStateListener { loadState ->
-            if ((loadState.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && mainAdapter.itemCount < 1) || loadState.source.refresh is LoadState.Error) {
+            if (loadState.refresh is LoadState.Loading) {
+                startSwipeRefresh()
+                showShimmerEffect()
+            } else {
+                stopSwipeRefresh()
                 hideShimmerEffect()
-                binding.swipeRefreshMain.isRefreshing = false
-                binding.imgError.visibility = View.VISIBLE
-                binding.txtError.visibility = View.VISIBLE
-                binding.btnRetryStory.visibility = View.VISIBLE
-                binding.btnRetryStory.isClickable = true
-
-            }else{
-                hideShimmerEffect()
-                binding.swipeRefreshMain.isRefreshing = false
-                binding.imgError.visibility = View.GONE
-                binding.txtError.visibility = View.GONE
-                binding.btnRetryStory.visibility = View.GONE
-                binding.btnRetryStory.isClickable = false
-
+                val errorState = loadState.source.refresh as? LoadState.Error
+                if (errorState != null) {
+                    // Tampilkan error UI
+                    binding.imgError.visibility = View.VISIBLE
+                    binding.txtError.visibility = View.VISIBLE
+                    binding.btnRetryStory.visibility = View.VISIBLE
+                    binding.btnRetryStory.isClickable = true
+                } else {
+                    // Tidak error
+                    binding.imgError.visibility = View.GONE
+                    binding.txtError.visibility = View.GONE
+                    binding.btnRetryStory.visibility = View.GONE
+                    binding.btnRetryStory.isClickable = false
+                }
             }
-
-            binding.swipeRefreshMain.isRefreshing = loadState.source.refresh is LoadState.Loading
-
-
         }
-
 
         try {
+            // Atur adapter dengan footer loading state
             binding.listDataStories.apply {
                 adapter = mainAdapter.withLoadStateFooter(
-                    footer = LoadingStatePageAdapter{
-                        mainAdapter.retry()
-                    }
+                    footer = LoadingStatePageAdapter { mainAdapter.retry() }
                 )
             }
-        }catch (e: NullPointerException) {
+        } catch (e: NullPointerException) {
             e.printStackTrace()
         }
-
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -173,6 +170,18 @@ class MainActivity : AppCompatActivity() {
         val toDetailStory = Intent(this@MainActivity,DetailStoryActivity::class.java)
         toDetailStory.putExtra(DETAIL_STORY,id)
         startActivity(toDetailStory)
+    }
+
+    private fun startSwipeRefresh(){
+        binding.apply {
+            swipeRefreshMain.isRefreshing = true
+        }
+    }
+
+    private fun stopSwipeRefresh(){
+        binding.apply {
+            swipeRefreshMain.isRefreshing = false
+        }
     }
 
     private fun showShimmerEffect() {
