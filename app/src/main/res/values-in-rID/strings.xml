@@ -56,6 +56,7 @@
     <string name="msg_text_widget_removed">Widget terhapus</string>
     <string name="button_refresh_data_on_widget">Tombol penyegaran data di widget</string>
     <string name="camera_x">Kamera X</string>
+    <string name="data_not_available">Data tidak tersedia</string>
 
     <string name="let_s_register">Silahkan daftar</string>
     <string name="before_explore_all_of_user_s_experience_and_story_of_all_user_please_login_with_account_that_you_already_registered">Sebelum Jelajahi semua pengalaman pengguna dan kisah semua pengguna, Silakan login dengan akun yang sudah Anda daftarkan.</string>

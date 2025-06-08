@@ -18,7 +18,9 @@ import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import rachman.forniandi.circlegathering.dBRoom.entities.StoriesEntity
 import rachman.forniandi.circlegathering.models.allStories.ResponseAllStories
@@ -35,111 +37,75 @@ class MainNewViewModel @Inject constructor(
     private val repository: MainNewRepository,
     private val dataStoreRepository: DataStoreRepository,
     application: Application
-): AndroidViewModel(application) {
+) : AndroidViewModel(application) {
 
     var networkStatus = false
     var backOnline = false
 
     var recyclerViewState: Parcelable? = null
 
-    private val refreshTrigger = MutableLiveData<Unit>()
+    // LiveData: nama user
+    fun getUserName() = dataStoreRepository.getUsername().asLiveData()
 
-    var getAllStoriesResponse: MutableLiveData<NetworkResult<ResponseAllStories>> = MutableLiveData()
-
-
-    //datastore get variable name
-    fun getUserName()= dataStoreRepository.getUsername().asLiveData()
-
-    //room
+    // DataStore: status koneksi sebelumnya
     var readBackOnline = dataStoreRepository.readBackOnline.asLiveData()
 
+    // Cache token dan paging flow
+    private var authToken: String? = null
+    private var _pagingFlow: Flow<PagingData<StoriesEntity>>? = null
 
-    suspend fun getAllStoriesPerPages(): Flow<PagingData<StoriesEntity>>{
-        val token = dataStoreRepository.getTheTokenAuth().first()
-        return repository.getAllStoriesPerPage(token).cachedIn(viewModelScope)
-    }
-
-    /*fun getAllStoriesPerPages(): LiveData<PagingData<StoriesEntity>>{
-        viewModelScope.launch {
-            getAllStoriesResponse.value = NetworkResult.Loading()
-            if(hasInternetConnectionForMain()){
-                try {
-                    val tokenAuth= dataStoreRepository.getTheTokenAuth().first()
-                    val storiesFeedback = repository.getAllStoriesPerPage(tokenAuth)
-                    Log.e("check_token_auth",""+tokenAuth)
-                    getAllStoriesResponse.value  = handledAllStoriesResponse(storiesFeedback)
-
-                    val allStories = getAllStoriesResponse.value?.data
-                    Log.e("check_story",""+allStories)
-
-                }catch (e: Exception){
-                    getAllStoriesResponse.value  = NetworkResult.Error("Data not Available.")
-                }
+    fun getAllStoriesPerPages(): Flow<PagingData<StoriesEntity>> {
+        return _pagingFlow ?: flow {
+            if (authToken == null) {
+                authToken = dataStoreRepository.getTheTokenAuth().first()
             }
+            val newFlow = repository.getAllStoriesPerPage(authToken ?: "").cachedIn(viewModelScope)
+            _pagingFlow = newFlow
+            emitAll(newFlow)
         }
     }
 
-    private fun handledAllStoriesResponse(response: Response<ResponseAllStories>): NetworkResult<ResponseAllStories>? {
-        return when{
-            response.message().toString().contains("timeout")->{
-                NetworkResult.Error("Timeout")
-            }
+    // Reset paging data (jika logout / force refresh)
+    fun resetPagingFlow() {
+        _pagingFlow = null
+    }
 
-            response.body()!!.listStory.isEmpty()->{
-                val storiesData = response.body()
-                return NetworkResult.Success(storiesData)
-            }
-            response.isSuccessful -> {
-                val dataStories = response.body()
-                return NetworkResult.Success(dataStories)
-            }
-
-            else->{
-                NetworkResult.Error(response.message())
-            }
-        }
-    }*/
-
-
-    //logout & clear token dari data store
+    // Logout user
     fun signOutUser() = viewModelScope.launch {
         dataStoreRepository.run {
             deleteTokenAuth()
             setLoginUserStatus(false)
         }
+        resetPagingFlow()
     }
 
+    // Simpan status back online
+    private fun saveBackOnline(backOnline: Boolean) = viewModelScope.launch(Dispatchers.IO) {
+        dataStoreRepository.saveBackOnline(backOnline)
+    }
 
-
-    private fun saveBackOnline(backOnline:Boolean)=
-        viewModelScope.launch(Dispatchers.IO) {
-            dataStoreRepository.saveBackOnline(backOnline)
-        }
-
-
-    fun showNetworkStatus(){
-        if (!networkStatus){
-            Toast.makeText(getApplication(),"No Internet Connection.", Toast.LENGTH_SHORT).show()
+    // Tampilkan status koneksi
+    fun showNetworkStatus() {
+        if (!networkStatus) {
+            Toast.makeText(getApplication(), "No Internet Connection.", Toast.LENGTH_SHORT).show()
             saveBackOnline(true)
-        }else if (networkStatus){
-            if (backOnline){
-                Toast.makeText(getApplication(),"We're back online.", Toast.LENGTH_SHORT).show()
-                saveBackOnline(false)
-            }
+        } else if (networkStatus && backOnline) {
+            Toast.makeText(getApplication(), "We're back online.", Toast.LENGTH_SHORT).show()
+            saveBackOnline(false)
         }
     }
 
-
-    private fun hasInternetConnectionForMain():Boolean{
+    // Cek koneksi internet
+    private fun hasInternetConnectionForMain(): Boolean {
         val connectivityManager = getApplication<Application>().getSystemService(
             Context.CONNECTIVITY_SERVICE
-        )as ConnectivityManager
+        ) as ConnectivityManager
         val activeNetwork = connectivityManager.activeNetwork ?: return false
-        val capabilities= connectivityManager.getNetworkCapabilities(activeNetwork) ?: return false
-        return when{
-            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)->true
-            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)->true
-            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)->true
+        val capabilities = connectivityManager.getNetworkCapabilities(activeNetwork) ?: return false
+        return when {
+            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
             else -> false
         }
     }
