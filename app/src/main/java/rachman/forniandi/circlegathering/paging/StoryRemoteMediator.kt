@@ -56,7 +56,6 @@ class StoryRemoteMediator(
         }
 
         return try {
-            //val token = dataStoreRepository.getTheTokenAuth().first()
             val responseStoryData = remoteDataSource.showStoriesPerPages(token,page,state.config.pageSize)
             val endOfPagination = responseStoryData.body()?.listStory?.isEmpty()
             val storiesForEntity = responseStoryData.body()?.listStory?.toStoryEntity()
@@ -98,9 +97,5 @@ class StoryRemoteMediator(
             }
         }
     }
-
-    /*private fun makeBearerToken(token: String): String {
-        return ConstantsMain.TOKEN_BEARER+token
-    }*/
 
 }
