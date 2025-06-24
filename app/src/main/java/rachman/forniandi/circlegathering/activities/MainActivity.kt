@@ -25,14 +25,14 @@ import rachman.forniandi.circlegathering.adapters.LoadingStatePageAdapter
 import rachman.forniandi.circlegathering.adapters.MainNewAdapter
 import rachman.forniandi.circlegathering.databinding.ActivityMainBinding
 import rachman.forniandi.circlegathering.utils.NetworkListener
-import rachman.forniandi.circlegathering.viewModels.MainNewViewModel
+import rachman.forniandi.circlegathering.viewModels.MainViewModel
 
 @OptIn(ExperimentalPagingApi::class)
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private val viewModel: MainNewViewModel by viewModels()
+    private val viewModel: MainViewModel by viewModels()
     private lateinit var mainAdapter: MainNewAdapter
     private lateinit var networkListener: NetworkListener
 

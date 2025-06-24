@@ -8,6 +8,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.paging.ExperimentalPagingApi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -20,7 +21,8 @@ import java.lang.Exception
 import javax.inject.Inject
 
 @HiltViewModel
-class MapsLocationViewModel @Inject constructor(
+class MapsLocationViewModel @OptIn(ExperimentalPagingApi::class)
+@Inject constructor(
     private val repository: MainRepository,
     private val dataStoreRepository: DataStoreRepository,
     application: Application
@@ -33,6 +35,7 @@ class MapsLocationViewModel @Inject constructor(
         actionSafeCallShowAllStoriesAndLocation()
     }
 
+    @OptIn(ExperimentalPagingApi::class)
     private suspend fun actionSafeCallShowAllStoriesAndLocation() {
         getAllStoriesLocationResponse.value = NetworkResult.Loading()
         if(hasInternetConnectionForMain()){

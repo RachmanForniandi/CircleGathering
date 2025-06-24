@@ -9,6 +9,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.paging.ExperimentalPagingApi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -25,7 +26,8 @@ import java.lang.Exception
 import javax.inject.Inject
 
 @HiltViewModel
-class UploadViewModel @Inject constructor(
+class UploadViewModel @OptIn(ExperimentalPagingApi::class)
+@Inject constructor(
     private val repository: MainRepository,
     private val sessionPreferences: DataStoreRepository,
     application: Application
@@ -67,6 +69,7 @@ class UploadViewModel @Inject constructor(
         }
     }*/
 
+    @OptIn(ExperimentalPagingApi::class)
     private suspend fun actionSafeCallUploadStories(filePicture: MultipartBody.Part,
                                                     description: RequestBody,
                                                     lat: RequestBody?,
