@@ -89,7 +89,7 @@
             android:contentDescription="@string/button_add_data_story"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/ic_add_white" />
+            app:srcCompat="@drawable/ic_create" />
 
         <ImageView
             android:id="@+id/img_error"

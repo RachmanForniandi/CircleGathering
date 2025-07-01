@@ -26,7 +26,7 @@ constructor(private val prefData: DataStore<Preferences>):SessionPreferences{
         }
     }
 
-    val readBackOnline: Flow<Boolean> = prefData.data
+    /*val readBackOnline: Flow<Boolean> = prefData.data
         .catch { exception->
             if (exception is IOException){
                 emit(emptyPreferences())
@@ -36,7 +36,7 @@ constructor(private val prefData: DataStore<Preferences>):SessionPreferences{
         }.map { preferences ->
             val backOnline= preferences[BACK_ONLINE] ?:false
             backOnline
-        }
+        }*/
 
     fun checkAuthToken(): Flow<String?> {
         return prefData.data.map { pref ->

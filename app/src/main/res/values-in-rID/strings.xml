@@ -26,7 +26,7 @@
     <string name="loading_please_wait">Memuat....Mohon menunggu</string>
     <string name="select_image_input_type">Pilih jenis input gambar</string>
     <string name="language_settings">Pengaturan Bahasa</string>
-    <string name="input_password_error_message">Kata Sandi harus memiliki sedikitnya 6 karakter</string>
+    <string name="input_password_error_message">Kata Sandi harus memiliki sedikitnya 8 karakter</string>
     <string name="input_name_error_message">Nama tidak boleh kosong!</string>
     <string name="image_on_login_page">gambar di halaman login</string>
     <string name="image_data_error">Gambar Gangguan tidak ada data</string>

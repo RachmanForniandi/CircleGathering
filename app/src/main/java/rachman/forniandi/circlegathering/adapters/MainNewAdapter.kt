@@ -18,7 +18,7 @@ class MainNewAdapter (
 
     inner class MainNewHolder(private val binding: ItemStoryBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: StoriesEntity?) {
-            binding.txtTitleStory.text = item?.description
+            binding.txtTitleStory.text = item?.name
             binding.txtTimeStoryElapsed.text = item?.createdAt.getTimeElapseFormat()
             Glide.with(binding.root.context)
                 .load(item?.photoUrl)

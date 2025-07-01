@@ -7,6 +7,7 @@ import android.net.NetworkCapabilities
 import android.os.Parcelable
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
@@ -15,6 +16,7 @@ import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
@@ -28,9 +30,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val repository: MainRepository,
-    private val dataStoreRepository: DataStoreRepository,
-    application: Application
-) : AndroidViewModel(application) {
+    private val dataStoreRepository: DataStoreRepository
+) : ViewModel() {
 
     var networkStatus = false
     var backOnline = false
@@ -41,7 +42,9 @@ class MainViewModel @Inject constructor(
     fun getUserName() = dataStoreRepository.getUsername().asLiveData()
 
     // DataStore: status koneksi sebelumnya
-    var readBackOnline = dataStoreRepository.readBackOnline.asLiveData()
+    //var readBackOnline = dataStoreRepository.readBackOnline.asLiveData()
+
+    private val isReadBackOnline = MutableStateFlow<Boolean?>(null)
 
     // Cache token dan paging flow
     private var authToken: String? = null
@@ -73,7 +76,7 @@ class MainViewModel @Inject constructor(
     }
 
     // Simpan status back online
-    private fun saveBackOnline(backOnline: Boolean) = viewModelScope.launch(Dispatchers.IO) {
+    /*private fun saveBackOnline(backOnline: Boolean) = viewModelScope.launch(Dispatchers.IO) {
         dataStoreRepository.saveBackOnline(backOnline)
     }
 
@@ -86,6 +89,6 @@ class MainViewModel @Inject constructor(
             Toast.makeText(getApplication(), "We're back online.", Toast.LENGTH_SHORT).show()
             saveBackOnline(false)
         }
-    }
+    }*/
 
 }

@@ -68,7 +68,7 @@ class RegisterFragment : Fragment() {
 
                     is NetworkResult.Error -> {
                         Toast.makeText(
-                            requireContext(),
+                            requireActivity(),
                             response.message.toString(), Toast.LENGTH_SHORT
                         ).show()
                         applyLoadProgressStateRegister(false)

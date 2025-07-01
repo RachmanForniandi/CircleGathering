@@ -58,8 +58,13 @@ class ExploreMapsActivity : AppCompatActivity(), OnMapReadyCallback  {
                                 it1
                             )
                         }}
-                        mapPage.addMarker(MarkerOptions().position(positionUser!!).title(storyItem.name))
+                        mapPage.addMarker(
+                            MarkerOptions()
+                                .position(positionUser!!)
+                                .title(storyItem.name)
+                        )
                         mapPage.animateCamera(CameraUpdateFactory.newLatLngZoom(positionUser, 5f))
+
                     }
                     Log.e("ExploreMapsActivity","Network Success called")
                 }

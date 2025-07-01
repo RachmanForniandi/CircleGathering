@@ -36,10 +36,6 @@ interface NetworkService {
                       @Part("lon") longitude: RequestBody? = null,
                       ):Response<ResponseAddStory>
 
-    @GET("stories")
-    suspend fun getAllStories(
-        @Header("Authorization")authorization:String
-    ):Response<ResponseAllStories>
 
     @GET("stories")
     suspend fun getNewAllStories(

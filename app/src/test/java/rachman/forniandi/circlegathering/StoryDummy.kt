@@ -1,8 +1,15 @@
 package rachman.forniandi.circlegathering
 
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import rachman.forniandi.circlegathering.dBRoom.entities.StoriesEntity
+import rachman.forniandi.circlegathering.models.addStory.ResponseAddStory
 import rachman.forniandi.circlegathering.models.allStories.ResponseAllStories
 import rachman.forniandi.circlegathering.models.allStories.StoryItem
+import rachman.forniandi.circlegathering.models.login.LoginResult
+import rachman.forniandi.circlegathering.models.login.ResponseLogin
+import rachman.forniandi.circlegathering.models.register.ResponseRegister
 
 object StoryDummy {
 
@@ -32,18 +39,19 @@ object StoryDummy {
 
         for (i in 0 until 10) {
             val storyDummy = StoriesEntity(
-                id = "story-A35X5ujzaW6p5fSy",
-                name = "note794",
-                description = "zxczxczxczxczxc",
-                photoUrl = "https://story-api.dicoding.dev/images/stories/photos-1750632397153_053fc3f022b801a5bf0e.jpg",
-                createdAt = "2025-06-22T22:46:37.161Z",
-                lat = -1.198154140377501,
-                lon = 102.39608945297535
+                id = "story-$i",
+                name = "user_$i",
+                description = "description_$i",
+                photoUrl = "https://example.com/photo_$i.jpg",
+                createdAt = "2025-06-22T22:46:${10 + i}.161Z",
+                lat = -1.0 + i,
+                lon = 102.0 + i
             )
             items.add(storyDummy)
         }
         return items
     }
+
 
 
 

@@ -3,9 +3,7 @@ package rachman.forniandi.circlegathering.viewModels
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.*
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListUpdateCallback
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
@@ -23,7 +21,6 @@ import rachman.forniandi.circlegathering.utils.DataStoreRepository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.advanceUntilIdle
 import org.mockito.Mock
-import org.mockito.Mockito
 import rachman.forniandi.circlegathering.StoryDummy
 import rachman.forniandi.circlegathering.StoryPagingSource
 import rachman.forniandi.circlegathering.adapters.MainNewAdapter
@@ -40,10 +37,11 @@ class MainViewModelTest {
     val mainDispatchRule = MainDispatchRule()
 
     @Mock
-    private lateinit var mainRepository: MainRepository
-    private lateinit var dataStoreRepository: DataStoreRepository
     private lateinit var viewModel: MainViewModel
     private val dummyToken = "dummy_token"
+    private lateinit var mainRepository: MainRepository
+    private lateinit var dataStoreRepository: DataStoreRepository
+
 
 
     @Before
@@ -55,8 +53,7 @@ class MainViewModelTest {
 
         viewModel = MainViewModel(
             mainRepository,
-            dataStoreRepository,
-            mock(android.app.Application::class.java)
+            dataStoreRepository
         )
     }
 
@@ -79,17 +76,16 @@ class MainViewModelTest {
             diffCallback = MainNewAdapter.DIFF_CALLBACK,
             updateCallback = noopListUpdateCallback,
             mainDispatcher = mainDispatchRule.testDispatcher,
-            workerDispatcher = Dispatchers.Main
+            workerDispatcher = mainDispatchRule.testDispatcher
         )
 
         differ.submitData(result)
 
-        //advanceUntilIdle()
+        advanceUntilIdle()
 
-        Mockito.verify(viewModel).getAllStoriesPerPages()
+        verify(mainRepository).getAllStoriesPerPage(dummyToken)
         assertNotNull(differ.snapshot())
         assertEquals(dummyStories.size, differ.snapshot().size)
-        assertEquals(dummyStories[0], differ.snapshot()[0])
     }
 
     @Test
@@ -101,15 +97,7 @@ class MainViewModelTest {
         val result = viewModel.getAllStoriesPerPages().first()
 
         val differ = AsyncPagingDataDiffer(
-            diffCallback = object : DiffUtil.ItemCallback<StoriesEntity>() {
-                override fun areItemsTheSame(oldItem: StoriesEntity, newItem: StoriesEntity): Boolean {
-                    return oldItem.id == newItem.id
-                }
-
-                override fun areContentsTheSame(oldItem: StoriesEntity, newItem: StoriesEntity): Boolean {
-                    return oldItem == newItem
-                }
-            },
+            diffCallback = MainNewAdapter.DIFF_CALLBACK,
             updateCallback = noopListUpdateCallback,
             mainDispatcher = mainDispatchRule.testDispatcher,
             workerDispatcher = mainDispatchRule.testDispatcher
@@ -120,6 +108,38 @@ class MainViewModelTest {
         advanceUntilIdle()
 
         assertEquals(0, differ.snapshot().size)
+    }
+
+    @Test
+    fun `when getAllStoriesPerPages returns data - first item is correct`() = runTest {
+        // Arrange
+        val dummyStories = StoryDummy.generateDummyListStoryEntity()
+        val pagingData = StoryPagingSource.snapShotData(dummyStories)
+
+        `when`(mainRepository.getAllStoriesPerPage(dummyToken)).thenReturn(flowOf(pagingData))
+
+        val result = viewModel.getAllStoriesPerPages().first()
+
+        val differ = AsyncPagingDataDiffer(
+            diffCallback = MainNewAdapter.DIFF_CALLBACK,
+            updateCallback = noopListUpdateCallback,
+            mainDispatcher = mainDispatchRule.testDispatcher,
+            workerDispatcher = mainDispatchRule.testDispatcher
+        )
+
+        // Act
+        differ.submitData(result)
+        advanceUntilIdle()
+
+        // Assert
+        val expectedFirst = dummyStories[0]
+        val actualFirst = differ.snapshot().items[0]
+
+        assertNotNull(actualFirst)
+        assertEquals(expectedFirst.id, actualFirst.id)
+        assertEquals(expectedFirst.name, actualFirst.name)
+        assertEquals(expectedFirst.description, actualFirst.description)
+        assertEquals(expectedFirst.photoUrl, actualFirst.photoUrl)
     }
 
     private val noopListUpdateCallback = object : ListUpdateCallback {
