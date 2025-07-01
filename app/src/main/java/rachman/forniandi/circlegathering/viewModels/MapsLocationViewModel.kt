@@ -7,6 +7,7 @@ import android.net.NetworkCapabilities
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.ExperimentalPagingApi
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,9 +25,8 @@ import javax.inject.Inject
 class MapsLocationViewModel @OptIn(ExperimentalPagingApi::class)
 @Inject constructor(
     private val repository: MainRepository,
-    private val dataStoreRepository: DataStoreRepository,
-    application: Application
-): AndroidViewModel(application) {
+    private val dataStoreRepository: DataStoreRepository
+): ViewModel() {
 
     var getAllStoriesLocationResponse: MutableLiveData<NetworkResult<ResponseAllStories>> = MutableLiveData()
 
@@ -38,21 +38,17 @@ class MapsLocationViewModel @OptIn(ExperimentalPagingApi::class)
     @OptIn(ExperimentalPagingApi::class)
     private suspend fun actionSafeCallShowAllStoriesAndLocation() {
         getAllStoriesLocationResponse.value = NetworkResult.Loading()
-        if(hasInternetConnectionForMain()){
-            try {
-                val tokenAuth= dataStoreRepository.getTheTokenAuth().first()
-                val storiesFeedback = repository.remoteMain.showStoriesWithLocation(tokenAuth)
-                Log.e("check_token_auth",""+tokenAuth)
-                getAllStoriesLocationResponse.value  = handledAllStoriesAndLocationResponse(storiesFeedback)
+        try {
+            val tokenAuth= dataStoreRepository.getTheTokenAuth().first()
+            val storiesFeedback = repository.remoteMain.showStoriesWithLocation(tokenAuth)
+            Log.e("check_token_auth",""+tokenAuth)
+            getAllStoriesLocationResponse.value  = handledAllStoriesAndLocationResponse(storiesFeedback)
 
-                val allStories = getAllStoriesLocationResponse.value?.data
-                Log.e("check_story",""+allStories)
+            val allStories = getAllStoriesLocationResponse.value?.data
+            Log.e("check_story",""+allStories)
 
-            }catch (e: Exception){
-                getAllStoriesLocationResponse.value  = NetworkResult.Error("Data not Available.")
-            }
-        }else{
-            getAllStoriesLocationResponse.value  = NetworkResult.Error("No Internet Connection.")
+        }catch (e: Exception){
+            getAllStoriesLocationResponse.value  = NetworkResult.Error("Data not Available.")
         }
     }
 
@@ -77,19 +73,5 @@ class MapsLocationViewModel @OptIn(ExperimentalPagingApi::class)
         }
     }
 
-
-    private fun hasInternetConnectionForMain():Boolean{
-        val connectivityManager = getApplication<Application>().getSystemService(
-            Context.CONNECTIVITY_SERVICE
-        )as ConnectivityManager
-        val activeNetwork = connectivityManager.activeNetwork ?: return false
-        val capabilities= connectivityManager.getNetworkCapabilities(activeNetwork) ?: return false
-        return when{
-            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)->true
-            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)->true
-            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)->true
-            else -> false
-        }
-    }
 
 }
