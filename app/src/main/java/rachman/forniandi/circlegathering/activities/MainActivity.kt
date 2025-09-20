@@ -40,8 +40,8 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setSupportActionBar(binding.toolbarMain)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
+        //setSupportActionBar(binding.toolbarMain)
+        //supportActionBar?.setDisplayShowTitleEnabled(false)
 
         setSwipeRefreshAtMainPage()
         showListStories()

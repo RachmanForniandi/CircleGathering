@@ -120,7 +120,7 @@ class FormAddDataActivity : AppCompatActivity(), View.OnClickListener {
             }
         }
 
-        setSupportActionBar(binding.toolbarAddData)
+        //setSupportActionBar(binding.toolbarAddData)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
