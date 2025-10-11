@@ -23,7 +23,6 @@ import rachman.forniandi.circlegathering.R
 import rachman.forniandi.circlegathering.adapters.LoadingStatePageAdapter
 import rachman.forniandi.circlegathering.adapters.MainNewAdapter
 import rachman.forniandi.circlegathering.databinding.ActivityMainBinding
-import rachman.forniandi.circlegathering.utils.NetworkListener
 import rachman.forniandi.circlegathering.viewModels.MainViewModel
 
 @OptIn(ExperimentalPagingApi::class)
@@ -33,15 +32,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val viewModel: MainViewModel by viewModels()
     private lateinit var mainAdapter: MainNewAdapter
-    private lateinit var networkListener: NetworkListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        //setSupportActionBar(binding.toolbarMain)
-        //supportActionBar?.setDisplayShowTitleEnabled(false)
 
         setSwipeRefreshAtMainPage()
         showListStories()
@@ -57,21 +53,31 @@ class MainActivity : AppCompatActivity() {
             mainAdapter.retry()
         }
 
-        /*viewModel.readBackOnline.observe(this) {
-            viewModel.backOnline = it
+        binding.toolbarMain.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.menu_logout -> {
+                    viewModel.signOutUser()
+                    val intentToAuth = Intent(this, LoginRegisterActivity::class.java)
+                    intentToAuth.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intentToAuth)
+                    finish()
+                    true
+                }
+
+                R.id.menu_setting -> {
+                    startActivity(Intent(Settings.ACTION_LOCALE_SETTINGS))
+                    true
+                }
+
+                R.id.menu_maps -> {
+                    startActivity(Intent(this, ExploreMapsActivity::class.java))
+                    true
+                }
+
+                else -> super.onOptionsItemSelected(menuItem)
+            }
         }
 
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                networkListener = NetworkListener()
-                networkListener.checkNetworkAvailability(this@MainActivity)
-                    .collect { status ->
-                        Log.d("NetworkListener", status.toString())
-                        viewModel.networkStatus = status
-                        viewModel.showNetworkStatus()
-                    }
-            }
-        }*/
     }
 
 
@@ -187,35 +193,6 @@ class MainActivity : AppCompatActivity() {
             }.create().show()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.menu_logout -> {
-                viewModel.signOutUser()
-                val intentToAuth = Intent(this, LoginRegisterActivity::class.java)
-                intentToAuth.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(intentToAuth)
-                finish()
-                true
-            }
-
-            R.id.menu_setting -> {
-                startActivity(Intent(Settings.ACTION_LOCALE_SETTINGS))
-                true
-            }
-
-            R.id.menu_maps -> {
-                startActivity(Intent(this, ExploreMapsActivity::class.java))
-                true
-            }
-
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
 
     companion object {
         const val DETAIL_STORY = "detail_story"
