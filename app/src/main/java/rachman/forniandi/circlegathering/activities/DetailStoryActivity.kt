@@ -28,7 +28,7 @@ class DetailStoryActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         showDetailStory()
-        setSupportActionBar(binding.toolbarDetailStory)
+        //setSupportActionBar(binding.toolbarDetailStory)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
 

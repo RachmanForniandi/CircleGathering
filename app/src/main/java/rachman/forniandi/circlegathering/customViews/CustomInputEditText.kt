@@ -100,7 +100,7 @@ class CustomInputEditText : AppCompatEditText, View.OnTouchListener {
 
     }
 
-    override fun onDraw(canvas: Canvas?) {
+    override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         setAssetDrawAble(
             startOfTheText = initiateIconDrawable,

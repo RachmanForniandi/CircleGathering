@@ -68,7 +68,7 @@ class RegisterFragment : Fragment() {
 
                     is NetworkResult.Error -> {
                         Toast.makeText(
-                            requireContext(),
+                            requireActivity(),
                             response.message.toString(), Toast.LENGTH_SHORT
                         ).show()
                         applyLoadProgressStateRegister(false)
@@ -94,7 +94,6 @@ class RegisterFragment : Fragment() {
             etPassword.isEnabled = !onProcess
             btnRegister.isEnabled = !onProcess
         }
-
 
         if (onProcess){
             binding?.maskedViewPgRegister?.animateLoadingProcessData(true)

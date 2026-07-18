@@ -31,12 +31,23 @@ interface NetworkService {
     suspend fun insertStories(
                       @Header("Authorization") token:String,
                       @Part file:MultipartBody.Part,
-                      @Part("description") description:RequestBody
+                      @Part("description") description:RequestBody,
+                      @Part("lat") latitude: RequestBody? = null,
+                      @Part("lon") longitude: RequestBody? = null,
                       ):Response<ResponseAddStory>
 
+
     @GET("stories")
-    suspend fun getAllStories(
-        @Header("Authorization")authorization:String
+    suspend fun getNewAllStories(
+        @Header("Authorization")authorization:String,
+        @Query("page") page: Int? = null,
+        @Query("size") size: Int? = null,
+    ):Response<ResponseAllStories>
+
+    @GET("stories")
+    suspend fun getAllStoriesWithLocation(
+        @Header("Authorization")authorization:String,
+        @Query("location") location : Int = 1,
     ):Response<ResponseAllStories>
 
     @GET("stories/{id}")

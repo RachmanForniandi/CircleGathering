@@ -26,7 +26,7 @@
     <string name="loading_please_wait">Memuat....Mohon menunggu</string>
     <string name="select_image_input_type">Pilih jenis input gambar</string>
     <string name="language_settings">Pengaturan Bahasa</string>
-    <string name="input_password_error_message">Kata Sandi harus memiliki sedikitnya 6 karakter</string>
+    <string name="input_password_error_message">Kata Sandi harus memiliki sedikitnya 8 karakter</string>
     <string name="input_name_error_message">Nama tidak boleh kosong!</string>
     <string name="image_on_login_page">gambar di halaman login</string>
     <string name="image_data_error">Gambar Gangguan tidak ada data</string>
@@ -56,6 +56,7 @@
     <string name="msg_text_widget_removed">Widget terhapus</string>
     <string name="button_refresh_data_on_widget">Tombol penyegaran data di widget</string>
     <string name="camera_x">Kamera X</string>
+    <string name="data_not_available">Data tidak tersedia</string>
 
     <string name="let_s_register">Silahkan daftar</string>
     <string name="before_explore_all_of_user_s_experience_and_story_of_all_user_please_login_with_account_that_you_already_registered">Sebelum Jelajahi semua pengalaman pengguna dan kisah semua pengguna, Silakan login dengan akun yang sudah Anda daftarkan.</string>
@@ -68,4 +69,12 @@
     <string name="failure_to_show_camera">Gagal memunculkan kamera.</string>
     <string name="let_s_sign_in">Silahkan masuk</string>
     <string name="detail_image_story">gambar cerita detail</string>
+    <string name="maps">Peta</string>
+    <string name="location">lokasi</string>
+    <string name="latitude">garis Lintang</string>
+    <string name="longitude">garis Bujur</string>
+    <string name="not_get_permission">Tidak mendapatkan perijinan</string>
+    <string name="location_permission_denied">perijinan lokasi ditolak</string>
+    <string name="change_setting">ubah pengaturan</string>
+    <string name="unable_to_fetch_data_of_stories">Tidak dapat mengambil data cerita</string>
 </resources>

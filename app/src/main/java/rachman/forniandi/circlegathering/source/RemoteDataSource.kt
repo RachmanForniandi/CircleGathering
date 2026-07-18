@@ -9,6 +9,7 @@ import rachman.forniandi.circlegathering.models.login.ResponseLogin
 import rachman.forniandi.circlegathering.models.register.ResponseRegister
 import rachman.forniandi.circlegathering.networkUtil.NetworkService
 import rachman.forniandi.circlegathering.utils.ConstantsMain
+import rachman.forniandi.circlegathering.utils.addedBearerToToken
 import retrofit2.Response
 import javax.inject.Inject
 
@@ -23,25 +24,30 @@ class RemoteDataSource @Inject constructor(
         return networkService.registerUser(username,email, password)
     }
 
-    suspend fun showStories(authorization:String):Response<ResponseAllStories>{
-        val addedBearerToken = makeBearerToken(authorization)
-        return networkService.getAllStories(addedBearerToken)
+    suspend fun showStoriesWithLocation(authorization:String):Response<ResponseAllStories>{
+        val addedBearerTokenStoryLocation= addedBearerToToken(authorization)
+        return networkService.getAllStoriesWithLocation(addedBearerTokenStoryLocation)
+    }
+
+    suspend fun showStoriesPerPages(authorization:String,page:Int? = null,size:Int? = null):Response<ResponseAllStories>{
+        val addedBearerTokenStoryPages = addedBearerToToken(authorization)
+        return networkService.getNewAllStories(addedBearerTokenStoryPages,page,size)
     }
 
     suspend fun showDetailStories(authorization:String,id:String):Response<ResponseDetailStory>{
-        val addedBearerToken = makeBearerToken(authorization)
-        return networkService.getDetailStories(addedBearerToken,id)
+        val addedBearerTokenDetail = addedBearerToToken(authorization)
+        return networkService.getDetailStories(addedBearerTokenDetail,id)
     }
 
-    suspend fun addDataStories(bearerToken:String,
+    suspend fun addDataStories(bearerTokenInputStory:String,
                                file:MultipartBody.Part,
-                               description:RequestBody):Response<ResponseAddStory>{
-        val addedBearerToken = makeBearerToken(bearerToken)
-        return networkService.insertStories(addedBearerToken,file,description)
-    }
+                               description:RequestBody,
+                               lat: RequestBody? = null,
+                               lon: RequestBody? = null
+    ):Response<ResponseAddStory>{
+        val addedBearerTokenInputStory = addedBearerToToken(bearerTokenInputStory)
 
-    private fun makeBearerToken(token: String): String {
-        return ConstantsMain.TOKEN_BEARER+token
+        return networkService.insertStories(addedBearerTokenInputStory,file, description,lat,lon)
     }
 
 }

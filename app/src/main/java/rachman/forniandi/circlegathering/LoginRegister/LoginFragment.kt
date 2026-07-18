@@ -42,7 +42,7 @@ class LoginFragment : Fragment() {
         _binding=FragmentLoginBinding.inflate(inflater, container, false)
 
 
-        lifecycleScope.launch{
+        /*lifecycleScope.launch{
             networkListener = NetworkListener()
             networkListener.checkNetworkAvailability(requireActivity())
                 .collect { status->
@@ -50,7 +50,7 @@ class LoginFragment : Fragment() {
                     loginViewModel.networkStatus = status
                     loginViewModel.showNetworkStatus()
                 }
-        }
+        }*/
         return _binding!!.root
     }
 

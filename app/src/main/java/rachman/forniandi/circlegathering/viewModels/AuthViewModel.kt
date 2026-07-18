@@ -8,16 +8,13 @@ import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import dagger.Provides
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import rachman.forniandi.circlegathering.models.login.ResponseLogin
 import rachman.forniandi.circlegathering.models.register.ResponseRegister
 import rachman.forniandi.circlegathering.repositories.AuthUserRepository
 import rachman.forniandi.circlegathering.utils.DataStoreRepository
 import rachman.forniandi.circlegathering.utils.NetworkResult
-import rachman.forniandi.circlegathering.utils.SessionPreferences
 import retrofit2.Response
 import java.lang.Exception
 import javax.inject.Inject
@@ -47,16 +44,13 @@ class AuthViewModel @Inject constructor(
 
     private suspend fun actionRegisterSafeCall(name:String,email:String,password:String){
         registerResponse.value = NetworkResult.Loading()
-        if(hasInternetConnectionForAuth()){
-            try {
-                val registerFeedback = repository.remote.doRegister(name,email,password)
-                registerResponse.value = handledRegisterResponse(registerFeedback)
-            }catch (e: Exception){
-                registerResponse.value = NetworkResult.Error("register failed.")
-            }
-        }else{
-            registerResponse.value = NetworkResult.Error("No Internet Connection.")
+        try {
+            val registerFeedback = repository.remote.doRegister(name,email,password)
+            registerResponse.value = handledRegisterResponse(registerFeedback)
+        }catch (e: Exception){
+            registerResponse.value = NetworkResult.Error("register failed.")
         }
+
     }
 
     private fun handledRegisterResponse(response: Response<ResponseRegister>):NetworkResult<ResponseRegister>{
@@ -77,17 +71,15 @@ class AuthViewModel @Inject constructor(
 
     private suspend fun actionLoginSafeCall(email:String,password:String){
         loginResponse.value = NetworkResult.Loading()
-        if(hasInternetConnectionForAuth()){
-            try {
-                val loginFeedback = repository.remote.doLogin(email,password)
-                loginResponse.value = handledLoginResponse(loginFeedback)
+        try {
+            val loginFeedback = repository.remote.doLogin(email,password)
+            loginResponse.value = handledLoginResponse(loginFeedback)
 
-            }catch (e: Exception){
-                loginResponse.value = NetworkResult.Error("Login Failed.")
-            }
-        }else{
-            loginResponse.value = NetworkResult.Error("No Internet Connection.")
+        }catch (e: Exception){
+            loginResponse.value = NetworkResult.Error("Login Failed.")
         }
+
+
     }
 
     private suspend fun handledLoginResponse(response: Response<ResponseLogin>): NetworkResult<ResponseLogin>? {
@@ -111,36 +103,5 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-
-    private fun saveBackOnline(backOnline:Boolean)=
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.online.saveBackOnline(backOnline)
-        }
-
-    private fun hasInternetConnectionForAuth():Boolean{
-        val connectivityManager = getApplication<Application>().getSystemService(
-            Context.CONNECTIVITY_SERVICE
-        )as ConnectivityManager
-        val activeNetwork = connectivityManager.activeNetwork ?: return false
-        val capabilities= connectivityManager.getNetworkCapabilities(activeNetwork) ?: return false
-        return when{
-            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)->true
-            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)->true
-            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)->true
-            else -> false
-        }
-    }
-
-    fun showNetworkStatus(){
-        if (!networkStatus){
-            Toast.makeText(getApplication(),"No Internet Connection.", Toast.LENGTH_SHORT).show()
-            saveBackOnline(true)
-        }else if (networkStatus){
-            if (backOnline){
-                Toast.makeText(getApplication(),"We're back online.", Toast.LENGTH_SHORT).show()
-                saveBackOnline(false)
-            }
-        }
-    }
 
 }

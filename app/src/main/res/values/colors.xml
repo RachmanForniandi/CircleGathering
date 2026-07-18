@@ -23,7 +23,7 @@
     <color name="colorPrimary">#6200EA</color>
     <color name="colorPrimaryDark">#5502C8</color>
     <color name="colorAccent">#9D46FF</color>
-
+    <color name="line_dark_background">#FF424242</color>
 
     <color name="backgroundColor">@color/lightGray</color>
     <color name="placeholderColor">@color/mediumGray</color>

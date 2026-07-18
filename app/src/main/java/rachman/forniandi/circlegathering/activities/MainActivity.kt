@@ -1,89 +1,94 @@
 package rachman.forniandi.circlegathering.activities
 
 import android.app.AlertDialog.Builder
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.LoadState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import rachman.forniandi.circlegathering.LoginRegister.LoginRegisterActivity
 import rachman.forniandi.circlegathering.R
-import rachman.forniandi.circlegathering.adapters.MainAdapter
+import rachman.forniandi.circlegathering.adapters.LoadingStatePageAdapter
+import rachman.forniandi.circlegathering.adapters.MainNewAdapter
 import rachman.forniandi.circlegathering.databinding.ActivityMainBinding
-import rachman.forniandi.circlegathering.models.allStories.StoryItem
-import rachman.forniandi.circlegathering.utils.NetworkListener
-import rachman.forniandi.circlegathering.utils.NetworkResult
 import rachman.forniandi.circlegathering.viewModels.MainViewModel
 
-@ExperimentalCoroutinesApi
+@OptIn(ExperimentalPagingApi::class)
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private val viewModel: MainViewModel by viewModels()
-    private val mainAdapter by lazy { MainAdapter(this@MainActivity) }
-    private lateinit var networkListener: NetworkListener
-
+    private lateinit var mainAdapter: MainNewAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityMainBinding.inflate(layoutInflater)
-
         setContentView(binding.root)
 
-        setSupportActionBar(binding.toolbarMain)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        setUserName()
-        showDataStoriesOnMain()
         setSwipeRefreshAtMainPage()
-        requestDataRemoteStories()
+        showListStories()
+        setUserName()
+        observePagingData()
+
         binding.fabAddStory.setOnClickListener {
-            val intentToAddData = Intent(this,FormAddDataActivity::class.java)
+            val intentToAddData = Intent(this, FormAddDataActivity::class.java)
             startActivity(intentToAddData)
         }
-        binding.swipeRefreshMain.isRefreshing = true
 
         binding.btnRetryStory.setOnClickListener {
-            requestDataRemoteStories()
+            mainAdapter.retry()
         }
 
-        viewModel.readBackOnline.observe(this){
-            viewModel.backOnline=it
-        }
+        binding.toolbarMain.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.menu_logout -> {
+                    viewModel.signOutUser()
+                    val intentToAuth = Intent(this, LoginRegisterActivity::class.java)
+                    intentToAuth.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intentToAuth)
+                    finish()
+                    true
+                }
 
+                R.id.menu_setting -> {
+                    startActivity(Intent(Settings.ACTION_LOCALE_SETTINGS))
+                    true
+                }
 
-        lifecycleScope.launch {
-            repeatOnLifecycle(state = Lifecycle.State.STARTED) {
-                networkListener = NetworkListener()
-                networkListener.checkNetworkAvailability(this@MainActivity)
-                    .collect { status->
-                        Log.d("NetworkListener",status.toString())
-                        viewModel.networkStatus = status
-                        viewModel.showNetworkStatus()
-                    }
+                R.id.menu_maps -> {
+                    startActivity(Intent(this, ExploreMapsActivity::class.java))
+                    true
+                }
+
+                else -> super.onOptionsItemSelected(menuItem)
             }
         }
 
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (viewModel.recyclerViewState != null){
-            binding.listDataStories.layoutManager?.onRestoreInstanceState(viewModel.recyclerViewState)
+
+    private fun observePagingData() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.getAllStoriesPerPages().collectLatest { pagingData ->
+                    viewModel.recyclerViewState = binding.listDataStories.layoutManager?.onSaveInstanceState()
+                    mainAdapter.submitData(pagingData)
+                }
+            }
         }
     }
 
@@ -93,63 +98,75 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
     private fun setSwipeRefreshAtMainPage() {
         binding.swipeRefreshMain.setOnRefreshListener {
-            requestDataRemoteStories()
-            hideShimmerEffect()
+            startSwipeRefresh()
+            mainAdapter.refresh()
         }
     }
 
-    private fun requestDataRemoteStories() {
-        viewModel.doShowAllStoriesData()
-        viewModel.getAllStoriesResponse.observe(this) { response ->
-            when (response) {
-                is NetworkResult.Success -> {
-                    hideShimmerEffect()
-                    response.data?.let { mainAdapter.setData(it) }
-                    binding.swipeRefreshMain.isRefreshing = false
-                    binding.imgError.visibility = View.GONE
-                    binding.txtError.visibility = View.GONE
-                    binding.btnRetryStory.visibility = View.GONE
-                    binding.btnRetryStory.isClickable = false
-                    Log.e("MainActivity","Network Success called")
-                }
+    private fun showListStories() {
+        mainAdapter = MainNewAdapter { id -> handleToDetail(id) }
+        binding.listDataStories.adapter = mainAdapter.withLoadStateFooter(
+            footer = LoadingStatePageAdapter { mainAdapter.retry() }
+        )
 
-                is NetworkResult.Error -> {
+        mainAdapter.addLoadStateListener { loadState ->
+            if (loadState.refresh is LoadState.Loading) {
+                startSwipeRefresh()
+                showShimmerEffect()
+            } else {
+                stopSwipeRefresh()
+                hideShimmerEffect()
+                val errorState = loadState.source.refresh as? LoadState.Error
+                val endOfPaginationReached = loadState.append.endOfPaginationReached
 
-                    hideShimmerEffect()
-                    Toast.makeText(
-                        this,
-                        response.message.toString(), Toast.LENGTH_SHORT
-                    ).show()
-                    binding.swipeRefreshMain.isRefreshing = false
-                    binding.imgError.visibility = View.VISIBLE
-                    binding.txtError.visibility = View.VISIBLE
-                    binding.btnRetryStory.visibility = View.VISIBLE
-                    binding.btnRetryStory.isClickable = true
-                    Log.e("MainActivity","Network Error called")
-                }
 
-                is NetworkResult.Loading -> {
-                    showShimmerEffect()
-                    Log.e("MainActivity","Network Loading called")
+                if (errorState != null) {
+                    // Error terjadi saat refresh (misalnya network error)
+                    showErrorState(true)
+                    binding.listDataStories.visibility = View.GONE // << penting
+                } else if (endOfPaginationReached && mainAdapter.itemCount == 0) {
+                    // Tidak ada data setelah sukses memuat
+                    showEmptyState() // Bisa tampilkan UI “Belum ada data”
+                } else {
+                    showErrorState(false)
+                    binding.listDataStories.visibility = View.VISIBLE
                 }
+                showErrorState(errorState != null)
             }
         }
     }
 
-    private fun showDataStoriesOnMain() {
-        binding.listDataStories.adapter = mainAdapter
-        mainAdapter.setOnClickListener(object :MainAdapter.OnStoryClickListener{
-            override fun onClick(position: Int, story: StoryItem) {
+    private fun showEmptyState() {
+        binding.imgError.visibility = View.VISIBLE
+        binding.txtError.visibility = View.VISIBLE
+        binding.txtError.text = getString(R.string.data_not_available)
+        binding.btnRetryStory.visibility = View.GONE
+    }
 
-                val toDetailStory = Intent(this@MainActivity,DetailStoryActivity::class.java)
-                toDetailStory.putExtra(DETAIL_STORY,story.id)
-                startActivity(toDetailStory)
-            }
-        })
-        showShimmerEffect()
+
+
+    private fun showErrorState(show: Boolean) {
+        binding.imgError.visibility = if (show) View.VISIBLE else View.GONE
+        binding.txtError.visibility = if (show) View.VISIBLE else View.GONE
+        binding.btnRetryStory.visibility = if (show) View.VISIBLE else View.GONE
+        binding.btnRetryStory.isClickable = show
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private fun handleToDetail(id: String?) {
+        val toDetailStory = Intent(this, DetailStoryActivity::class.java)
+        toDetailStory.putExtra(DETAIL_STORY, id)
+        startActivity(toDetailStory)
+    }
+
+    private fun startSwipeRefresh() {
+        binding.swipeRefreshMain.isRefreshing = true
+    }
+
+    private fun stopSwipeRefresh() {
+        binding.swipeRefreshMain.isRefreshing = false
     }
 
     private fun showShimmerEffect() {
@@ -166,45 +183,18 @@ class MainActivity : AppCompatActivity() {
 
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
+        super.onBackPressed()
         Builder(this)
             .setTitle(getString(R.string.exit))
             .setMessage(getString(R.string.are_you_sure_do_you_want_to_exit))
             .setNegativeButton(getString(R.string.no), null)
-            .setPositiveButton(getString(R.string.yes), object : DialogInterface.OnClickListener {
-                override fun onClick(arg0: DialogInterface?, arg1: Int) {
-                    super@MainActivity.onBackPressed()
-                }
-            }).create().show()
+            .setPositiveButton(getString(R.string.yes)) { _, _ ->
+                super@MainActivity.onBackPressed()
+            }.create().show()
     }
 
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
+    companion object {
+        const val DETAIL_STORY = "detail_story"
     }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.menu_logout ->{
-                viewModel.signOutUser()
-                val intentToAuth = Intent(this,LoginRegisterActivity::class.java)
-                intentToAuth.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                startActivity(intentToAuth)
-                finish()
-                true
-            }
-            R.id.menu_setting ->{
-                val intentSetting = Intent(Settings.ACTION_LOCALE_SETTINGS)
-                startActivity(intentSetting)
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
-    companion object{
-        const val DETAIL_STORY="detail_story"
-    }
-
 }
