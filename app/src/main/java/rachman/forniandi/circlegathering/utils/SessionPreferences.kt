@@ -12,7 +12,11 @@ interface SessionPreferences {
 
     suspend fun saveUsername(name: String)
 
+    suspend fun saveUserId(userId: String)
+
     fun getUsername(): Flow<String>
+
+    fun getUserId(): Flow<String>
 
     suspend fun deleteUsername()
 
