@@ -70,6 +70,7 @@
         app:layout_constraintTop_toBottomOf="@+id/txt_lbl_settings">
 
         <TextView
+            android:id="@+id/tv_setting_language"
             style="@style/setting_tv_menu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -80,6 +81,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
+            android:id="@+id/btn_setting_language"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_arrow_option"

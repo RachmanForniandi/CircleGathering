@@ -1,18 +1,16 @@
 package rachman.forniandi.circlegathering.activities
 
+import android.content.Intent
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
+import android.provider.Settings
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import rachman.forniandi.circlegathering.R
+import dagger.hilt.android.AndroidEntryPoint
+import rachman.forniandi.circlegathering.LoginRegister.LoginRegisterActivity
 import rachman.forniandi.circlegathering.databinding.ActivityAboutUserBinding
-import rachman.forniandi.circlegathering.databinding.ActivityMainBinding
 import rachman.forniandi.circlegathering.viewModels.AboutUserViewModel
-import rachman.forniandi.circlegathering.viewModels.MainViewModel
-import kotlin.getValue
 
+@AndroidEntryPoint
 class AboutUserActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAboutUserBinding
@@ -34,6 +32,18 @@ class AboutUserActivity : AppCompatActivity() {
 
             viewModel.getUserId().observe(this@AboutUserActivity) { id ->
                 binding.txtUserid.text = id
+            }
+
+            btnSettingLanguage.setOnClickListener {
+                startActivity(Intent(Settings.ACTION_LOCALE_SETTINGS))
+            }
+
+            btnLogout.setOnClickListener {
+                viewModel.signOutUser()
+                val intentToAuth = Intent(this@AboutUserActivity, LoginRegisterActivity::class.java)
+                intentToAuth.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intentToAuth)
+                finish()
             }
         }
     }
