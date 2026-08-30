@@ -20,14 +20,15 @@
         android:layout_height="wrap_content">
 
         <ImageView
-                    android:id="@+id/img_story"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/place_holder"
-                    android:scaleType="centerCrop"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+            android:id="@+id/img_story"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/place_holder"
+            android:contentDescription="@string/image_contentDescription"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/txt_time_story_elapsed"
@@ -40,6 +41,7 @@
             android:gravity="center_vertical"
             android:textColor="@color/white"
             android:ellipsize="end"
+            style="@style/StyleTitleNamePicture"
             android:drawablePadding="8dp"
             app:drawableStartCompat="@drawable/ic_access_time_white"
             app:flow_horizontalBias="0.0"
@@ -47,20 +49,16 @@
             app:layout_constraintEnd_toEndOf="parent"
             tools:text="8 hours ago"/>
         <TextView
-                    android:id="@+id/txt_title_story"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    app:layout_constraintTop_toBottomOf="@id/img_story"
-                    app:layout_constraintStart_toStartOf="parent"
-                    tools:text="Title" />
+            android:id="@+id/txt_title_story"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="8dp"
+            style="@style/StyleTitleNamePicture"
+            app:layout_constraintTop_toBottomOf="@id/img_story"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="Title" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </com.google.android.material.card.MaterialCardView>
+</com.google.android.material.card.MaterialCardView>
