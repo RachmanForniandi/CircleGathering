@@ -9,7 +9,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import rachman.forniandi.circlegathering.R
 import rachman.forniandi.circlegathering.activities.MainActivity.Companion.DETAIL_STORY
-import rachman.forniandi.circlegathering.databinding.ActivityDetailStoryActivityBinding
+import rachman.forniandi.circlegathering.databinding.ActivityDetailStoryBinding
 import rachman.forniandi.circlegathering.utils.NetworkResult
 import rachman.forniandi.circlegathering.utils.animateLoadingProcessData
 import rachman.forniandi.circlegathering.utils.getStringDate
@@ -19,12 +19,12 @@ import rachman.forniandi.circlegathering.viewModels.DetailStoryViewModel
 @AndroidEntryPoint
 class DetailStoryActivity : AppCompatActivity() {
     private val viewModel: DetailStoryViewModel by viewModels()
-    private lateinit var binding: ActivityDetailStoryActivityBinding
+    private lateinit var binding: ActivityDetailStoryBinding
     
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityDetailStoryActivityBinding.inflate(layoutInflater)
+        binding = ActivityDetailStoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         showDetailStory()
