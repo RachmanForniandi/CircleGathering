@@ -16,6 +16,13 @@ class AboutUserViewModel @Inject constructor(
     fun getUserName() = dataStoreRepository.getUsername().asLiveData()
     fun getUserId() = dataStoreRepository.getUserId().asLiveData()
 
+    // Theme (Day / Night)
+    fun getTheme() = dataStoreRepository.getTheme().asLiveData()
+
+    fun saveTheme(isDarkMode: Boolean) = viewModelScope.launch {
+        dataStoreRepository.setTheme(isDarkMode)
+    }
+
     fun signOutUser() = viewModelScope.launch {
         dataStoreRepository.run {
             deleteTokenAuth()

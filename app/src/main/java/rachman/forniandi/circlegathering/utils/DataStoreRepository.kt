@@ -100,6 +100,18 @@ constructor(private val prefData: DataStore<Preferences>):SessionPreferences{
             it[KEY_USER_LOGIN_STATUS]?: false
         }
 
+    override fun getTheme(): Flow<Boolean> =
+        prefData.data
+            .catch { exception ->
+                if (exception is IOException) emit(emptyPreferences())
+                else throw exception
+            }
+            .map { it[THEME_DARK_MODE] ?: false }
+
+    override suspend fun setTheme(isDarkModeThemeActive: Boolean) {
+        prefData.edit { it[THEME_DARK_MODE] = isDarkModeThemeActive }
+    }
+
 
     companion object{
         val KEY_TOKEN_STORE = stringPreferencesKey("token_stories")

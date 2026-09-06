@@ -24,5 +24,9 @@ interface SessionPreferences {
 
     fun getLoginUserStatus(): Flow<Boolean>
 
+    fun getTheme(): Flow<Boolean>
+
+    suspend fun setTheme(isDarkModeThemeActive:Boolean)
+
     suspend fun saveBackOnline(backOnline:Boolean)
 }
