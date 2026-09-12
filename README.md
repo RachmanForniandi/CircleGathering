@@ -79,11 +79,11 @@
 ## 📸 Screenshots
 
 ## Screenshot
-|Splash Screen|Login|Sign Up|Loading Screen|Main|
+|Splash Screen|Login|Sign Up|Loading Screen|
 |--|--|--|--|
 |![](assets/ss/1.jpeg?raw=true)|![](assets/ss/2.jpeg?raw=true)|![](assets/ss/3.jpeg?raw=true)|![](assets/ss/4.jpeg?raw=true)|
 
-|Main|Detail|Form-Input|Map|About User & Settings|
+|Main|Detail|Form-Input|Map|
 |--|--|--|--|
 |![](assets/ss/5.jpeg?raw=true)||![](assets/ss/6.jpeg?raw=true)|![](assets/ss/7.jpeg?raw=true)|![](assets/ss/8.jpeg?raw=true)|
 
