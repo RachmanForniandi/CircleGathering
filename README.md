@@ -85,7 +85,7 @@
 
 |Main|Detail|Form-Input|Map|
 |--|--|--|--|
-|![](assets/ss/5.jpeg?raw=true)||![](assets/ss/6.jpeg?raw=true)|![](assets/ss/7.jpeg?raw=true)|![](assets/ss/8.jpeg?raw=true)|
+|![](assets/ss/5.jpeg?raw=true)|![](assets/ss/6.jpeg?raw=true)|![](assets/ss/7.jpeg?raw=true)|![](assets/ss/8.jpeg?raw=true)|
 
 |About User & Settings|
 |--|
