@@ -67,9 +67,20 @@ constructor(private val prefData: DataStore<Preferences>):SessionPreferences{
         }
     }
 
+    override suspend fun saveUserId(userId: String) {
+        prefData.edit { pref ->
+            pref[KEY_USER_ID] = userId
+        }
+    }
+
     override fun getUsername()=
         prefData.data.map {
             it[KEY_USERNAME]?: ""
+        }
+
+    override fun getUserId(): Flow<String> =
+        prefData.data.map {
+            it[KEY_USER_ID]?: ""
         }
 
     override suspend fun deleteUsername() {
@@ -89,10 +100,25 @@ constructor(private val prefData: DataStore<Preferences>):SessionPreferences{
             it[KEY_USER_LOGIN_STATUS]?: false
         }
 
+    override fun getTheme(): Flow<Boolean> =
+        prefData.data
+            .catch { exception ->
+                if (exception is IOException) emit(emptyPreferences())
+                else throw exception
+            }
+            .map { it[THEME_DARK_MODE] ?: false }
+
+    override suspend fun setTheme(isDarkModeThemeActive: Boolean) {
+        prefData.edit { it[THEME_DARK_MODE] = isDarkModeThemeActive }
+    }
+
 
     companion object{
         val KEY_TOKEN_STORE = stringPreferencesKey("token_stories")
         val KEY_USERNAME = stringPreferencesKey("username")
+
+        val THEME_DARK_MODE = booleanPreferencesKey("is_dark_mode_theme_active")
+        val KEY_USER_ID= stringPreferencesKey("user_id")
         val KEY_USER_LOGIN_STATUS = booleanPreferencesKey("user_login_status")
         val BACK_ONLINE = booleanPreferencesKey(PREFERENCES_BACK_ONLINE)
 

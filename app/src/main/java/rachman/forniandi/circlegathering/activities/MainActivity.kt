@@ -1,5 +1,6 @@
 package rachman.forniandi.circlegathering.activities
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog.Builder
 import android.content.Intent
 import android.os.Bundle
@@ -55,17 +56,9 @@ class MainActivity : AppCompatActivity() {
 
         binding.toolbarMain.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.menu_logout -> {
-                    viewModel.signOutUser()
-                    val intentToAuth = Intent(this, LoginRegisterActivity::class.java)
-                    intentToAuth.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    startActivity(intentToAuth)
-                    finish()
-                    true
-                }
 
-                R.id.menu_setting -> {
-                    startActivity(Intent(Settings.ACTION_LOCALE_SETTINGS))
+                R.id.menu_profile_and_settings-> {
+                    startActivity(Intent(this, AboutUserActivity::class.java))
                     true
                 }
 
@@ -182,14 +175,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     @Deprecated("Deprecated in Java")
+    @SuppressLint("MissingSuperCall")
     override fun onBackPressed() {
-        super.onBackPressed()
         Builder(this)
             .setTitle(getString(R.string.exit))
             .setMessage(getString(R.string.are_you_sure_do_you_want_to_exit))
             .setNegativeButton(getString(R.string.no), null)
             .setPositiveButton(getString(R.string.yes)) { _, _ ->
-                super@MainActivity.onBackPressed()
+                finishAffinity()
             }.create().show()
     }
 

@@ -8,6 +8,7 @@
     <string name="login">Masuk</string>
     <string name="stories">Cerita</string>
     <string name="logout">Keluar</string>
+    <string name="settings">Pengaturan</string>
     <string name="yes">Iya</string>
     <string name="no">Tidak</string>
     <string name="exit">keluar ?</string>
@@ -57,11 +58,15 @@
     <string name="button_refresh_data_on_widget">Tombol penyegaran data di widget</string>
     <string name="camera_x">Kamera X</string>
     <string name="data_not_available">Data tidak tersedia</string>
+    <string name="change_theme">Ubah Tema</string>
+    <string name="setting_change_language">Ganti Bahasa</string>
+    <string name="setting_icon_arrow">Ikon panah pengaturan</string>
 
     <string name="let_s_register">Silahkan daftar</string>
     <string name="before_explore_all_of_user_s_experience_and_story_of_all_user_please_login_with_account_that_you_already_registered">Sebelum Jelajahi semua pengalaman pengguna dan kisah semua pengguna, Silakan login dengan akun yang sudah Anda daftarkan.</string>
     <string name="before_explore_all_of_student_s_experience_and_story_when_learning_in_dicoding_and_of_course_you_can_also_share_your_story_too">Sebelumnya Jelajahi semua pengalaman dan cerita siswa saat belajar di Dicoding, dan tentunya Anda juga bisa berbagi cerita Anda juga.</string>
     <string name="id">ID: %2$s</string>
+    <string name="userId">userId:, %3$s </string>
     <string name="created_by">Dibuat oleh: %3$s</string>
     <string name="date_time">Tanggal/Waktu: %4$s</string>
     <string name="flash_camera_is_not_available">Flash camera is Not Available</string>
@@ -77,4 +82,5 @@
     <string name="location_permission_denied">perijinan lokasi ditolak</string>
     <string name="change_setting">ubah pengaturan</string>
     <string name="unable_to_fetch_data_of_stories">Tidak dapat mengambil data cerita</string>
+    <string name="avatar_profile">Profil avatar</string>
 </resources>

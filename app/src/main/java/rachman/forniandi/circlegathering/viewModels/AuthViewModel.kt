@@ -76,7 +76,7 @@ class AuthViewModel @Inject constructor(
             loginResponse.value = handledLoginResponse(loginFeedback)
 
         }catch (e: Exception){
-            loginResponse.value = NetworkResult.Error("Login Failed.")
+            loginResponse.value = NetworkResult.Error(e.message)
         }
 
 
@@ -93,6 +93,7 @@ class AuthViewModel @Inject constructor(
                 sessionPreferences.run {
                     login?.loginResult?.token?.let { saveTokenAuth(it) }
                     login?.loginResult?.name?.let{ saveUsername(it)}
+                    login?.loginResult?.userId?.let { saveUserId(it) }
                     setLoginUserStatus(true)
                 }
                 return NetworkResult.Success(login)
