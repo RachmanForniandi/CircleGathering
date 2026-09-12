@@ -34,7 +34,6 @@
 - 📷 **Camera Integration** — Capture or pick photos using CameraX
 - 📄 **Paging 3** — Efficient infinite-scroll story feed
 - ⏳ **Shimmer Loading** — Skeleton loading effect for better UX
-- 🔔 **WorkManager** — Background task scheduling
 - 💉 **Dependency Injection** — Powered by Dagger Hilt
 
 ---
@@ -53,7 +52,6 @@
 | Paging | Paging 3 |
 | Maps | Google Maps SDK |
 | Camera | CameraX |
-| Background Work | WorkManager |
 | UI | ViewBinding, Navigation Component, Material Design |
 | Animation | Property Animation, Motion Layout |
 | Debug | Chucker |
@@ -74,12 +72,7 @@
    git clone https://github.com/RachmanForniandi/CircleGathering.git
    ```
 
-2. **Add your Google Maps API Key** to `local.properties`
-   ```properties
-   MAPS_API_KEY=YOUR_API_KEY_HERE
-   ```
-
-3. **Open** the project in Android Studio and **Run** the app
+2. **Open** the project in Android Studio and **Run** the app
 
 ---
 
