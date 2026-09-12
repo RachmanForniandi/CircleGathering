@@ -78,67 +78,16 @@
 
 ## 📸 Screenshots
 
-### 1. Splash Screen
-<p align="center">
-  <img src="assets/ss/1.jpeg" width="270" alt="Splash Screen" />
-</p>
+## Screenshot
+|Splash Screen|Login|Sign Up|Loading Screen|Main|
+|--|--|--|--|
+|![](assets/ss/1.jpeg?raw=true)|![](assets/ss/2.jpeg?raw=true)|![](assets/ss/3.jpeg?raw=true)|![](assets/ss/4.jpeg?raw=true)|
 
+|Main|Detail|Form-Input|Map|About User & Settings|
+|--|--|--|--|
+|![](assets/ss/5.jpeg?raw=true)||![](assets/ss/6.jpeg?raw=true)|![](assets/ss/7.jpeg?raw=true)|![](assets/ss/8.jpeg?raw=true)|
+
+|About User & Settings|
+|--|
+|![](assets/ss/9.jpeg?raw=true)|
 ---
-
-### 2. Login
-<p align="center">
-  <img src="assets/ss/2.jpeg" width="270" alt="Login Screen" />
-</p>
-
----
-
-### 3. Register
-<p align="center">
-  <img src="assets/ss/3.jpeg" width="270" alt="Register Screen" />
-</p>
-
----
-
-### 4. Loading Screen
-<p align="center">
-  <img src="assets/ss/4.jpeg" width="270" alt="Loading Screen" />
-</p>
-
----
-
-### 5. Main
-<p align="center">
-  <img src="assets/ss/5.jpeg" width="270" alt="Main Screen" />
-</p>
-
----
-
-### 6. Detail
-<p align="center">
-  <img src="assets/ss/6.jpeg" width="270" alt="Detail Screen" />
-</p>
-
----
-
-### 7. Input Data
-<p align="center">
-  <img src="assets/ss/7.jpeg" width="270" alt="Input Data Screen" />
-</p>
-
----
-
-### 8. Map
-<p align="center">
-  <img src="assets/ss/8.jpeg" width="270" alt="Map Screen" />
-</p>
-
----
-
-### 9. About & Settings
-<p align="center">
-  <img src="assets/ss/9.jpeg" width="270" alt="About and Settings Screen" />
-</p>
-
----
-
-<p align="center">Made with ❤️ by <a href="https://github.com/RachmanForniandi">Rachman Forniandi</a></p>
